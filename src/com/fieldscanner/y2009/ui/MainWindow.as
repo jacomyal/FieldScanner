@@ -22,20 +22,13 @@
 
 package com.fieldscanner.y2009.ui {
 	
-	import flash.ui.Keyboard;
-    import flash.text.TextField;
-    import flash.text.TextFormat;
-    import flash.text.TextFieldAutoSize;
-    import flash.events.KeyboardEvent;
-    import flash.events.MouseEvent;
-    import flash.events.Event;
+	import com.fieldscanner.y2009.calcul.GSCalculator;
+	import com.fieldscanner.y2009.graphics.Diagram;
+	import com.fieldscanner.y2009.loading.DataLoader;
+	
 	import flash.display.Sprite;
 	import flash.display.Stage;
-	import flash.display.SimpleButton;
-	import com.fieldscanner.y2009.text.InputFormatTextField;
-	import com.fieldscanner.y2009.calcul.GSCalculator;
-	import com.fieldscanner.y2009.loading.DataLoader;
-	import com.fieldscanner.y2009.graphics.Diagram;
+	import flash.events.Event;
 	
 	public class MainWindow extends Sprite{
 		
@@ -61,8 +54,9 @@ package com.fieldscanner.y2009.ui {
 			launchFromFile();
 		}
 		
-		public function reprocess(newInt:Number):void{
+		public function reprocess(newInt:Number,newAlp:Number):void{
 			interval = newInt;
+			alphaValue = newAlp;
 			gsCalculator.launch(interval,alphaValue);
 			gsCalculator.addEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsReprocessedHandler);
 		}

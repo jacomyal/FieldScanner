@@ -56,7 +56,6 @@ package com.fieldscanner.y2009.calcul {
 		
 		public function launch(newInt:Number,tempAlpha:Number):void{
 			interval = newInt;
-			trace("\n\n"+endYear+", "+beginYear+", "+interval+"\n\n");
 			focusParameter = tempAlpha;
 			
 			addEventListener(GSCalculator.IN_OUT_FINISH, onResultsFoundHandler);
@@ -83,10 +82,8 @@ package com.fieldscanner.y2009.calcul {
 		}
 		
 		protected function onResultsFoundHandler(evt:Event):void{
-			trace("GSCalculator.onResultsFoundHandler:\n\tResultFinder.ON_COMPLETED event received");
 			var i:Number = 0;
 			for(i=0;i<wordsData.getArrayLength();i++){
-				trace(wordsData.getWord(i));
 				setInProx(i);
 				setOutProx(i);
 			}
@@ -129,12 +126,11 @@ package com.fieldscanner.y2009.calcul {
 			
 			for (i=0;i<iMax;i++){
 				inProc += P(max,wordIndex,i);
-				trace(inProc);
 			}
 			
 			var res:Number = inProc/(iMax-1);
 			
-			trace("GSCalculator.setInProx:\n\tIn proximity value of expression n°"+wordIndex+" is "+res);
+			trace("GSCalculator.setInProx:\n\tIn proximity value of expression "+word+" is "+res);
 			wordsData.setIn(wordIndex,yearCounter,res);
 		}
 		
@@ -149,12 +145,11 @@ package com.fieldscanner.y2009.calcul {
 			
 			for (i=0;i<iMax;i++){
 				outProc += P(min,wordIndex,i);
-				trace(outProc);
 			}
 			
 			var res:Number = outProc/(iMax-1);
 			
-			trace("GSCalculator.setOutProx:\n\tOut proximity value of expression n°"+wordIndex+" is "+res);
+			trace("GSCalculator.setOutProx:\n\tOut proximity value of expression "+word+" is "+res);
 			wordsData.setOut(wordIndex,yearCounter,res);
 		}
 	}

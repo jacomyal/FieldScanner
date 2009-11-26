@@ -263,6 +263,10 @@ package com.fieldscanner.y2009.graphics {
 			return res;
 		}
 		
+		public function get LAST_FRAME():Boolean{
+			return (indexOfImage==graphsVector.length-1);
+		}
+		
 		public function goFrame(i:Number):Boolean{
 			var res:Boolean = false;
 			

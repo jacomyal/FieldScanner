@@ -1,4 +1,26 @@
-﻿package com.fieldscanner.y2009.ui {
+﻿/*
+# Copyright (c) 2009 Alexis Jacomy <alexis.jacomy@gmail.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+*/
+
+package com.fieldscanner.y2009.ui {
 	
     import flash.display.Sprite;
     import flash.display.Stage;
@@ -38,6 +60,7 @@
 				x = 50;
 				y = 10;
 				selectable = true;
+				background = true;
 				autoSize = TextFieldAutoSize.LEFT;
 				text = up.DIAGRAM.interval.toString();
 			}
@@ -47,7 +70,7 @@
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
 				x = 10;
-				y = 10;
+				y = 30;
 				text = "Alpha: ";
 			}
 			
@@ -55,8 +78,9 @@
 			with(alphaInputTextField){
 				type = TextFieldType.INPUT;
 				x = 50;
-				y = 10;
+				y = 30;
 				selectable = true;
+				background = true;
 				autoSize = TextFieldAutoSize.LEFT;
 				text = up.DIAGRAM.interval.toString();
 			}
@@ -64,7 +88,7 @@
 			redoButton = new Button();
 			with(redoButton){
 				x = 30;
-				y = 30;
+				y = 50;
 				width = 70;
 				height = 20;
 				toggle = true;
@@ -76,7 +100,7 @@
 			problemTextField = new TextField();
 			with(problemTextField){
 				selectable = false;
-				autoSize = TextFieldAutoSize.CENTER;
+				autoSize = TextFieldAutoSize.LEFT;
 				x = 10;
 				y = 90;
 				textColor = 0x770909;
@@ -92,22 +116,29 @@
 		}
 		
 		private function setProblem(s:String):void{
-			problemTextField.text = s;
+			problemTextField.appendText(s+"\n");
+			problemTextField.textColor = 0x770909;
+		}
+		
+		private function clearProblem():void{
+			problemTextField.text = "";
 			problemTextField.textColor = 0x770909;
 		}
 		
 		private function redoButtonHandler(e:MouseEvent):void{
+			clearProblem();
 			var newInt:int = new int(intervalInputTextField.text);
+			var newAlp:Number = new Number(alphaInputTextField.text);
 			var intMax:int = up.DIAGRAM.endYear-up.DIAGRAM.beginYear;
 			
-			if(newInt>0 && newInt<=intMax){
-				up.DIAGRAM.up.reprocess(newInt);
-				redoButton.selected = false;
-			}else{
+			if(newInt<=0 || newInt>intMax){
 				setProblem("Wrong interval value: Must be between 0 and "+intMax+".");
+			}else if(newAlp<=0){
+				setProblem("Wrong alpha value: Must be over 0.");
+			}else{
+				up.DIAGRAM.up.reprocess(newInt,newAlp);
+				redoButton.selected = false;
 			}
 		}
-		
 	}
-	
 }
