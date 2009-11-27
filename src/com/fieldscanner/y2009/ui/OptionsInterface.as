@@ -53,33 +53,10 @@ package com.fieldscanner.y2009.ui {
 			x = 10;
 			y = 10;
 			
-			timePalette = new TimePalette(this);
-			with(timePalette){
-				setButtons();
-				setSpeedSlider();
-				setTimeSlider(diagram.graphsVector.length);
-				x = 0;
-				y = 470;
-			}
-			
-			calculsPalette = new CalculsPalette(this);
-			with(calculsPalette){
-				setInterface();
-				x = 0;
-				y = 0;
-			}
-			
-			displayPalette = new DisplayPalette(this);
-			
-			infoPalette = new InfoPalette(this);
+			setPalettes();
 		}
 		
-		public function reset():void{
-			
-			while(this.numChildren>0){
-				this.removeChildAt(0);
-				trace("OptionsInterface.removeChild...");
-			}
+		public function setPalettes():void{
 			
 			timePalette = new TimePalette(this);
 			with(timePalette){
@@ -97,9 +74,24 @@ package com.fieldscanner.y2009.ui {
 				y = 390;
 			}
 			
-			displayPalette = new DisplayPalette(this);
-			
 			infoPalette = new InfoPalette(this);
+			with(infoPalette){
+				setInterface();
+				x = 0;
+				y = 0;
+			}
+			
+			displayPalette = new DisplayPalette(this);
+		}
+		
+		public function reset():void{
+			
+			while(this.numChildren>0){
+				this.removeChildAt(0);
+				trace("OptionsInterface.removeChild...");
+			}
+			
+			setPalettes();
 		}
 		
 		public function get DIAGRAM ():Diagram{

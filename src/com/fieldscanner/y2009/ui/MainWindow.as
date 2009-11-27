@@ -63,7 +63,7 @@ package com.fieldscanner.y2009.ui {
 		
 		protected function launchFromFile():void{
 			var path:String;
-			if(root.loaderInfo.parameters["path"]==undefined){path = "D:/Text-Mining (stage)/dev/FieldScanner 0.2/bin/field_data2.txt";}
+			if(root.loaderInfo.parameters["path"]==undefined){path = "D:/Text-Mining (stage)/dev/FieldScanner 0.2/bin/field_data.txt";}
 			else{path = root.loaderInfo.parameters["path"];}
 			
 			dataLoader = new DataLoader();

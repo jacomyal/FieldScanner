@@ -31,9 +31,14 @@ package com.fieldscanner.y2009.ui {
 		
 		public function InfoPalette(newUp:OptionsInterface){
 			up = newUp;
+			up.addChild(this);
 			
 		}
 		
+		public function setInterface():void{
+			
+			
+		}
 	}
 	
 }
