@@ -76,13 +76,6 @@ package com.fieldscanner.y2009.ui {
 		
 		public function reset():void{
 			
-			trace("OptionsInterface.children: "+this.numChildren);
-			
-			displayPalette = null;
-			infoPalette = null;
-			timePalette = null;
-			calculsPalette = null;
-			
 			while(this.numChildren>0){
 				this.removeChildAt(0);
 				trace("OptionsInterface.removeChild...");
@@ -101,7 +94,7 @@ package com.fieldscanner.y2009.ui {
 			with(calculsPalette){
 				setInterface();
 				x = 0;
-				y = 0;
+				y = 390;
 			}
 			
 			displayPalette = new DisplayPalette(this);

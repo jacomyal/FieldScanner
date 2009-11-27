@@ -49,6 +49,7 @@ package com.fieldscanner.y2009.graphics {
 		public var optionsInterface:OptionsInterface;
 		public var plotMode:String;
 		
+		
 		public var mainWindow:MainWindow;
 		
 		public function Diagram(m:MainWindow){
