@@ -175,7 +175,7 @@ package com.fieldscanner.y2009.ui {
 		private function playProcess(evt:Event):void{
 			if(!goNextFrame()||!isPlaying){
 				removeEventListener(Event.ENTER_FRAME,playProcess);
-				if(!isPaused) goFirstFrame();
+				if(isStopped) goFirstFrame();
 				
 				isStopped = false;
 				isPlaying = false;

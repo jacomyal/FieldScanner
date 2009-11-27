@@ -74,6 +74,41 @@ package com.fieldscanner.y2009.ui {
 			infoPalette = new InfoPalette(this);
 		}
 		
+		public function reset():void{
+			
+			trace("OptionsInterface.children: "+this.numChildren);
+			
+			displayPalette = null;
+			infoPalette = null;
+			timePalette = null;
+			calculsPalette = null;
+			
+			while(this.numChildren>0){
+				this.removeChildAt(0);
+				trace("OptionsInterface.removeChild...");
+			}
+			
+			timePalette = new TimePalette(this);
+			with(timePalette){
+				setButtons();
+				setSpeedSlider();
+				setTimeSlider(diagram.graphsVector.length);
+				x = 0;
+				y = 470;
+			}
+			
+			calculsPalette = new CalculsPalette(this);
+			with(calculsPalette){
+				setInterface();
+				x = 0;
+				y = 0;
+			}
+			
+			displayPalette = new DisplayPalette(this);
+			
+			infoPalette = new InfoPalette(this);
+		}
+		
 		public function get DIAGRAM ():Diagram{
 			return diagram;
 		}

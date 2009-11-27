@@ -25,8 +25,8 @@ package com.fieldscanner.y2009.data {
 	public class Data {
 		
 		public var wordsArray:Array;
-		public var wordsVector:Vector.<Word>;
-		public var occMatrixes:Array;
+		private var wordsVector:Vector.<Word>;
+		private var occMatrixes:Array;
 		public var inMatrix:Array;
 		public var outMatrix:Array;
 		public var beginYear:Number;
@@ -55,6 +55,15 @@ package com.fieldscanner.y2009.data {
 					occMatrixes[i].push(new Array());
 				}
 			}
+		}
+		
+		public function get WORDS_VECTOR():Vector.<Word>{
+			return(wordsVector);
+		}
+		
+		public function createWordsVector():Vector.<Word>{
+			wordsVector = new Vector.<Word>();
+			return(wordsVector);
 		}
 		
 		public function getWord(wordIndex:Number):String{
@@ -130,7 +139,7 @@ package com.fieldscanner.y2009.data {
 		}
 		
 		public function setOut(wordIndex:Number,year:Number,newOut:Number):void{
-			if(year>=1500) outMatrix[wordIndex][year-beginYear] = newOut;
+			if(year>=1800) outMatrix[wordIndex][year-beginYear] = newOut;
 			else outMatrix[wordIndex][year] = newOut;
 		}
 		

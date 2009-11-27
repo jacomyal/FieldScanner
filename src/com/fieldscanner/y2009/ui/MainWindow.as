@@ -57,8 +57,8 @@ package com.fieldscanner.y2009.ui {
 		public function reprocess(newInt:Number,newAlp:Number):void{
 			interval = newInt;
 			alphaValue = newAlp;
-			gsCalculator.launch(interval,alphaValue);
 			gsCalculator.addEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsReprocessedHandler);
+			gsCalculator.launch(interval,alphaValue);
 		}
 		
 		protected function launchFromFile():void{
@@ -67,7 +67,7 @@ package com.fieldscanner.y2009.ui {
 			else{path = root.loaderInfo.parameters["path"];}
 			
 			dataLoader = new DataLoader();
-			dataLoader.addEventListener(DataLoader.ON_COMPLETED, onResultsFoundHandlerFromFile);
+			dataLoader.addEventListener(DataLoader.ON_COMPLETED, onResultsFoundHandler);
 			dataLoader.parse(path);
 		}
 		
@@ -77,23 +77,23 @@ package com.fieldscanner.y2009.ui {
 			trace("MainWindow.onGSCalculatorFinish:\n\tGSCalculator.IN_OUT_FINISH event received");
 		}
 		
-		protected function onResultsFoundHandlerFromFile(evt:Event):void{
-			trace(evt.target.wordsData);
+		protected function onResultsFoundHandler(evt:Event):void{
+			
+			
 			gsCalculator = new GSCalculator(evt.target.wordsData,evt.target.beginYear,evt.target.endYear);
-			gsCalculator.addEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsFinishedHandlerFromFile);
+			gsCalculator.addEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsFinishedHandler);
 			gsCalculator.launch(interval,alphaValue);
 		}
 		
-		protected function onCalculsFinishedHandlerFromFile(evt:Event):void{
+		protected function onCalculsFinishedHandler(evt:Event):void{
 			diagram = new Diagram(this);
-			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsFinishedHandlerFromFile);
-			diagram.process(gsCalculator.wordsData,dataLoader.beginYear,dataLoader.endYear,interval);
+			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsFinishedHandler);
+			diagram.process(gsCalculator.wordsData,dataLoader.beginYear,dataLoader.endYear,interval,alphaValue);
 		}
 		
 		protected function onCalculsReprocessedHandler(evt:Event):void{
-			diagram = new Diagram(this);
 			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsReprocessedHandler);
-			diagram.process(gsCalculator.wordsData,begin,end,interval);
+			diagram.process(gsCalculator.wordsData,dataLoader.beginYear,dataLoader.endYear,interval,alphaValue);
 		}
 		
 	}

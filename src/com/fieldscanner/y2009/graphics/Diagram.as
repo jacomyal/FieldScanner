@@ -44,6 +44,7 @@ package com.fieldscanner.y2009.graphics {
 		public var beginYear:Number;
 		public var endYear:Number;
 		public var interval:Number;
+		public var alphaValue:Number;
 		public var indexOfImage:Number;
 		public var optionsInterface:OptionsInterface;
 		public var plotMode:String;
@@ -62,10 +63,11 @@ package com.fieldscanner.y2009.graphics {
 			return mainWindow;
 		}
 		
-		public function process(newWordsData:Data,newBY:Number,newEY:Number,newI:Number):void{
+		public function process(newWordsData:Data,newBY:Number,newEY:Number,newI:Number,newAlp:Number):void{
 			beginYear = newBY;
 			endYear = newEY;
 			interval = newI;
+			alphaValue = newAlp;
 			wordsData = newWordsData;
 			graphsVector = new Vector.<Sprite>();
 			
@@ -82,30 +84,32 @@ package com.fieldscanner.y2009.graphics {
 			var stepNumber:Number = (endYear-beginYear)-(interval-1);
 			var strArray:Array = wordsData.wordsArray;
 			
-			wordsData.wordsVector = new Vector.<Word>();
+			wordsData.createWordsVector();
 			
 			for(i=0;i<strArray.length;i++){
 				tempWord = new Word(strArray[i]);
 				tempWord.setLabel();
-				wordsData.wordsVector.push(tempWord);
+				wordsData.WORDS_VECTOR.push(tempWord);
+				
+				trace("Diagram.setWordsVector:\n\tNew word: "+tempWord.label);
 			}
 			
-			for(i=0;i<wordsData.wordsVector.length;i++){
-				wordsData.wordsVector[i].inProxValues = new Vector.<Number>();
-				wordsData.wordsVector[i].outProxValues = new Vector.<Number>();
-				wordsData.wordsVector[i].occurences = new Vector.<Number>();
+			for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
+				wordsData.WORDS_VECTOR[i].inProxValues = new Vector.<Number>();
+				wordsData.WORDS_VECTOR[i].outProxValues = new Vector.<Number>();
+				wordsData.WORDS_VECTOR[i].occurences = new Vector.<Number>();
 				
 				for(j=0;j<stepNumber;j++){
 					
 					tempValue = 0;
-					wordsData.wordsVector[i].inProxValues.push(wordsData.getIn(i,j));
-					wordsData.wordsVector[i].outProxValues.push(wordsData.getOut(i,j));
+					wordsData.WORDS_VECTOR[i].inProxValues.push(wordsData.getIn(i,j));
+					wordsData.WORDS_VECTOR[i].outProxValues.push(wordsData.getOut(i,j));
 					
 					for(k=0;k<interval;k++){
 						tempValue += wordsData.getWordOcc(i,i,j+k);
 					}
 					
-					wordsData.wordsVector[i].occurences.push(tempValue);
+					wordsData.WORDS_VECTOR[i].occurences.push(tempValue);
 				}
 			}
 			
@@ -115,6 +119,13 @@ package com.fieldscanner.y2009.graphics {
 		}
 		
 		public function scaleAndPlotDiagram():void{
+			
+			trace("Diagram.children: "+this.numChildren);
+			
+			while(this.numChildren>0){
+				this.removeChildAt(0);
+				trace("Diagram.removeChild...");
+			}
 			
 			graphics.beginFill(0xFFFFFF,1);
 			graphics.drawRect(-30,30,470,-470);
@@ -128,26 +139,26 @@ package com.fieldscanner.y2009.graphics {
 			var tempRatioX:Number;
 			var tempRatioY:Number;
 			
-			var year:Number = 0;
-			var yearNumber:Number = wordsData.wordsVector[0].occurences.length;
+			var step:Number = 0;
+			var stepNumber:Number = wordsData.WORDS_VECTOR[0].occurences.length;
 			
 			var tempContainer:Sprite;
 			var tempIntervalField:TextField;
-			var inMin:Number = wordsData.wordsVector[0].inProxValues[year];
-			var inMax:Number = wordsData.wordsVector[0].inProxValues[year];
-			var outMin:Number = wordsData.wordsVector[0].outProxValues[year];
-			var outMax:Number = wordsData.wordsVector[0].outProxValues[year];
+			var inMin:Number = wordsData.WORDS_VECTOR[0].inProxValues[step];
+			var inMax:Number = wordsData.WORDS_VECTOR[0].inProxValues[step];
+			var outMin:Number = wordsData.WORDS_VECTOR[0].outProxValues[step];
+			var outMax:Number = wordsData.WORDS_VECTOR[0].outProxValues[step];
 			
-			for(year=0;year<yearNumber;year++){
-				for (i=1;i<wordsData.wordsVector.length;i++){
-					if(wordsData.wordsVector[i].inProxValues[year] < inMin)
-						inMin = wordsData.wordsVector[i].inProxValues[year];
-					if(wordsData.wordsVector[i].inProxValues[year] > inMax)
-						inMax = wordsData.wordsVector[i].inProxValues[year];
-					if(wordsData.wordsVector[i].outProxValues[year] < outMin)
-						outMin = wordsData.wordsVector[i].outProxValues[year];
-					if(wordsData.wordsVector[i].outProxValues[year] > outMax)
-						outMax = wordsData.wordsVector[i].outProxValues[year];
+			for(step=0;step<stepNumber;step++){
+				for (i=1;i<wordsData.WORDS_VECTOR.length;i++){
+					if(wordsData.WORDS_VECTOR[i].inProxValues[step] < inMin)
+						inMin = wordsData.WORDS_VECTOR[i].inProxValues[step];
+					if(wordsData.WORDS_VECTOR[i].inProxValues[step] > inMax)
+						inMax = wordsData.WORDS_VECTOR[i].inProxValues[step];
+					if(wordsData.WORDS_VECTOR[i].outProxValues[step] < outMin)
+						outMin = wordsData.WORDS_VECTOR[i].outProxValues[step];
+					if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax)
+						outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
 				}
 			}
 			
@@ -167,13 +178,13 @@ package com.fieldscanner.y2009.graphics {
 			tempRatioX = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
 			tempRatioY = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
 			
-			for(year=0;year<yearNumber;year++){
+			for(step=0;step<stepNumber;step++){
 				graphsVector.push(new Sprite());
 				tempContainer = graphsVector[graphsVector.length-1];
 				
 				tempIntervalField = new TextField();
 				with(tempIntervalField){
-					text = (beginYear+year).toString()+" - "+(beginYear+year+interval).toString();
+					text = (beginYear+step).toString()+" - "+(beginYear+step+interval).toString();
 					setTextFormat(new TextFormat("Arial",60,0xEFEFEF,true,true));
 					selectable = false;
 					autoSize = TextFieldAutoSize.LEFT;
@@ -219,18 +230,18 @@ package com.fieldscanner.y2009.graphics {
 					}
 				}
 				
-				for (i=0;i<wordsData.wordsVector.length;i++){
-					if(wordsData.wordsVector[i].occurences[year]==0) continue;
+				for (i=0;i<wordsData.WORDS_VECTOR.length;i++){
+					if(wordsData.WORDS_VECTOR[i].occurences[step]==0) continue;
 					
 					tempWordSprite = plotWord();
 					with(tempWordSprite){
-						x = ((wordsData.wordsVector[i].outProxValues[year]-outAxisValuesArray[0])/tempRatioX);
-						y = -1*((wordsData.wordsVector[i].inProxValues[year]-inAxisValuesArray[0])/tempRatioY);
+						x = ((wordsData.WORDS_VECTOR[i].outProxValues[step]-outAxisValuesArray[0])/tempRatioX);
+						y = -1*((wordsData.WORDS_VECTOR[i].inProxValues[step]-inAxisValuesArray[0])/tempRatioY);
 					}
 					
 					tempTField = new DiagramTextField();
 					tempTField.autoSize = TextFieldAutoSize.CENTER;
-					tempTField.text = wordsData.wordsVector[i].label;
+					tempTField.text = wordsData.WORDS_VECTOR[i].label;
 					tempTField.refresh();
 					tempTField.x = tempWordSprite.x-tempTField.width/2;
 					tempTField.y = tempWordSprite.y-tempTField.height/2;
@@ -240,8 +251,8 @@ package com.fieldscanner.y2009.graphics {
 				}
 			}
 			
-			optionsInterface = new OptionsInterface(this);
-			trace("pouet");
+			if(optionsInterface==null) optionsInterface = new OptionsInterface(this);
+			else optionsInterface.reset();
 			
 			indexOfImage = 0;
 			addChild(graphsVector[0]);

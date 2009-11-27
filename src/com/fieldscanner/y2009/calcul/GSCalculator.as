@@ -40,21 +40,22 @@ package com.fieldscanner.y2009.calcul {
 		public var wordsData:Data;
 		public var alertString:String;
 		
-		private var yearCounter:Number;
+		private var stepCounter:Number;
 		private var initialString:String;
 		
 		public function GSCalculator(newWordsData:Data,bY:Number,eY:Number){
 			wordsData = newWordsData;
-			yearCounter = 0;
 			
 			alertString = new String();
-			expressionsIndex = new Vector.<String>();
 			
 			beginYear = bY;
 			endYear = eY;
 		}
 		
 		public function launch(newInt:Number,tempAlpha:Number):void{
+			stepCounter = 0;
+			expressionsIndex = new Vector.<String>();
+			
 			interval = newInt;
 			focusParameter = tempAlpha;
 			
@@ -68,11 +69,11 @@ package com.fieldscanner.y2009.calcul {
 		}
 		
 		public function launchNextStep():void{
-			yearCounter++;
+			stepCounter++;
 			
-			if(yearCounter<(endYear-beginYear-interval+1)){
-				var localBegin:Number = beginYear+yearCounter;
-				var localEnd:Number = beginYear+yearCounter+interval;
+			if(stepCounter<(endYear-beginYear-interval+1)){
+				var localBegin:Number = beginYear+stepCounter;
+				var localEnd:Number = beginYear+stepCounter+interval;
 				dispatchEvent(new Event(IN_OUT_FINISH));
 			}
 			
@@ -101,9 +102,9 @@ package com.fieldscanner.y2009.calcul {
 			if(i1==i2) return(0);
 			
 			for(var i:Number=0;i<interval;i++){
-				cooc += wordsData.getWordOcc(i1,i2,yearCounter+i);
-				oc1 += wordsData.getWordOcc(i1,i1,yearCounter+i);
-				oc2 += wordsData.getWordOcc(i2,i2,yearCounter+i);
+				cooc += wordsData.getWordOcc(i1,i2,stepCounter+i);
+				oc1 += wordsData.getWordOcc(i1,i1,stepCounter+i);
+				oc2 += wordsData.getWordOcc(i2,i2,stepCounter+i);
 			}
 			
 			if((oc1>0)&&(oc2>0)){
@@ -131,7 +132,7 @@ package com.fieldscanner.y2009.calcul {
 			var res:Number = inProc/(iMax-1);
 			
 			trace("GSCalculator.setInProx:\n\tIn proximity value of expression "+word+" is "+res);
-			wordsData.setIn(wordIndex,yearCounter,res);
+			wordsData.setIn(wordIndex,stepCounter,res);
 		}
 		
 		protected function setOutProx(wordIndex:Number):void{
@@ -150,7 +151,7 @@ package com.fieldscanner.y2009.calcul {
 			var res:Number = outProc/(iMax-1);
 			
 			trace("GSCalculator.setOutProx:\n\tOut proximity value of expression "+word+" is "+res);
-			wordsData.setOut(wordIndex,yearCounter,res);
+			wordsData.setOut(wordIndex,stepCounter,res);
 		}
 	}
 }

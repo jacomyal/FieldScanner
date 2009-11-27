@@ -82,12 +82,12 @@ package com.fieldscanner.y2009.ui {
 				selectable = true;
 				background = true;
 				autoSize = TextFieldAutoSize.LEFT;
-				text = up.DIAGRAM.interval.toString();
+				text = up.DIAGRAM.alphaValue.toString();
 			}
 			
 			redoButton = new Button();
 			with(redoButton){
-				x = 30;
+				x = 10;
 				y = 50;
 				width = 70;
 				height = 20;

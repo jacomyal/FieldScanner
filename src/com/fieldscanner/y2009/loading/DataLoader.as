@@ -142,9 +142,7 @@ package com.fieldscanner.y2009.loading {
 			
 			while(1){
 				tempArray = readLine(rawData.substr(counter));
-				trace(tempArray);
 				if(tempArray==null) break;
-				trace('('+wordsVector[1]+'=='+tempArray[0]+')='+(wordsVector[1]==tempArray[0]));
 				ng1 = wordsVector.indexOf(tempArray[0]);
 				ng2 = wordsVector.indexOf(tempArray[1]);
 				year = tempArray[2];
