@@ -22,60 +22,94 @@
 
 package com.fieldscanner.y2009.ui {
 	
-    import fl.controls.ComboBox;
-    import fl.data.DataProvider;
+    import fl.controls.*;
+    
     import flash.display.Sprite;
     import flash.events.Event;
+    import flash.events.MouseEvent;
     import flash.text.TextField;
     import flash.text.TextFieldAutoSize;
 	
 	public class DisplayPalette extends Sprite{
 		
 		public static const MODE_CHANGED:String = "Mode has changed";
+		
 		private var up:OptionsInterface;
-		private var mode:ComboBox;
+		private var radioButtons:Vector.<RadioButton>;
+		private var rbGroups:RadioButtonGroup;
 		
 		public function DisplayPalette(newUp:OptionsInterface){
 			up = newUp;
 			up.addChild(this);
-			
+			rbGroups = new RadioButtonGroup("Display mode");
 		}
 		
 		public function setInterface():void{
-			var tf:TextField = new TextField();
-			with(tf){
+			var dTF:TextField = new TextField();
+			radioButtons = new Vector.<RadioButton>();
+			
+			with(dTF){
 				x = 10;
 				y = 10;
 				text = "Display mode:";
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
 			}
-			addChild(tf);
-			
-			var dp:DataProvider = new DataProvider([{label:"Global view", data:1},
-													{label:"Scaled view (all diagrams)", data:2},
-													{label:"Scaled view (each diagram)", data:3}]);
-			
-			mode = new ComboBox();
-			with(mode){
+			addChild(dTF);
+
+			radioButtons.push(new RadioButton());
+			with(radioButtons[0]){
 				x = 10;
 				y = 30;
-				width = 175;
-				dataProvider = dp;
-				selectedIndex = 0;
-				addEventListener(Event.CHANGE, modeChangeHandler);
+				width = 200;
+				label = "Global view";
+				if(up.DIAGRAM.MODE==0) selected = true;
+				group = rbGroups;
+				addEventListener(MouseEvent.CLICK,modeChangeHandler);
 			}
-			addChild(mode);
+			addChild(radioButtons[0]);
+			
+			radioButtons.push(new RadioButton());
+			with(radioButtons[1]){
+				x = 10;
+				y = 50;
+				width = 200;
+				label = "Scaled view (each diagram)";
+				if(up.DIAGRAM.MODE==1) selected = true;
+				group = rbGroups;
+				addEventListener(MouseEvent.CLICK,modeChangeHandler);
+			}
+			addChild(radioButtons[1]);
+			
+			radioButtons.push(new RadioButton());
+			with(radioButtons[2]){
+				x = 10;
+				y = 70;
+				width = 200;
+				label = "Scaled view (all diagrams)";
+				if(up.DIAGRAM.MODE==2) selected = true;
+				group = rbGroups;
+				addEventListener(MouseEvent.CLICK,modeChangeHandler);
+			}
+			addChild(radioButtons[2]);
 			
 		}
 		
 		private function modeChangeHandler(e:Event):void{
-			var i:int = mode.selectedIndex;
+			var i:int;
+			var index:int = -1;
 			
-			mode.selectedIndex = i;
-			trace("Changing display mode: "+mode.selectedLabel);
-			up.DIAGRAM.changeDisplayMode(i);
+			for(i=0;i<3;i++){
+				if(radioButtons[i]==(e.target as RadioButton)){
+					index = i;
+					radioButtons[i].selected = true;
+				}else{
+					radioButtons[i].selected = false;
+				}
+			}
 			
+			trace("Changing display mode: "+index);
+			up.DIAGRAM.changeDisplayMode(index);
 		}
 		
 	}

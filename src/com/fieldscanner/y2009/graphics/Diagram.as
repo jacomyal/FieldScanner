@@ -48,7 +48,7 @@ package com.fieldscanner.y2009.graphics {
 		public var indexOfImage:Number;
 		public var optionsInterface:OptionsInterface;
 		public var displayMode:int;
-		
+		public var diagramSize:Number;
 		
 		public var mainWindow:MainWindow;
 		
@@ -56,11 +56,13 @@ package com.fieldscanner.y2009.graphics {
 			mainWindow = m;
 			mainWindow.addChild(this);
 			
+			diagramSize = 400;
+			
 			displayMode = 0;
 			indexOfImage = 0;
 			
-			x = 340;
-			y = 460;
+			x = (diagramSize-60);
+			y = (diagramSize+60);
 		}
 		
 		public function get up():MainWindow{
@@ -69,6 +71,10 @@ package com.fieldscanner.y2009.graphics {
 		
 		public function get LAST_FRAME():Boolean{
 			return (indexOfImage==graphsVector.length-1);
+		}
+		
+		public function get MODE():int{
+			return displayMode;
 		}
 		
 		public function changeDisplayMode(index:int):void{
@@ -183,7 +189,7 @@ package com.fieldscanner.y2009.graphics {
 			}
 			
 			graphics.beginFill(0xFFFFFF,1);
-			graphics.drawRect(-30,30,470,-470);
+			graphics.drawRect(-30,30,(diagramSize+70),-(diagramSize+70));
 			
 			trace("Diagram.scaleAndPlotDiagram:\n\tPlot the diagrams...");
 			var i:Number = 0;
@@ -267,8 +273,8 @@ package com.fieldscanner.y2009.graphics {
 					inAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[0];
 					outAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[1];
 					
-					tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
-					tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
+					tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/diagramSize;
+					tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/diagramSize;
 				}
 				
 				tempContainer = displayMapKey(tempContainer,inAxisValuesArray,outAxisValuesArray);
@@ -288,9 +294,9 @@ package com.fieldscanner.y2009.graphics {
 			
 			with(s.graphics){
 				lineStyle(1,0x000000);
-				moveTo(0,-420);
+				moveTo(0,-(diagramSize+20));
 				lineTo(0,0);
-				lineTo(420,0);
+				lineTo((diagramSize+20),0);
 			}
 			
 			l = inAxis.length;
@@ -298,12 +304,12 @@ package com.fieldscanner.y2009.graphics {
 				tf = new DiagramTextField();
 				tf.text = roundToString(inAxis[i]);
 				tf.refresh();
-				tf.x = i*400/(l-1);
+				tf.x = i*diagramSize/(l-1);
 				tf.y = 0;
 				s.addChild(tf);
 				with(s.graphics){
-					moveTo(i*400/(l-1),0);
-					lineTo(i*400/(l-1),5);
+					moveTo(i*diagramSize/(l-1),0);
+					lineTo(i*diagramSize/(l-1),5);
 				}
 			}
 			
@@ -314,11 +320,11 @@ package com.fieldscanner.y2009.graphics {
 				tf.text = roundToString(outAxis[i]);
 				tf.refresh();
 				tf.x = -1*tf.width;
-				tf.y = -1*i*400/(l-1);
+				tf.y = -1*i*diagramSize/(l-1);
 				s.addChild(tf);
 				with(s.graphics){
-					moveTo(0,-1*i*400/(l-1));
-					lineTo(-5,-1*i*400/(l-1));
+					moveTo(0,-1*i*diagramSize/(l-1));
+					lineTo(-5,-1*i*diagramSize/(l-1));
 				}
 			}
 			
@@ -341,7 +347,7 @@ package com.fieldscanner.y2009.graphics {
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
 				x = 20;
-				y = -400;
+				y = -diagramSize;
 			}
 			
 			s.addChild(tf);
@@ -365,7 +371,7 @@ package com.fieldscanner.y2009.graphics {
 		private function getAxisValuesArray(xMax:Number,xMin:Number,yMax:Number,yMin:Number):Array{
 			var xDifference:Number = xMax - xMin;
 			var yDifference:Number = yMax - yMin;
-			var order:int = Math.min(Math.round((Math.log(xDifference)/Math.LN10)),Math.round((Math.log(yDifference)/Math.LN10)));
+			var order:int = -1;
 
 			var xInfMin:Number = Math.floor(xMin*Math.pow(10,(-1)*order))*Math.pow(10,order);
 			var yInfMin:Number = Math.floor(yMin*Math.pow(10,(-1)*order))*Math.pow(10,order);

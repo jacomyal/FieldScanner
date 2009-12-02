@@ -58,7 +58,7 @@ package com.fieldscanner.y2009.loading {
 			fileLoader.load(fileRequest);
 		}
 		
-		protected function whenCompleted(e:Event):void{
+		private function whenCompleted(e:Event):void{
 			var i:int = 0;
 			var arrayCounter:int = 0;
 			var parsed:String = '';
@@ -94,7 +94,7 @@ package com.fieldscanner.y2009.loading {
 			setWordsVector(rawWordsString);
 		}
 		
-		protected function setWordsVector(s:String):void{
+		private function setWordsVector(s:String):void{
 			var pos:Number = 0;
 			var posMax:Number = s.length;
 			var tempWord:String = new String();
@@ -131,7 +131,7 @@ package com.fieldscanner.y2009.loading {
 			
 		}
 		
-		protected function readFile():void{
+		private function readFile():void{
 			var tempArray:Array = new Array();
 			var tempStr:String = '';
 			var counter:int = 0;
@@ -156,7 +156,7 @@ package com.fieldscanner.y2009.loading {
 			dispatchEvent(new Event(ON_COMPLETED));
 		}
 		
-		protected function readLine(s:String):Array{
+		private function readLine(s:String):Array{
 			if(s.toUpperCase()==s.toLowerCase()) return null;
 			
 			var counter:int = 0;
@@ -187,7 +187,7 @@ package com.fieldscanner.y2009.loading {
 			return res;
 		}
 		
-		protected function clean(s0:String):String{
+		private function clean(s0:String):String{
 			var t:Boolean = true;
 			var s:String = s0;
 			var a:Array = ["\n"," ","\t","\r"];
@@ -201,7 +201,7 @@ package com.fieldscanner.y2009.loading {
 			return s;
 		}
 		
-		protected function compareString(S1:String, S2:String):int{
+		private function compareString(S1:String, S2:String):int{
 			var s1:String = S1.toLowerCase();
 			var s2:String = S2.toLowerCase();
 			
