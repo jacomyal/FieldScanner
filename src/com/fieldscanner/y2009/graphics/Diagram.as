@@ -27,6 +27,7 @@ package com.fieldscanner.y2009.graphics {
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	import com.fieldscanner.y2009.ui.MainWindow;
 	import com.fieldscanner.y2009.ui.OptionsInterface;
+	
 	import flash.display.Sprite;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -74,6 +75,10 @@ package com.fieldscanner.y2009.graphics {
 			displayMode = index;
 			trace("New display index: "+displayMode);
 			process(wordsData,beginYear,endYear,interval,alphaValue);
+		}
+		
+		public function resetPlayer():void{
+			indexOfImage = 0;
 		}
 		
 		public function goNextFrame():Boolean{
@@ -199,112 +204,75 @@ package com.fieldscanner.y2009.graphics {
 			var outMin:Number = wordsData.WORDS_VECTOR[0].outProxValues[step];
 			var outMax:Number = wordsData.WORDS_VECTOR[0].outProxValues[step];
 			
-			for(step=0;step<stepNumber;step++){
-				for (i=1;i<wordsData.WORDS_VECTOR.length;i++){
-					if(wordsData.WORDS_VECTOR[i].inProxValues[step] < inMin)
-						inMin = wordsData.WORDS_VECTOR[i].inProxValues[step];
-					if(wordsData.WORDS_VECTOR[i].inProxValues[step] > inMax)
-						inMax = wordsData.WORDS_VECTOR[i].inProxValues[step];
-					if(wordsData.WORDS_VECTOR[i].outProxValues[step] < outMin)
-						outMin = wordsData.WORDS_VECTOR[i].outProxValues[step];
-					if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax)
-						outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
-				}
-			}
-			
-			trace("\t\tinMax: "+roundToString2(inMax)+", inMin: "+roundToString2(inMin));
-			trace("\t\toutMax: "+roundToString2(outMax)+", outMin: "+roundToString2(outMin));
-			
 			var inAxisValuesArray:Array;
 			var outAxisValuesArray:Array;
+			
+			if(displayMode!=2){
+				for(step=0;step<stepNumber;step++){
+					for (i=1;i<wordsData.WORDS_VECTOR.length;i++){
+						if(wordsData.WORDS_VECTOR[i].inProxValues[step] < inMin)
+							inMin = wordsData.WORDS_VECTOR[i].inProxValues[step];
+						if(wordsData.WORDS_VECTOR[i].inProxValues[step] > inMax)
+							inMax = wordsData.WORDS_VECTOR[i].inProxValues[step];
+						if(wordsData.WORDS_VECTOR[i].outProxValues[step] < outMin)
+							outMin = wordsData.WORDS_VECTOR[i].outProxValues[step];
+						if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax)
+							outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
+					}
+				}
+				
+				trace("\t\tinMax: "+roundToString2(inMax)+", inMin: "+roundToString2(inMin));
+				trace("\t\toutMax: "+roundToString2(outMax)+", outMin: "+roundToString2(outMin));
+			}
 			
 			if(displayMode==0){
 				inAxisValuesArray = UNSCALED_AXIS;
 				trace("\t\tinAxisValuesArray: "+inAxisValuesArray);
 				outAxisValuesArray = UNSCALED_AXIS;
 				trace("\t\toutAxisValuesArray: "+outAxisValuesArray);
+				
+				tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
+				tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
 			}else if(displayMode==1){
 				inAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[0];
 				trace("\t\tinAxisValuesArray: "+inAxisValuesArray);
 				outAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[1];
 				trace("\t\toutAxisValuesArray: "+outAxisValuesArray);
+				
+				tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
+				tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
 			}
-			
-			
-			tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
-			tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
 			
 			for(step=0;step<stepNumber;step++){
 				graphsVector.push(new Sprite());
 				tempContainer = graphsVector[graphsVector.length-1];
 				
-				tempIntervalField = new TextField();
-				with(tempIntervalField){
-					text = (beginYear+step).toString()+" - "+(beginYear+step+interval).toString();
-					setTextFormat(new TextFormat("Arial",60,0xDEDEDE,true,true));
-					selectable = false;
-					autoSize = TextFieldAutoSize.LEFT;
-					x = 20;
-					y = -400;
-				}
-				
-				tempContainer.addChild(tempIntervalField);
-				
-				with(tempContainer.graphics){
-					lineStyle(1,0x000000);
-					moveTo(0,-420);
-					lineTo(0,0);
-					lineTo(420,0);
-				}
-				
-				tempLength = inAxisValuesArray.length;
-				for(i=0;i<tempLength;i++){
-					tempTField = new DiagramTextField();
-					tempTField.text = roundToString(inAxisValuesArray[i]);
-					tempTField.refresh();
-					tempTField.x = i*400/(tempLength-1);
-					tempTField.y = 0;
-					tempContainer.addChild(tempTField);
-					with(tempContainer.graphics){
-						moveTo(i*400/(tempLength-1),0);
-						lineTo(i*400/(tempLength-1),5);
-					}
-				}
-				
-				tempLength = outAxisValuesArray.length;
-				for(i=0;i<tempLength;i++){
-					tempTField = new DiagramTextField();
-					tempTField.autoSize = TextFieldAutoSize.RIGHT;
-					tempTField.text = roundToString(outAxisValuesArray[i]);
-					tempTField.refresh();
-					tempTField.x = -1*tempTField.width;
-					tempTField.y = -1*i*400/(tempLength-1);
-					tempContainer.addChild(tempTField);
-					with(tempContainer.graphics){
-						moveTo(0,-1*i*400/(tempLength-1));
-						lineTo(-5,-1*i*400/(tempLength-1));
-					}
-				}
-				
-				for (i=0;i<wordsData.WORDS_VECTOR.length;i++){
-					if(wordsData.WORDS_VECTOR[i].occurences[step]==0) continue;
+				if(displayMode==2){
+					inMin = wordsData.WORDS_VECTOR[0].inProxValues[step];
+					inMax = wordsData.WORDS_VECTOR[0].inProxValues[step];
+					outMin = wordsData.WORDS_VECTOR[0].outProxValues[step];
+					outMax = wordsData.WORDS_VECTOR[0].outProxValues[step];
 					
-					tempWordSprite = plotWord();
-					with(tempWordSprite){
-						x = ((wordsData.WORDS_VECTOR[i].inProxValues[step]-inAxisValuesArray[0])/tempRatioX);
-						y = -1*((wordsData.WORDS_VECTOR[i].outProxValues[step]-outAxisValuesArray[0])/tempRatioY);
+					for (i=1;i<wordsData.WORDS_VECTOR.length;i++){
+						if(wordsData.WORDS_VECTOR[i].inProxValues[step] < inMin)
+							inMin = wordsData.WORDS_VECTOR[i].inProxValues[step];
+						if(wordsData.WORDS_VECTOR[i].inProxValues[step] > inMax)
+							inMax = wordsData.WORDS_VECTOR[i].inProxValues[step];
+						if(wordsData.WORDS_VECTOR[i].outProxValues[step] < outMin)
+							outMin = wordsData.WORDS_VECTOR[i].outProxValues[step];
+						if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax)
+							outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
 					}
 					
-					tempTField = new DiagramTextField();
-					tempTField.text = wordsData.WORDS_VECTOR[i].label;
-					tempTField.refresh();
-					tempTField.x = tempWordSprite.x+15;
-					tempTField.y = tempWordSprite.y-tempTField.height/2;
-					tempTField.autoSize = TextFieldAutoSize.LEFT;
+					inAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[0];
+					outAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[1];
 					
-					tempContainer.addChildAt(tempWordSprite,1);
-					tempContainer.addChild(tempTField);
+					tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
+					tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
 				}
+				
+				tempContainer = displayMapKey(tempContainer,inAxisValuesArray,outAxisValuesArray);
+				tempContainer = displayDiagram(tempContainer,step,[inAxisValuesArray[0],outAxisValuesArray[0],tempRatioX,tempRatioY]);
 			}
 			
 			if(optionsInterface==null) optionsInterface = new OptionsInterface(this);
@@ -313,14 +281,85 @@ package com.fieldscanner.y2009.graphics {
 			addChild(graphsVector[indexOfImage]);
 		}
 		
-		private function plotWord(color:uint=0x446688,diameter:Number=15):Sprite{
-			var tempSprite:Sprite = new Sprite();
-			tempSprite.graphics.beginFill(0x446688,1);
-			tempSprite.graphics.drawCircle(0,0,diameter*2/3);
-			tempSprite.graphics.beginFill(0x446688,0.3);
-			tempSprite.graphics.drawCircle(0,0,diameter);
+		private function displayMapKey(s:Sprite,inAxis:Array,outAxis:Array):Sprite{
+			var l:int;
+			var i:int;
+			var tf:DiagramTextField;
 			
-			return(tempSprite);
+			with(s.graphics){
+				lineStyle(1,0x000000);
+				moveTo(0,-420);
+				lineTo(0,0);
+				lineTo(420,0);
+			}
+			
+			l = inAxis.length;
+			for(i=0;i<l;i++){
+				tf = new DiagramTextField();
+				tf.text = roundToString(inAxis[i]);
+				tf.refresh();
+				tf.x = i*400/(l-1);
+				tf.y = 0;
+				s.addChild(tf);
+				with(s.graphics){
+					moveTo(i*400/(l-1),0);
+					lineTo(i*400/(l-1),5);
+				}
+			}
+			
+			l = outAxis.length;
+			for(i=0;i<l;i++){
+				tf = new DiagramTextField();
+				tf.autoSize = TextFieldAutoSize.RIGHT;
+				tf.text = roundToString(outAxis[i]);
+				tf.refresh();
+				tf.x = -1*tf.width;
+				tf.y = -1*i*400/(l-1);
+				s.addChild(tf);
+				with(s.graphics){
+					moveTo(0,-1*i*400/(l-1));
+					lineTo(-5,-1*i*400/(l-1));
+				}
+			}
+			
+			return(s);
+		}
+		
+		private function displayDiagram(s:Sprite,step:int,ref:Array):Sprite{
+			var tf:TextField = new TextField();
+			var w:DisplayWord;
+			var i:int;
+			
+			var inMin:Number = ref[0];
+			var outMin:Number = ref[1];
+			var inRatio:Number = ref[2];
+			var outRatio:Number = ref[3];
+			
+			with(tf){
+				text = (beginYear+step).toString()+" - "+(beginYear+step+interval).toString();
+				setTextFormat(new TextFormat("Arial",60,0xDEDEDE,true,true));
+				selectable = false;
+				autoSize = TextFieldAutoSize.LEFT;
+				x = 20;
+				y = -400;
+			}
+			
+			s.addChild(tf);
+			
+			for (i=0;i<wordsData.WORDS_VECTOR.length;i++){
+				if(wordsData.WORDS_VECTOR[i].occurences[step]==0) continue;
+				w = new DisplayWord(wordsData.WORDS_VECTOR[i].label);
+				
+				with(w){
+					plot();
+					x = ((wordsData.WORDS_VECTOR[i].inProxValues[step]-inMin)/inRatio);
+					y = -1*((wordsData.WORDS_VECTOR[i].outProxValues[step]-outMin)/outRatio);
+				}
+				
+				s.addChild(w);
+			}
+			
+			return(s);
 		}
 		
 		private function getAxisValuesArray(xMax:Number,xMin:Number,yMax:Number,yMin:Number):Array{

@@ -26,9 +26,6 @@ package com.fieldscanner.y2009.text {
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
-	/*
-	* Classe personnelle de TextField.
-	*/
 	public class DiagramTextField extends TextField{
 		
 		public var textFormat:TextFormat;

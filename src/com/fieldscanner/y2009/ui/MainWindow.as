@@ -93,6 +93,7 @@ package com.fieldscanner.y2009.ui {
 		
 		protected function onCalculsReprocessedHandler(evt:Event):void{
 			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsReprocessedHandler);
+			diagram.resetPlayer();
 			diagram.process(gsCalculator.wordsData,dataLoader.beginYear,dataLoader.endYear,interval,alphaValue);
 		}
 		
