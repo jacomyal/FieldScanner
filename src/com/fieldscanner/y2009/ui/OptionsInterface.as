@@ -60,28 +60,28 @@ package com.fieldscanner.y2009.ui {
 			
 			timePalette = new TimePalette(this);
 			with(timePalette){
-				setButtons();
-				setSpeedSlider();
-				setTimeSlider(diagram.graphsVector.length);
 				x = 0;
 				y = 470;
+				setButtons();
+				setSpeedSlider();
+				setTimeSlider();
 			}
 			
 			calculsPalette = new CalculsPalette(this);
 			with(calculsPalette){
-				setInterface();
 				x = 0;
 				y = 390;
-			}
-			
-			infoPalette = new InfoPalette(this);
-			with(infoPalette){
 				setInterface();
-				x = 0;
-				y = 0;
 			}
 			
 			displayPalette = new DisplayPalette(this);
+			with(displayPalette){
+				x = 0;
+				y = 0;
+				setInterface();
+			}
+			
+			infoPalette = new InfoPalette(this);
 		}
 		
 		public function reset():void{

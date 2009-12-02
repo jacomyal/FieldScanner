@@ -27,7 +27,6 @@ package com.fieldscanner.y2009.graphics {
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	import com.fieldscanner.y2009.ui.MainWindow;
 	import com.fieldscanner.y2009.ui.OptionsInterface;
-	
 	import flash.display.Sprite;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -47,7 +46,7 @@ package com.fieldscanner.y2009.graphics {
 		public var alphaValue:Number;
 		public var indexOfImage:Number;
 		public var optionsInterface:OptionsInterface;
-		public var plotMode:String;
+		public var displayMode:int;
 		
 		
 		public var mainWindow:MainWindow;
@@ -56,12 +55,63 @@ package com.fieldscanner.y2009.graphics {
 			mainWindow = m;
 			mainWindow.addChild(this);
 			
+			displayMode = 0;
+			indexOfImage = 0;
+			
 			x = 340;
 			y = 460;
 		}
 		
 		public function get up():MainWindow{
 			return mainWindow;
+		}
+		
+		public function get LAST_FRAME():Boolean{
+			return (indexOfImage==graphsVector.length-1);
+		}
+		
+		public function changeDisplayMode(index:int):void{
+			displayMode = index;
+			trace("New display index: "+displayMode);
+			process(wordsData,beginYear,endYear,interval,alphaValue);
+		}
+		
+		public function goNextFrame():Boolean{
+			var res:Boolean = false;
+			
+			if(indexOfImage!=graphsVector.length-1){
+				removeChild(graphsVector[indexOfImage]);
+				indexOfImage+=1;
+				addChild(graphsVector[indexOfImage]);
+				
+				res=true;
+			}else{
+				res=false;
+			}
+			
+			return res;
+		}
+		
+		public function goFrame(i:Number):Boolean{
+			var res:Boolean = false;
+			
+			if(i<graphsVector.length){
+				removeChild(graphsVector[indexOfImage]);
+				indexOfImage = i;
+				addChild(graphsVector[indexOfImage]);
+				
+				res=true;
+			}else{
+				res=false;
+			}
+			
+			return res;
+		}
+		
+		public function goFirstFrame():void{
+			removeChild(graphsVector[indexOfImage]);
+			indexOfImage=0;
+			addChild(graphsVector[0]);
 		}
 		
 		public function process(newWordsData:Data,newBY:Number,newEY:Number,newI:Number,newAlp:Number):void{
@@ -75,7 +125,7 @@ package com.fieldscanner.y2009.graphics {
 			setWordsVector();
 		}
 		
-		protected function setWordsVector():void{
+		private function setWordsVector():void{
 			var i:Number = 0;
 			var j:Number = 0;
 			var k:Number = 0;
@@ -119,8 +169,7 @@ package com.fieldscanner.y2009.graphics {
 			scaleAndPlotDiagram();
 		}
 		
-		public function scaleAndPlotDiagram():void{
-			
+		private function scaleAndPlotDiagram():void{
 			trace("Diagram.children: "+this.numChildren);
 			
 			while(this.numChildren>0){
@@ -166,18 +215,24 @@ package com.fieldscanner.y2009.graphics {
 			trace("\t\tinMax: "+roundToString2(inMax)+", inMin: "+roundToString2(inMin));
 			trace("\t\toutMax: "+roundToString2(outMax)+", outMin: "+roundToString2(outMin));
 			
-//			var inAxisValuesArray:Array = getAxisValuesArray(inMax,inMin);
-//			trace("\t\tinAxisValuesArray: "+inAxisValuesArray);
-//			var outAxisValuesArray:Array = getAxisValuesArray(outMax,outMin);
-//			trace("\t\toutAxisValuesArray: "+outAxisValuesArray);
+			var inAxisValuesArray:Array;
+			var outAxisValuesArray:Array;
 			
-			var inAxisValuesArray:Array = UNSCALED_AXIS;
-			trace("\t\tinAxisValuesArray: "+inAxisValuesArray);
-			var outAxisValuesArray:Array = UNSCALED_AXIS;
-			trace("\t\toutAxisValuesArray: "+outAxisValuesArray);
+			if(displayMode==0){
+				inAxisValuesArray = UNSCALED_AXIS;
+				trace("\t\tinAxisValuesArray: "+inAxisValuesArray);
+				outAxisValuesArray = UNSCALED_AXIS;
+				trace("\t\toutAxisValuesArray: "+outAxisValuesArray);
+			}else if(displayMode==1){
+				inAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[0];
+				trace("\t\tinAxisValuesArray: "+inAxisValuesArray);
+				outAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[1];
+				trace("\t\toutAxisValuesArray: "+outAxisValuesArray);
+			}
 			
-			tempRatioX = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
-			tempRatioY = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
+			
+			tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
+			tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
 			
 			for(step=0;step<stepNumber;step++){
 				graphsVector.push(new Sprite());
@@ -186,7 +241,7 @@ package com.fieldscanner.y2009.graphics {
 				tempIntervalField = new TextField();
 				with(tempIntervalField){
 					text = (beginYear+step).toString()+" - "+(beginYear+step+interval).toString();
-					setTextFormat(new TextFormat("Arial",60,0xEFEFEF,true,true));
+					setTextFormat(new TextFormat("Arial",60,0xDEDEDE,true,true));
 					selectable = false;
 					autoSize = TextFieldAutoSize.LEFT;
 					x = 20;
@@ -236,18 +291,18 @@ package com.fieldscanner.y2009.graphics {
 					
 					tempWordSprite = plotWord();
 					with(tempWordSprite){
-						x = ((wordsData.WORDS_VECTOR[i].outProxValues[step]-outAxisValuesArray[0])/tempRatioX);
-						y = -1*((wordsData.WORDS_VECTOR[i].inProxValues[step]-inAxisValuesArray[0])/tempRatioY);
+						x = ((wordsData.WORDS_VECTOR[i].inProxValues[step]-inAxisValuesArray[0])/tempRatioX);
+						y = -1*((wordsData.WORDS_VECTOR[i].outProxValues[step]-outAxisValuesArray[0])/tempRatioY);
 					}
 					
 					tempTField = new DiagramTextField();
-					tempTField.autoSize = TextFieldAutoSize.CENTER;
 					tempTField.text = wordsData.WORDS_VECTOR[i].label;
 					tempTField.refresh();
-					tempTField.x = tempWordSprite.x-tempTField.width/2;
+					tempTField.x = tempWordSprite.x+15;
 					tempTField.y = tempWordSprite.y-tempTField.height/2;
+					tempTField.autoSize = TextFieldAutoSize.LEFT;
 					
-					tempContainer.addChild(tempWordSprite);
+					tempContainer.addChildAt(tempWordSprite,1);
 					tempContainer.addChild(tempTField);
 				}
 			}
@@ -255,87 +310,67 @@ package com.fieldscanner.y2009.graphics {
 			if(optionsInterface==null) optionsInterface = new OptionsInterface(this);
 			else optionsInterface.reset();
 			
-			indexOfImage = 0;
-			addChild(graphsVector[0]);
+			addChild(graphsVector[indexOfImage]);
 		}
 		
-		public function goNextFrame():Boolean{
-			var res:Boolean = false;
-			
-			if(indexOfImage!=graphsVector.length-1){
-				removeChild(graphsVector[indexOfImage]);
-				indexOfImage+=1;
-				addChild(graphsVector[indexOfImage]);
-				
-				res=true;
-			}else{
-				res=false;
-			}
-			
-			return res;
-		}
-		
-		public function get LAST_FRAME():Boolean{
-			return (indexOfImage==graphsVector.length-1);
-		}
-		
-		public function goFrame(i:Number):Boolean{
-			var res:Boolean = false;
-			
-			if(i<graphsVector.length){
-				removeChild(graphsVector[indexOfImage]);
-				indexOfImage = i;
-				addChild(graphsVector[indexOfImage]);
-				
-				res=true;
-			}else{
-				res=false;
-			}
-			
-			return res;
-		}
-		
-		public function goFirstFrame():void{
-			removeChild(graphsVector[indexOfImage]);
-			indexOfImage=0;
-			addChild(graphsVector[0]);
-		}
-		
-		public function plotWord():Sprite{
+		private function plotWord(color:uint=0x446688,diameter:Number=15):Sprite{
 			var tempSprite:Sprite = new Sprite();
 			tempSprite.graphics.beginFill(0x446688,1);
-			tempSprite.graphics.drawCircle(0,0,10);
+			tempSprite.graphics.drawCircle(0,0,diameter*2/3);
 			tempSprite.graphics.beginFill(0x446688,0.3);
-			tempSprite.graphics.drawCircle(0,0,15);
+			tempSprite.graphics.drawCircle(0,0,diameter);
 			
 			return(tempSprite);
 		}
 		
-		public function getAxisValuesArray(max:Number,min:Number):Array{
-			var difference:Number = max - min;
-			var order:int = Math.round((Math.log(difference)/Math.LN10));
-			var infMin:Number = Math.floor(min*Math.pow(10,(-1)*order))*Math.pow(10,order);
-			var resultArray:Array = new Array();
+		private function getAxisValuesArray(xMax:Number,xMin:Number,yMax:Number,yMin:Number):Array{
+			var xDifference:Number = xMax - xMin;
+			var yDifference:Number = yMax - yMin;
+			var order:int = Math.min(Math.round((Math.log(xDifference)/Math.LN10)),Math.round((Math.log(yDifference)/Math.LN10)));
+
+			var xInfMin:Number = Math.floor(xMin*Math.pow(10,(-1)*order))*Math.pow(10,order);
+			var yInfMin:Number = Math.floor(yMin*Math.pow(10,(-1)*order))*Math.pow(10,order);
+			
+			var xResultArray:Array = new Array();
+			var yResultArray:Array = new Array();
+			
 			var tempToAdd:Number = Math.pow(10,order);
-			var tempResult:Number = infMin-tempToAdd;
+			var tempResult:Number;
 			
 			var i:int = 0;
-			resultArray.push(tempResult);
 			
-			while(tempResult<max+tempToAdd){
-				tempResult = infMin+i*tempToAdd;
-				resultArray.push(round(tempResult,-order));
+			tempResult = xInfMin-tempToAdd;
+			xResultArray.push(tempResult);
+			
+			while(tempResult<xMax+tempToAdd){
+				tempResult = xInfMin+i*tempToAdd;
+				xResultArray.push(round(tempResult,-order));
 				i++;
 			}
 			
-			return(resultArray);
+			i = 0;
+			
+			tempResult = yInfMin-tempToAdd;
+			yResultArray.push(tempResult);
+			
+			while(tempResult<yMax+tempToAdd){
+				tempResult = yInfMin+i*tempToAdd;
+				yResultArray.push(round(tempResult,-order));
+				i++;
+			}
+			
+			var res:Array = new Array();
+			res.push(xResultArray);
+			res.push(yResultArray);
+			
+			return(res);
 		}
 		
-		public function round(num:Number,p:int):Number{ 
+		private function round(num:Number,p:int):Number{ 
 			return(Math.round(num*Math.pow(10,p))/Math.pow(10,p));
 		}
 		
-		public function roundToString(num:Number):String{ 
+		private function roundToString(num:Number):String{ 
 			var i:int = 0;
 			var tempStr:String = num.toString();
 			var tempChar:String = tempStr.charAt(i);
@@ -357,7 +392,7 @@ package com.fieldscanner.y2009.graphics {
 			return(resultStr);
 		}
 		
-		public function roundToString2(num:Number):String{ 
+		private function roundToString2(num:Number):String{ 
 			var i:int = 0;
 			var tempStr:String = num.toString();
 			var tempChar:String = tempStr.charAt(i);
@@ -380,7 +415,7 @@ package com.fieldscanner.y2009.graphics {
 			return(resultStr);
 		}
 		
-		protected function printVector(vector:Vector.<Number>):void{
+		private function printVector(vector:Vector.<Number>):void{
 			for (var i:Number = 0;i<vector.length;i++){
 				trace("\t\tColomn n°"+i+": value: "+vector[i]);
 			}

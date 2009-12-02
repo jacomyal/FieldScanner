@@ -7,7 +7,7 @@
 		<![CDATA[
 			import com.fieldscanner.y2009.ui.MainWindow;
 			
-			function init():void{
+			public function init():void{
 				var main:MainWindow = new MainWindow(stage);
 			}
 		]]>

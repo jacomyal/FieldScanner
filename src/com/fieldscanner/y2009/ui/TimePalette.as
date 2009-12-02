@@ -54,8 +54,9 @@ package com.fieldscanner.y2009.ui {
 			isPaused = false;
 		}
 		
-		public function setTimeSlider(framesNumber:Number):void{
+		public function setTimeSlider():void{
 			var tf:TextField = new TextField();
+			var fn:Number = up.DIAGRAM.graphsVector.length
 			with(tf){
 				text = "Time slider:";
 				selectable = false;
@@ -67,8 +68,8 @@ package com.fieldscanner.y2009.ui {
 			timeSlider = new Slider();
 			with(timeSlider){
 				minimum = 1;
-				maximum = framesNumber;
-				value = 0;
+				maximum = fn;
+				value = up.DIAGRAM.indexOfImage;
 				setSize(100,0);
 				liveDragging = true;
 				x = 10;

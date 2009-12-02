@@ -23,11 +23,13 @@
 package com.fieldscanner.y2009.ui {
 	
     import flash.display.Sprite;
-    import flash.display.Stage;
+    
+    import mx.controls.ComboBox;
 	
 	public class InfoPalette extends Sprite{
 		
 		private var up:OptionsInterface;
+		private var mode:ComboBox;
 		
 		public function InfoPalette(newUp:OptionsInterface){
 			up = newUp;
@@ -36,7 +38,11 @@ package com.fieldscanner.y2009.ui {
 		}
 		
 		public function setInterface():void{
-			
+			mode = new ComboBox();
+			with(mode){
+				x = 10;
+				y = 10;
+			}
 			
 		}
 	}

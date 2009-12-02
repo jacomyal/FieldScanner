@@ -22,15 +22,59 @@
 
 package com.fieldscanner.y2009.ui {
 	
+    import fl.controls.ComboBox;
+    import fl.data.DataProvider;
     import flash.display.Sprite;
-    import flash.display.Stage;
+    import flash.events.Event;
+    import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
 	
 	public class DisplayPalette extends Sprite{
 		
+		public static const MODE_CHANGED:String = "Mode has changed";
 		private var up:OptionsInterface;
+		private var mode:ComboBox;
 		
 		public function DisplayPalette(newUp:OptionsInterface){
 			up = newUp;
+			up.addChild(this);
+			
+		}
+		
+		public function setInterface():void{
+			var tf:TextField = new TextField();
+			with(tf){
+				x = 10;
+				y = 10;
+				text = "Display mode:";
+				selectable = false;
+				autoSize = TextFieldAutoSize.LEFT;
+			}
+			addChild(tf);
+			
+			var dp:DataProvider = new DataProvider([{label:"Global view", data:1},
+													{label:"Scaled view (all diagrams)", data:2},
+													{label:"Scaled view (each diagram)", data:3}]);
+			
+			mode = new ComboBox();
+			with(mode){
+				x = 10;
+				y = 30;
+				width = 175;
+				dataProvider = dp;
+				selectedIndex = 0;
+				addEventListener(Event.CHANGE, modeChangeHandler);
+			}
+			addChild(mode);
+			
+		}
+		
+		private function modeChangeHandler(e:Event):void{
+			var i:int = mode.selectedIndex;
+			
+			mode.selectedIndex = i;
+			trace("Changing display mode: "+mode.selectedLabel);
+			up.DIAGRAM.changeDisplayMode(i);
 			
 		}
 		
