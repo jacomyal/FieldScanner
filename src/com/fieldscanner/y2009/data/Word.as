@@ -28,12 +28,23 @@ package com.fieldscanner.y2009.data {
 		public var inProxValues:Vector.<Number>;
 		public var outProxValues:Vector.<Number>;
 		public var occurences:Vector.<Number>;
+		
+		public var color:uint;
+		public var diameter:Number;
 	
 		public function Word(newLabel:String){
 			label = newLabel;
 			inProxValues = new Vector.<Number>();
 			outProxValues = new Vector.<Number>();
 			occurences = new Vector.<Number>();
+			
+			color = Math.round((1+Math.random())/2*0xFFFFFF );
+			diameter = 15;
+		}
+		
+		public function setGraphicProperties(d:Number,c:uint):void{
+			color = c;
+			diameter = d;
 		}
 		
 		public function setLabel():void{

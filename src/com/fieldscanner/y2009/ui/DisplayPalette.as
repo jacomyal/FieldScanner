@@ -23,7 +23,6 @@
 package com.fieldscanner.y2009.ui {
 	
     import fl.controls.*;
-    
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
@@ -31,8 +30,6 @@ package com.fieldscanner.y2009.ui {
     import flash.text.TextFieldAutoSize;
 	
 	public class DisplayPalette extends Sprite{
-		
-		public static const MODE_CHANGED:String = "Mode has changed";
 		
 		private var up:OptionsInterface;
 		private var radioButtons:Vector.<RadioButton>;
@@ -62,7 +59,7 @@ package com.fieldscanner.y2009.ui {
 				x = 10;
 				y = 30;
 				width = 200;
-				label = "Global view";
+				label = "Normal view";
 				if(up.DIAGRAM.MODE==0) selected = true;
 				group = rbGroups;
 				addEventListener(MouseEvent.CLICK,modeChangeHandler);
@@ -74,7 +71,7 @@ package com.fieldscanner.y2009.ui {
 				x = 10;
 				y = 50;
 				width = 200;
-				label = "Scaled view (each diagram)";
+				label = "Scaled view (global)";
 				if(up.DIAGRAM.MODE==1) selected = true;
 				group = rbGroups;
 				addEventListener(MouseEvent.CLICK,modeChangeHandler);
@@ -86,7 +83,7 @@ package com.fieldscanner.y2009.ui {
 				x = 10;
 				y = 70;
 				width = 200;
-				label = "Scaled view (all diagrams)";
+				label = "Scaled view (local)";
 				if(up.DIAGRAM.MODE==2) selected = true;
 				group = rbGroups;
 				addEventListener(MouseEvent.CLICK,modeChangeHandler);

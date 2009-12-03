@@ -146,14 +146,16 @@ package com.fieldscanner.y2009.graphics {
 			var stepNumber:Number = (endYear-beginYear)-(interval-1);
 			var strArray:Array = wordsData.wordsArray;
 			
-			wordsData.createWordsVector();
-			
-			for(i=0;i<strArray.length;i++){
-				tempWord = new Word(strArray[i]);
-				tempWord.setLabel();
-				wordsData.WORDS_VECTOR.push(tempWord);
+			if(wordsData.WORDS_VECTOR==null){
+				wordsData.createWordsVector();
 				
-				trace("Diagram.setWordsVector:\n\tNew word: "+tempWord.label);
+				for(i=0;i<strArray.length;i++){
+					tempWord = new Word(strArray[i]);
+					tempWord.setLabel();
+					wordsData.WORDS_VECTOR.push(tempWord);
+					
+					trace("Diagram.setWordsVector:\n\tNew word: "+tempWord.label);
+				}
 			}
 			
 			for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
@@ -354,7 +356,7 @@ package com.fieldscanner.y2009.graphics {
 			
 			for (i=0;i<wordsData.WORDS_VECTOR.length;i++){
 				if(wordsData.WORDS_VECTOR[i].occurences[step]==0) continue;
-				w = new DisplayWord(wordsData.WORDS_VECTOR[i].label);
+				w = new DisplayWord(wordsData.WORDS_VECTOR[i]);
 				
 				with(w){
 					plot();

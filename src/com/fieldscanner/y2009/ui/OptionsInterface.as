@@ -70,7 +70,7 @@ package com.fieldscanner.y2009.ui {
 			calculsPalette = new CalculsPalette(this);
 			with(calculsPalette){
 				x = 0;
-				y = 390;
+				y = 370;
 				setInterface();
 			}
 			

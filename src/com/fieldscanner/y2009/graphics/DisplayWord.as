@@ -1,31 +1,39 @@
 package com.fieldscanner.y2009.graphics{
 	
+	import com.fieldscanner.y2009.data.Word;
 	import flash.display.Sprite;
 	import flash.text.TextField;
-	import flash.text.TextFormat;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	
 	public class DisplayWord extends Sprite{
 		
 		private var labelField:TextField;
 		private var textFormat:TextFormat;
+		private var word:Word;
 		
-		public function DisplayWord(label:String){
+		public function DisplayWord(w:Word){
 			textFormat = new TextFormat("Verdana");
 			
+			word = w;
+			
 			labelField = new TextField();
-			labelField.text = label;
+			labelField.text = w.label;
 			labelField.setTextFormat(textFormat);
 		}
 		
-		public function plot(color:uint=0x446688,diameter:Number=15):void{
+		public function get WORD():Word{
+			return(word);
+		}
+		
+		public function plot():void{
 			graphics.clear();
 			
 			with(graphics){
-				graphics.beginFill(0x446688,1);
-				graphics.drawCircle(0,0,diameter*2/3);
-				graphics.beginFill(0x446688,0.3);
-				graphics.drawCircle(0,0,diameter);
+				graphics.beginFill(word.color,1);
+				graphics.drawCircle(0,0,word.diameter*2/3);
+				graphics.beginFill(word.color,0.3);
+				graphics.drawCircle(0,0,word.diameter);
 			}
 			
 			with(labelField){

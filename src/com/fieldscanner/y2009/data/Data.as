@@ -37,7 +37,6 @@ package com.fieldscanner.y2009.data {
 			
 			beginYear = newBeginYear;
 			wordsArray = new Array();
-			wordsVector = new Vector.<Word>();
 			
 			/*occMatrixes: D1 and D2 are Words and D3 are Years*/
 			occMatrixes = new Array();
