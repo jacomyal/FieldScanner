@@ -201,6 +201,7 @@ package com.fieldscanner.y2009.graphics {
 			var step:Number = 0;
 			var stepNumber:Number = wordsData.WORDS_VECTOR[0].occurences.length;
 			
+			var measures:Array = getMeasuresForLocalDisplay();
 			var tempContainer:Sprite;
 			var tempIntervalField:TextField;
 			var inMin:Number = wordsData.WORDS_VECTOR[0].inProxValues[0];
@@ -259,6 +260,11 @@ package com.fieldscanner.y2009.graphics {
 						if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax)
 							outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
 					}
+					
+					inMin = (inMin+inMax-measures[0])/2;
+					outMin = (outMin+outMax-measures[1])/2;
+					inMax = (inMin+inMax+measures[0])/2;
+					outMax = (outMin+outMax+measures[1])/2;
 				}
 				
 				setSize(step,"occurences");
@@ -272,57 +278,6 @@ package com.fieldscanner.y2009.graphics {
 			else optionsInterface.reset();
 			
 			addChild(graphsVector[indexOfImage]);
-		}
-		
-		private function setSize(step:int,indexName:String,minSize:Number=10,maxSize:Number=30):void{
-			var i:int;
-			var l:int = wordsData.WORDS_VECTOR.length;
-			var indexArray:Array = new Array();
-			var sizeArray:Array = new Array();
-			var minValue:Number;
-			var maxValue:Number;
-			
-			
-			if(indexName=="occurences"){
-				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
-				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
-				
-				for(i=0;i<l;i++){
-					indexArray[i]=wordsData.WORDS_VECTOR[i].occurences[step];
-					
-					if(indexArray[i]<minValue) minValue=indexArray[i];
-					if(indexArray[i]>maxValue) maxValue=indexArray[i];
-				}
-			}
-			
-			for(i=0;i<l;i++){
-				wordsData.WORDS_VECTOR[i].setDiameter(minSize+(indexArray[i]-minValue)*(maxSize-minSize)/(maxValue-minValue));
-			}
-		}
-		
-		private function setColor(step:int,indexName:String,minColor:uint=0x21BFE7,maxColor:uint=0xBF1111):void{
-			var i:int;
-			var l:int = wordsData.WORDS_VECTOR.length;
-			var indexArray:Array = new Array();
-			var sizeArray:Array = new Array();
-			var minValue:Number;
-			var maxValue:Number;
-			
-			if(indexName=="occurences"){
-				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
-				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
-				
-				for(i=0;i<l;i++){
-					indexArray[i]=wordsData.WORDS_VECTOR[i].occurences[step];
-					
-					if(indexArray[i]<minValue) minValue=indexArray[i];
-					if(indexArray[i]>maxValue) maxValue=indexArray[i];
-				}
-			}
-			
-			for(i=0;i<l;i++){
-				wordsData.WORDS_VECTOR[i].setColor(minColor+(indexArray[i]-minValue)*(maxColor-minColor)/(maxValue-minValue));
-			}
 		}
 		
 		private function displayMapKey(s:Sprite,borders:Array):Sprite{
@@ -415,6 +370,105 @@ package com.fieldscanner.y2009.graphics {
 			}
 			
 			return(s);
+		}
+		
+		private function getMeasuresForLocalDisplay():Array{
+			var step:int;
+			var i:int;
+			
+			var inMin:Number;
+			var inMax:Number;
+			var outMin:Number;
+			var outMax:Number;
+			
+			var inDiffMax:Number = 0;
+			var outDiffMax:Number = 0;
+			
+			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
+				inMin = wordsData.WORDS_VECTOR[0].inProxValues[step];
+				inMax = wordsData.WORDS_VECTOR[0].inProxValues[step];
+				outMin = wordsData.WORDS_VECTOR[0].outProxValues[step];
+				outMax = wordsData.WORDS_VECTOR[0].outProxValues[step];
+				
+				for (i=1;i<wordsData.WORDS_VECTOR.length;i++){
+					if(wordsData.WORDS_VECTOR[i].inProxValues[step] < inMin){
+						inMin = wordsData.WORDS_VECTOR[i].inProxValues[step];
+					}else if(wordsData.WORDS_VECTOR[i].inProxValues[step] > inMax){
+						inMax = wordsData.WORDS_VECTOR[i].inProxValues[step];
+					}
+					if(wordsData.WORDS_VECTOR[i].outProxValues[step] < outMin){
+						outMin = wordsData.WORDS_VECTOR[i].outProxValues[step];
+					}else if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax){
+						outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
+					}
+				}
+				
+				if((inMax-inMin)>inDiffMax) inDiffMax = inMax-inMin;
+				if((outMax-outMin)>outDiffMax) outDiffMax = outMax-outMin;
+			}
+			
+			return [inDiffMax,outDiffMax];
+		}
+		
+		private function setSize(step:int,indexName:String,minSize:Number=10,maxSize:Number=30):void{
+			var i:int;
+			var l:int = wordsData.WORDS_VECTOR.length;
+			var indexArray:Array = new Array();
+			var sizeArray:Array = new Array();
+			var minValue:Number;
+			var maxValue:Number;
+			
+			
+			if(indexName=="occurences"){
+				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
+				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
+				
+				for(i=0;i<l;i++){
+					indexArray[i]=wordsData.WORDS_VECTOR[i].occurences[step];
+					
+					if(indexArray[i]<minValue) minValue=indexArray[i];
+					if(indexArray[i]>maxValue) maxValue=indexArray[i];
+				}
+			}
+			
+			for(i=0;i<l;i++){
+				wordsData.WORDS_VECTOR[i].setDiameter(minSize+(indexArray[i]-minValue)*(maxSize-minSize)/(maxValue-minValue));
+			}
+		}
+		
+		private function setColor(step:int,indexName:String,minColor:uint=0xffe241,maxColor:uint=0xBF1111):void{
+			var i:int;
+			var l:int = wordsData.WORDS_VECTOR.length;
+			var indexArray:Array = new Array();
+			var sizeArray:Array = new Array();
+			var minValue:Number;
+			var maxValue:Number;
+			
+			if(indexName=="occurences"){
+				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
+				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
+				
+				for(i=0;i<l;i++){
+					indexArray[i]=wordsData.WORDS_VECTOR[i].occurences[step];
+					
+					if(indexArray[i]<minValue) minValue=indexArray[i];
+					if(indexArray[i]>maxValue) maxValue=indexArray[i];
+				}
+			}
+			
+			for(i=0;i<l;i++){
+				wordsData.WORDS_VECTOR[i].setColor(fadeHex(minColor,maxColor,(indexArray[i]-minValue)/(maxValue-minValue)));
+			}
+		}
+		
+		private function fadeHex(hex:uint, hex2:uint, ratio:Number):uint{
+			var r:uint = hex >> 16;
+			var g:uint = hex >> 8 & 0xFF;
+			var b:uint = hex & 0xFF;
+			r += ((hex2 >> 16)-r)*ratio;
+			g += ((hex2 >> 8 & 0xFF)-g)*ratio;
+			b += ((hex2 & 0xFF)-b)*ratio;
+			return(r<<16 | g<<8 | b);
 		}
 		
 		private function round(num:Number,p:int):Number{ 
