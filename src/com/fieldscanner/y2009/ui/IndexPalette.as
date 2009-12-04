@@ -12,9 +12,10 @@ package com.fieldscanner.y2009.ui{
 	
 	public class IndexPalette extends Sprite{
 		
+		private var colorIndexComboBox:ComboBox;
+		private var sizeIndexComboBox:ComboBox;
 		private var minColorPicker:ColorPicker;
 		private var maxColorPicker:ColorPicker;
-		private var indexComboBox:ComboBox;
 		private var colorIndex:TextField;
 		private var sizeIndex:TextField;
 		private var minSizeTF:TextField;
@@ -119,29 +120,48 @@ package com.fieldscanner.y2009.ui{
 			}
 			addChild(maxSizeTF);
 			
-			var indexTF:TextField = new TextField();
-			with(indexTF){
+			var sizeIndexTF:TextField = new TextField();
+			with(sizeIndexTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
 				x = 10;
 				y = 130;
-				text = "Index: ";
+				text = "Size index: ";
 			}
-			addChild(indexTF);
+			addChild(sizeIndexTF);
 			
-			indexComboBox = new ComboBox();
-			with(indexComboBox){
-				x = 50;
+			sizeIndexComboBox = new ComboBox();
+			with(sizeIndexComboBox){
+				x = 80;
 				y = 130;
 			}
-			for(var i:int=0;i<up.DIAGRAM.INDEXES.length;i++) indexComboBox.addItem({label:up.DIAGRAM.INDEXES});
-			indexComboBox.selectedIndex = up.DIAGRAM.indexIndex;
-			addChild(indexComboBox);
+			for(var i:int=0;i<up.DIAGRAM.INDEXES.length;i++) sizeIndexComboBox.addItem({label:up.DIAGRAM.INDEXES[i]});
+			sizeIndexComboBox.selectedIndex = up.DIAGRAM.sizeIndex;
+			addChild(sizeIndexComboBox);
+			
+			var colorIndexTF:TextField = new TextField();
+			with(colorIndexTF){
+				selectable = false;
+				autoSize = TextFieldAutoSize.LEFT;
+				x = 10;
+				y = 160;
+				text = "Color index: ";
+			}
+			addChild(colorIndexTF);
+			
+			colorIndexComboBox = new ComboBox();
+			with(colorIndexComboBox){
+				x = 80;
+				y = 160;
+			}
+			for(var j:int=0;j<up.DIAGRAM.INDEXES.length;j++) colorIndexComboBox.addItem({label:up.DIAGRAM.INDEXES[j]});
+			colorIndexComboBox.selectedIndex = up.DIAGRAM.colorIndex;
+			addChild(colorIndexComboBox);
 			
 			redoButton = new Button();
 			with(redoButton){
 				x = 10;
-				y = 160;
+				y = 190;
 				width = 90;
 				height = 20;
 				toggle = true;
@@ -157,10 +177,11 @@ package com.fieldscanner.y2009.ui{
 			var sizeMax:Number = new Number(maxSizeTF.text);
 			var colorMin:uint = minColorPicker.selectedColor;
 			var colorMax:uint = maxColorPicker.selectedColor;
-			var newIndex:int = indexComboBox.selectedIndex;
+			var newColorIndex:int = colorIndexComboBox.selectedIndex;
+			var newSizeIndex:int = sizeIndexComboBox.selectedIndex;
 			
 			redoButton.selected = false;
-			up.DIAGRAM.setIndexParams([colorMin,colorMax,sizeMin,sizeMax],newIndex);
+			up.DIAGRAM.setIndexParams([colorMin,colorMax,sizeMin,sizeMax],newColorIndex,newSizeIndex);
 		}
 	}
 }

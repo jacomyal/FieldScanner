@@ -48,7 +48,8 @@ package com.fieldscanner.y2009.graphics {
 		public var displayMode:int;
 		public var diagramSize:Number;
 		public var indexParams:Array;
-		public var indexIndex:int;
+		public var colorIndex:int;
+		public var sizeIndex:int;
 		
 		public var mainWindow:MainWindow;
 		
@@ -63,7 +64,8 @@ package com.fieldscanner.y2009.graphics {
 			
 			indexParams = [0xFFE241,0xBF1111,10,30];
 			INDEXES = ["occurences"];
-			indexIndex = 0;
+			colorIndex = 0;
+			sizeIndex = 0;
 			
 			x = (diagramSize-60);
 			y = (diagramSize+60);
@@ -81,9 +83,10 @@ package com.fieldscanner.y2009.graphics {
 			return displayMode;
 		}
 		
-		public function setIndexParams(a:Array,i:int):void{
+		public function setIndexParams(a:Array,c:int,s:int):void{
 			indexParams = a;
-			indexIndex = i;
+			colorIndex = c;
+			sizeIndex = s;
 			process(wordsData,beginYear,endYear,interval,alphaValue);
 		}
 		
@@ -431,7 +434,7 @@ package com.fieldscanner.y2009.graphics {
 			var minSize:Number = indexParams[2];
 			var maxSize:Number = indexParams[3];
 			
-			if(indexIndex==0){
+			if(sizeIndex==0){
 				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				
@@ -459,7 +462,7 @@ package com.fieldscanner.y2009.graphics {
 			var minColor:uint = indexParams[0];
 			var maxColor:uint = indexParams[1];
 			
-			if(indexIndex==0){
+			if(colorIndex==0){
 				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				

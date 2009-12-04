@@ -11,7 +11,7 @@
     Learn more about Flex at http://flex.org 
     // -->
     <head>
-        <title></title>         
+        <title>FieldScanner test page</title>         
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<!-- Include CSS to eliminate any default margins/padding and set the height of the html element and 
 		     the body element to 100%, because Firefox, or any Gecko based browser, interprets percentage as 
@@ -75,6 +75,47 @@
 	   	
        	<noscript>
             <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="FieldScanner">
+				<script type="text/javascript">
+					<!-- Start
+					
+					/* Copyright (c) 2006-2009 Paranoid Ferret Productions.  All rights reserved.
+
+					 * Developed by: Paranoid Ferret Productions
+					 * 			http://www.paranoidferret.com
+					 */
+					 
+					function stopScroll(element, eventName, handler)
+						{
+						if(typeof(element) == "string")
+							element = document.getElementById(element);
+						if(element == null)
+							return;
+						if(element.addEventListener)
+						{
+							if(eventName == 'mousewheel')
+							element.addEventListener('DOMMouseScroll', handler, false);  
+							element.addEventListener(eventName, handler, false);
+						}
+						else if(element.attachEvent)
+							element.attachEvent("on" + eventName, handler);
+					}
+
+					function cancelEvent(e)
+					{
+						e = e ? e : window.event;
+						if(e.stopPropagation)
+							e.stopPropagation();
+						if(e.preventDefault)
+							e.preventDefault();
+						e.cancelBubble = true;
+						e.cancel = true;
+						e.returnValue = false;
+						return false;
+					}
+
+					stopScroll('FieldScanner', 'mousewheel', cancelEvent);
+					// end -->
+				</script>
                 <param name="movie" value="FieldScanner.swf" />
                 <param name="quality" value="high" />
                 <param name="bgcolor" value="#ffffff" />
