@@ -279,6 +279,9 @@ package com.fieldscanner.y2009.graphics {
 					tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/diagramSize;
 				}
 				
+				setSize(step,"occurences");
+				setColor(step,"occurences");
+				
 				tempContainer = displayMapKey(tempContainer,inAxisValuesArray,outAxisValuesArray);
 				tempContainer = displayDiagram(tempContainer,step,[inAxisValuesArray[0],outAxisValuesArray[0],tempRatioX,tempRatioY]);
 			}
@@ -287,6 +290,57 @@ package com.fieldscanner.y2009.graphics {
 			else optionsInterface.reset();
 			
 			addChild(graphsVector[indexOfImage]);
+		}
+		
+		private function setSize(step:int,indexName:String,minSize:Number=10,maxSize:Number=30):void{
+			var i:int;
+			var l:int = wordsData.WORDS_VECTOR.length;
+			var indexArray:Array = new Array();
+			var sizeArray:Array = new Array();
+			var minValue:Number;
+			var maxValue:Number;
+			
+			
+			if(indexName=="occurences"){
+				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
+				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
+				
+				for(i=0;i<l;i++){
+					indexArray[i]=wordsData.WORDS_VECTOR[i].occurences[step];
+					
+					if(indexArray[i]<minValue) minValue=indexArray[i];
+					if(indexArray[i]>maxValue) maxValue=indexArray[i];
+				}
+			}
+			
+			for(i=0;i<l;i++){
+				wordsData.WORDS_VECTOR[i].setDiameter(minSize+(indexArray[i]-minValue)*(maxSize-minSize)/(maxValue-minValue));
+			}
+		}
+		
+		private function setColor(step:int,indexName:String,minColor:uint=0x21BFE7,maxColor:uint=0xBF1111):void{
+			var i:int;
+			var l:int = wordsData.WORDS_VECTOR.length;
+			var indexArray:Array = new Array();
+			var sizeArray:Array = new Array();
+			var minValue:Number;
+			var maxValue:Number;
+			
+			if(indexName=="occurences"){
+				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
+				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
+				
+				for(i=0;i<l;i++){
+					indexArray[i]=wordsData.WORDS_VECTOR[i].occurences[step];
+					
+					if(indexArray[i]<minValue) minValue=indexArray[i];
+					if(indexArray[i]>maxValue) maxValue=indexArray[i];
+				}
+			}
+			
+			for(i=0;i<l;i++){
+				wordsData.WORDS_VECTOR[i].setColor(minColor+(indexArray[i]-minValue)*(maxColor-minColor)/(maxValue-minValue));
+			}
 		}
 		
 		private function displayMapKey(s:Sprite,inAxis:Array,outAxis:Array):Sprite{

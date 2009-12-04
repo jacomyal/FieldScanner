@@ -42,8 +42,11 @@ package com.fieldscanner.y2009.data {
 			diameter = 15;
 		}
 		
-		public function setGraphicProperties(d:Number,c:uint):void{
+		public function setColor(c:uint):void{
 			color = c;
+		}
+		
+		public function setDiameter(d:Number):void{
 			diameter = d;
 		}
 		
