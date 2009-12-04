@@ -187,7 +187,6 @@ package com.fieldscanner.y2009.graphics {
 			
 			while(this.numChildren>0){
 				this.removeChildAt(0);
-				trace("Diagram.removeChild...");
 			}
 			
 			graphics.beginFill(0xFFFFFF,1);
@@ -198,57 +197,46 @@ package com.fieldscanner.y2009.graphics {
 			var tempLength:Number;
 			var tempValue:Number;
 			var tempTField:DiagramTextField;
-			var tempWordSprite:Sprite;
-			var tempRatioX:Number;
-			var tempRatioY:Number;
 			
 			var step:Number = 0;
 			var stepNumber:Number = wordsData.WORDS_VECTOR[0].occurences.length;
 			
 			var tempContainer:Sprite;
 			var tempIntervalField:TextField;
-			var inMin:Number = wordsData.WORDS_VECTOR[0].inProxValues[step];
-			var inMax:Number = wordsData.WORDS_VECTOR[0].inProxValues[step];
-			var outMin:Number = wordsData.WORDS_VECTOR[0].outProxValues[step];
-			var outMax:Number = wordsData.WORDS_VECTOR[0].outProxValues[step];
+			var inMin:Number = wordsData.WORDS_VECTOR[0].inProxValues[0];
+			var inMax:Number = wordsData.WORDS_VECTOR[0].inProxValues[0];
+			var outMin:Number = wordsData.WORDS_VECTOR[0].outProxValues[0];
+			var outMax:Number = wordsData.WORDS_VECTOR[0].outProxValues[0];
 			
-			var inAxisValuesArray:Array;
-			var outAxisValuesArray:Array;
-			
-			if(displayMode!=2){
-				for(step=0;step<stepNumber;step++){
-					for (i=1;i<wordsData.WORDS_VECTOR.length;i++){
-						if(wordsData.WORDS_VECTOR[i].inProxValues[step] < inMin)
+			if(displayMode==0){
+				trace("Diagram.scaleAndPlotDiagram:\n\tDisplay mode: Normal view:");
+				inMin = 0;
+				inMax = 1;
+				outMin = 0;
+				outMax = 1;
+				
+			}else if(displayMode==1){
+				
+				trace("WORDS VECTOR LENGTH: "+wordsData.WORDS_VECTOR.length);
+				trace("STEP NUMBER: "+stepNumber);
+				for (i=0;i<wordsData.WORDS_VECTOR.length;i++){
+					for(step=0;step<stepNumber;step++){
+						if(wordsData.WORDS_VECTOR[i].inProxValues[step] < inMin){
 							inMin = wordsData.WORDS_VECTOR[i].inProxValues[step];
-						if(wordsData.WORDS_VECTOR[i].inProxValues[step] > inMax)
+						}else if(wordsData.WORDS_VECTOR[i].inProxValues[step] > inMax){
 							inMax = wordsData.WORDS_VECTOR[i].inProxValues[step];
-						if(wordsData.WORDS_VECTOR[i].outProxValues[step] < outMin)
+						}
+						if(wordsData.WORDS_VECTOR[i].outProxValues[step] < outMin){
 							outMin = wordsData.WORDS_VECTOR[i].outProxValues[step];
-						if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax)
+						}else if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax){
 							outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
+						}
 					}
 				}
 				
-				trace("\t\tinMax: "+roundToString2(inMax)+", inMin: "+roundToString2(inMin));
-				trace("\t\toutMax: "+roundToString2(outMax)+", outMin: "+roundToString2(outMin));
-			}
-			
-			if(displayMode==0){
-				inAxisValuesArray = UNSCALED_AXIS;
-				trace("\t\tinAxisValuesArray: "+inAxisValuesArray);
-				outAxisValuesArray = UNSCALED_AXIS;
-				trace("\t\toutAxisValuesArray: "+outAxisValuesArray);
-				
-				tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
-				tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
-			}else if(displayMode==1){
-				inAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[0];
-				trace("\t\tinAxisValuesArray: "+inAxisValuesArray);
-				outAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[1];
-				trace("\t\toutAxisValuesArray: "+outAxisValuesArray);
-				
-				tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/400;
-				tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/400;
+				trace("Diagram.scaleAndPlotDiagram:\n\tDisplay mode: Scaled view:");
+				trace("\t\tinMax: "+roundToString(inMax)+", inMin: "+roundToString(inMin));
+				trace("\t\toutMax: "+roundToString(outMax)+", outMin: "+roundToString(outMin));
 			}
 			
 			for(step=0;step<stepNumber;step++){
@@ -261,7 +249,7 @@ package com.fieldscanner.y2009.graphics {
 					outMin = wordsData.WORDS_VECTOR[0].outProxValues[step];
 					outMax = wordsData.WORDS_VECTOR[0].outProxValues[step];
 					
-					for (i=1;i<wordsData.WORDS_VECTOR.length;i++){
+					for (i=0;i<wordsData.WORDS_VECTOR.length;i++){
 						if(wordsData.WORDS_VECTOR[i].inProxValues[step] < inMin)
 							inMin = wordsData.WORDS_VECTOR[i].inProxValues[step];
 						if(wordsData.WORDS_VECTOR[i].inProxValues[step] > inMax)
@@ -271,19 +259,13 @@ package com.fieldscanner.y2009.graphics {
 						if(wordsData.WORDS_VECTOR[i].outProxValues[step] > outMax)
 							outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
 					}
-					
-					inAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[0];
-					outAxisValuesArray = getAxisValuesArray(inMax,inMin,outMax,outMin)[1];
-					
-					tempRatioX = (inAxisValuesArray[1]-inAxisValuesArray[0])*(inAxisValuesArray.length-1)/diagramSize;
-					tempRatioY = (outAxisValuesArray[1]-outAxisValuesArray[0])*(outAxisValuesArray.length-1)/diagramSize;
 				}
 				
 				setSize(step,"occurences");
 				setColor(step,"occurences");
 				
-				tempContainer = displayMapKey(tempContainer,inAxisValuesArray,outAxisValuesArray);
-				tempContainer = displayDiagram(tempContainer,step,[inAxisValuesArray[0],outAxisValuesArray[0],tempRatioX,tempRatioY]);
+				tempContainer = displayMapKey(tempContainer,[inMin,inMax,outMin,outMax]);
+				tempContainer = displayDiagram(tempContainer,step,[inMin,inMax,outMin,outMax]);
 			}
 			
 			if(optionsInterface==null) optionsInterface = new OptionsInterface(this);
@@ -343,10 +325,13 @@ package com.fieldscanner.y2009.graphics {
 			}
 		}
 		
-		private function displayMapKey(s:Sprite,inAxis:Array,outAxis:Array):Sprite{
-			var l:int;
-			var i:int;
+		private function displayMapKey(s:Sprite,borders:Array):Sprite{
 			var tf:DiagramTextField;
+			var pos:Number;
+			var im:Number = borders[0];
+			var iM:Number = borders[1];
+			var om:Number = borders[2];
+			var oM:Number = borders[3];
 			
 			with(s.graphics){
 				lineStyle(1,0x000000);
@@ -355,47 +340,55 @@ package com.fieldscanner.y2009.graphics {
 				lineTo((diagramSize+20),0);
 			}
 			
-			l = inAxis.length;
-			for(i=0;i<l;i++){
+			pos = round((Math.floor((im*10)+1))/10,1);
+
+			while(pos<iM){
 				tf = new DiagramTextField();
-				tf.text = roundToString(inAxis[i]);
+				tf.text = roundToString(pos);
 				tf.refresh();
-				tf.x = i*diagramSize/(l-1);
+				tf.x = diagramSize*(pos-im)/(iM-im);
 				tf.y = 0;
 				s.addChild(tf);
 				with(s.graphics){
-					moveTo(i*diagramSize/(l-1),0);
-					lineTo(i*diagramSize/(l-1),5);
+					moveTo(diagramSize*(pos-im)/(iM-im),0);
+					lineTo(diagramSize*(pos-im)/(iM-im),5);
 				}
+				
+				pos += 0.1;
+				pos = round(pos,1);
 			}
 			
-			l = outAxis.length;
-			for(i=0;i<l;i++){
+			pos = round((Math.floor((om*10)+1))/10,1);
+			
+			while(pos<oM){
 				tf = new DiagramTextField();
 				tf.autoSize = TextFieldAutoSize.RIGHT;
-				tf.text = roundToString(outAxis[i]);
+				tf.text = roundToString(pos);
 				tf.refresh();
 				tf.x = -1*tf.width;
-				tf.y = -1*i*diagramSize/(l-1);
+				tf.y = -1*diagramSize*(pos-om)/(oM-om);
 				s.addChild(tf);
 				with(s.graphics){
-					moveTo(0,-1*i*diagramSize/(l-1));
-					lineTo(-5,-1*i*diagramSize/(l-1));
+					moveTo(0,-1*diagramSize*(pos-om)/(oM-om));
+					lineTo(-5,-1*diagramSize*(pos-om)/(oM-om));
 				}
+				
+				pos += 0.1;
+				pos = round(pos,1);
 			}
 			
 			return(s);
 		}
 		
-		private function displayDiagram(s:Sprite,step:int,ref:Array):Sprite{
+		private function displayDiagram(s:Sprite,step:int,borders:Array):Sprite{
 			var tf:TextField = new TextField();
 			var w:DisplayWord;
 			var i:int;
 			
-			var inMin:Number = ref[0];
-			var outMin:Number = ref[1];
-			var inRatio:Number = ref[2];
-			var outRatio:Number = ref[3];
+			var im:Number = borders[0];
+			var iM:Number = borders[1];
+			var om:Number = borders[2];
+			var oM:Number = borders[3];
 			
 			with(tf){
 				text = (beginYear+step).toString()+" - "+(beginYear+step+interval).toString();
@@ -410,61 +403,18 @@ package com.fieldscanner.y2009.graphics {
 			
 			for (i=0;i<wordsData.WORDS_VECTOR.length;i++){
 				if(wordsData.WORDS_VECTOR[i].occurences[step]==0) continue;
-				w = new DisplayWord(wordsData.WORDS_VECTOR[i]);
 				
+				w = new DisplayWord(wordsData.WORDS_VECTOR[i]);
 				with(w){
 					plot();
-					x = ((wordsData.WORDS_VECTOR[i].inProxValues[step]-inMin)/inRatio);
-					y = -1*((wordsData.WORDS_VECTOR[i].outProxValues[step]-outMin)/outRatio);
+					x = diagramSize*(wordsData.WORDS_VECTOR[i].inProxValues[step]-im)/(iM-im);
+					y = -1*diagramSize*(wordsData.WORDS_VECTOR[i].outProxValues[step]-om)/(oM-om);
 				}
 				
 				s.addChild(w);
 			}
 			
 			return(s);
-		}
-		
-		private function getAxisValuesArray(xMax:Number,xMin:Number,yMax:Number,yMin:Number):Array{
-			var xDifference:Number = xMax - xMin;
-			var yDifference:Number = yMax - yMin;
-			var order:int = -1;
-
-			var xInfMin:Number = Math.floor(xMin*Math.pow(10,(-1)*order))*Math.pow(10,order);
-			var yInfMin:Number = Math.floor(yMin*Math.pow(10,(-1)*order))*Math.pow(10,order);
-			
-			var xResultArray:Array = new Array();
-			var yResultArray:Array = new Array();
-			
-			var tempToAdd:Number = Math.pow(10,order);
-			var tempResult:Number;
-			
-			var i:int = 0;
-			
-			tempResult = xInfMin-tempToAdd;
-			xResultArray.push(tempResult);
-			
-			while(tempResult<xMax+tempToAdd){
-				tempResult = xInfMin+i*tempToAdd;
-				xResultArray.push(round(tempResult,-order));
-				i++;
-			}
-			
-			i = 0;
-			
-			tempResult = yInfMin-tempToAdd;
-			yResultArray.push(tempResult);
-			
-			while(tempResult<yMax+tempToAdd){
-				tempResult = yInfMin+i*tempToAdd;
-				yResultArray.push(round(tempResult,-order));
-				i++;
-			}
-			
-			var res:Array = new Array();
-			res.push(xResultArray);
-			res.push(yResultArray);
-			
-			return(res);
 		}
 		
 		private function round(num:Number,p:int):Number{ 
@@ -491,35 +441,6 @@ package com.fieldscanner.y2009.graphics {
 			}
 			
 			return(resultStr);
-		}
-		
-		private function roundToString2(num:Number):String{ 
-			var i:int = 0;
-			var tempStr:String = num.toString();
-			var tempChar:String = tempStr.charAt(i);
-			var resultStr:String = tempChar;
-			
-			while(tempChar=="0" || tempChar=="," || tempChar=="." || tempChar=="-"){
-				i++;
-				tempChar=tempStr.charAt(i);
-				resultStr += tempChar;
-			}
-			
-			i++;
-			tempChar=tempStr.charAt(i);
-			resultStr += tempChar;
-			
-			i++;
-			tempChar=tempStr.charAt(i);
-			resultStr += tempChar;
-			
-			return(resultStr);
-		}
-		
-		private function printVector(vector:Vector.<Number>):void{
-			for (var i:Number = 0;i<vector.length;i++){
-				trace("\t\tColomn n°"+i+": value: "+vector[i]);
-			}
 		}
 	}
 }
