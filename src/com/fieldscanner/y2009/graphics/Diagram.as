@@ -35,9 +35,7 @@ package com.fieldscanner.y2009.graphics {
 	
 	public class Diagram extends Sprite{
 		
-		public static const SCALED:String = "Scaled mode.";
-		public static const UNSCALED:String = "Unscaled mode.";
-		public static const UNSCALED_AXIS:Array = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+		public var INDEXES:Array;
 		
 		public var wordsData:Data;
 		public var graphsVector:Vector.<Sprite>;
@@ -49,6 +47,8 @@ package com.fieldscanner.y2009.graphics {
 		public var optionsInterface:OptionsInterface;
 		public var displayMode:int;
 		public var diagramSize:Number;
+		public var indexParams:Array;
+		public var indexIndex:int;
 		
 		public var mainWindow:MainWindow;
 		
@@ -60,6 +60,10 @@ package com.fieldscanner.y2009.graphics {
 			
 			displayMode = 0;
 			indexOfImage = 0;
+			
+			indexParams = [0xFFE241,0xBF1111,10,30];
+			INDEXES = ["occurences"];
+			indexIndex = 0;
 			
 			x = (diagramSize-60);
 			y = (diagramSize+60);
@@ -75,6 +79,12 @@ package com.fieldscanner.y2009.graphics {
 		
 		public function get MODE():int{
 			return displayMode;
+		}
+		
+		public function setIndexParams(a:Array,i:int):void{
+			indexParams = a;
+			indexIndex = i;
+			process(wordsData,beginYear,endYear,interval,alphaValue);
 		}
 		
 		public function changeDisplayMode(index:int):void{
@@ -267,8 +277,8 @@ package com.fieldscanner.y2009.graphics {
 					outMax = (outMin+outMax+measures[1])/2;
 				}
 				
-				setSize(step,"occurences");
-				setColor(step,"occurences");
+				setSize(step);
+				setColor(step);
 				
 				tempContainer = displayMapKey(tempContainer,[inMin,inMax,outMin,outMax]);
 				tempContainer = displayDiagram(tempContainer,step,[inMin,inMax,outMin,outMax]);
@@ -410,7 +420,7 @@ package com.fieldscanner.y2009.graphics {
 			return [inDiffMax,outDiffMax];
 		}
 		
-		private function setSize(step:int,indexName:String,minSize:Number=10,maxSize:Number=30):void{
+		private function setSize(step:int):void{
 			var i:int;
 			var l:int = wordsData.WORDS_VECTOR.length;
 			var indexArray:Array = new Array();
@@ -418,8 +428,10 @@ package com.fieldscanner.y2009.graphics {
 			var minValue:Number;
 			var maxValue:Number;
 			
+			var minSize:Number = indexParams[2];
+			var maxSize:Number = indexParams[3];
 			
-			if(indexName=="occurences"){
+			if(indexIndex==0){
 				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				
@@ -436,7 +448,7 @@ package com.fieldscanner.y2009.graphics {
 			}
 		}
 		
-		private function setColor(step:int,indexName:String,minColor:uint=0xffe241,maxColor:uint=0xBF1111):void{
+		private function setColor(step:int):void{
 			var i:int;
 			var l:int = wordsData.WORDS_VECTOR.length;
 			var indexArray:Array = new Array();
@@ -444,7 +456,10 @@ package com.fieldscanner.y2009.graphics {
 			var minValue:Number;
 			var maxValue:Number;
 			
-			if(indexName=="occurences"){
+			var minColor:uint = indexParams[0];
+			var maxColor:uint = indexParams[1];
+			
+			if(indexIndex==0){
 				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				

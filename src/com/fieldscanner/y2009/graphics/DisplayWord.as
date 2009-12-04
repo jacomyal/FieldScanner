@@ -38,7 +38,7 @@ package com.fieldscanner.y2009.graphics{
 			
 			with(labelField){
 				autoSize = TextFieldAutoSize.LEFT;
-				x = 15;
+				x = word.diameter;
 				y = -height/2;
 			}
 			

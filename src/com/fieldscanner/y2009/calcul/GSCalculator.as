@@ -131,7 +131,7 @@ package com.fieldscanner.y2009.calcul {
 			
 			var res:Number = inProc/(iMax-1);
 			
-			trace("GSCalculator.setInProx:\n\tIn proximity value of expression "+word+" is "+res);
+			trace("GSCalculator.setInProx:\n\tIn value"+word+" for step "+stepCounter+" is "+res);
 			wordsData.setIn(wordIndex,stepCounter,res);
 		}
 		

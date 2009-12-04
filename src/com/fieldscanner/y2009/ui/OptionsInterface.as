@@ -41,13 +41,13 @@ package com.fieldscanner.y2009.ui {
 	public class OptionsInterface extends Sprite{
 		
 		private var displayPalette:DisplayPalette;
+		private var calculsPalette:CalculsPalette;
+		private var indexPalette:IndexPalette;
 		private var infoPalette:InfoPalette;
 		private var timePalette:TimePalette;
-		private var calculsPalette:CalculsPalette;
 		private var diagram:Diagram;
 		
 		public function OptionsInterface(d:Diagram) {
-			
 			diagram = d;
 			d.stage.addChild(this);
 			x = 10;
@@ -77,6 +77,13 @@ package com.fieldscanner.y2009.ui {
 			displayPalette = new DisplayPalette(this);
 			with(displayPalette){
 				x = 0;
+				y = 260;
+				setInterface();
+			}
+			
+			indexPalette = new IndexPalette(this);
+			with(indexPalette){
+				x = 0;
 				y = 0;
 				setInterface();
 			}
@@ -88,7 +95,6 @@ package com.fieldscanner.y2009.ui {
 			
 			while(this.numChildren>0){
 				this.removeChildAt(0);
-				trace("OptionsInterface.removeChild...");
 			}
 			
 			setPalettes();
