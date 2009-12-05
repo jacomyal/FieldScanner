@@ -59,6 +59,7 @@ package com.fieldscanner.y2009.ui {
 			var fn:Number = up.DIAGRAM.graphsVector.length
 			with(tf){
 				text = "Time slider:";
+				setTextFormat(up.BASIC_FORMAT);
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
 				x = 10;
@@ -70,7 +71,7 @@ package com.fieldscanner.y2009.ui {
 				minimum = 1;
 				maximum = fn;
 				value = up.DIAGRAM.indexOfImage;
-				setSize(100,0);
+				setSize(140,0);
 				liveDragging = true;
 				x = 10;
 				y = 30;
@@ -85,6 +86,7 @@ package com.fieldscanner.y2009.ui {
 			var tf:TextField = new TextField();
 			with(tf){
 				text = "Speed slider:";
+				setTextFormat(up.BASIC_FORMAT);
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
 				x = 10;
@@ -96,7 +98,7 @@ package com.fieldscanner.y2009.ui {
 				minimum = 0.1;
 				maximum = 30;
 				value = 8;
-				setSize(100,0);
+				setSize(140,0);
 				liveDragging = true;
 				x = 10;
 				y = 70;
@@ -111,6 +113,7 @@ package com.fieldscanner.y2009.ui {
 		
 		public function initButtons():void{
 			playButton.label = "Play";
+			playButton.setStyle("textFormat",up.TITLE_FORMAT);
 			playButton.selected = false;
 			stopButton.selected = false;
 		}
@@ -120,24 +123,26 @@ package com.fieldscanner.y2009.ui {
 			with(playButton){
 				x = 10;
 				y = 90;
-				width = 50;
+				width = 80;
 				height = 20;
 				toggle = true;
 				useHandCursor = true;
 				label = "Play";
+				setStyle("textFormat",up.TITLE_FORMAT);
 				addEventListener(MouseEvent.CLICK,playButtonHandler);
 			}
 			addChild(playButton);
 			
 			stopButton = new Button();
 			with(stopButton){
-				x = 70;
+				x = 100;
 				y = 90;
-				width = 40;
+				width = 50;
 				height = 20;
 				toggle = true;
 				useHandCursor = true;
 				label = "Stop";
+				setStyle("textFormat",up.TITLE_FORMAT);
 				addEventListener(MouseEvent.CLICK,stopButtonHandler);
 			}
 			addChild(stopButton);
@@ -153,6 +158,7 @@ package com.fieldscanner.y2009.ui {
 					
 				addEventListener(Event.ENTER_FRAME,playProcess);
 				playButton.label = "Pause";
+				playButton.setStyle("textFormat",up.TITLE_FORMAT);
 			}else{
 				isStopped = false;
 				isPlaying = false;
@@ -160,11 +166,13 @@ package com.fieldscanner.y2009.ui {
 				
 				initButtons();
 				playButton.label = "Play";
+				playButton.setStyle("textFormat",up.TITLE_FORMAT);
 			}
 		}
 		
 		private function stopButtonHandler(e:MouseEvent):void{
 			playButton.label = "Play";
+			playButton.setStyle("textFormat",up.TITLE_FORMAT);
 			isStopped = true;
 			isPlaying = false;
 			isPaused = false;

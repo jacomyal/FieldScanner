@@ -22,21 +22,12 @@
 
 package com.fieldscanner.y2009.ui {
 	
-	import flash.ui.Keyboard;
-    import flash.text.TextField;
-    import flash.text.TextFormat;
-    import flash.display.Sprite;
-    import flash.display.Stage;
-    import flash.display.SimpleButton;
-    import flash.display.DisplayObjectContainer;
-	import flash.display.StageDisplayState;
-    import flash.events.MouseEvent;
-    import flash.events.FullScreenEvent;
-	import flash.events.KeyboardEvent;
-	import flash.events.TimerEvent;
-	import flash.events.Event;
-	import flash.utils.Timer;
 	import com.fieldscanner.y2009.graphics.Diagram;
+	
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	public class OptionsInterface extends Sprite{
 		
@@ -45,6 +36,11 @@ package com.fieldscanner.y2009.ui {
 		private var indexPalette:IndexPalette;
 		private var infoPalette:InfoPalette;
 		private var timePalette:TimePalette;
+		
+		private var basicTextFormat:TextFormat;
+		private var titleTextFormat:TextFormat;
+		private var inputTextFormat:TextFormat;
+		private var errorTextFormat:TextFormat;
 		private var diagram:Diagram;
 		
 		public function OptionsInterface(d:Diagram) {
@@ -53,7 +49,33 @@ package com.fieldscanner.y2009.ui {
 			x = 10;
 			y = 10;
 			
+			basicTextFormat = new TextFormat("Verdana",12);
+			titleTextFormat = new TextFormat("Verdana",12,0x000000,true);
+			inputTextFormat = new TextFormat("Verdana",12,0x286777,false,true);
+			errorTextFormat = new TextFormat("Verdana",12,0x770909,true);
+			
 			setPalettes();
+		}
+		
+		public function get BASIC_FORMAT():TextFormat{
+			return basicTextFormat;
+		}
+		
+		public function get TITLE_FORMAT():TextFormat{
+			return titleTextFormat;
+		}
+		
+		public function get INPUT_FORMAT():TextFormat{
+			return inputTextFormat;
+		}
+		
+		public function get ERROR_FORMAT():TextFormat{
+			return errorTextFormat;
+		}
+		
+		public function inputHandler(e:Event):void{
+			var tf:TextField = e.target as TextField;
+			tf.setTextFormat(INPUT_FORMAT);
 		}
 		
 		public function setPalettes():void{

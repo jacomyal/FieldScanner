@@ -222,6 +222,9 @@ package com.fieldscanner.y2009.graphics {
 			var outMin:Number = wordsData.WORDS_VECTOR[0].outProxValues[0];
 			var outMax:Number = wordsData.WORDS_VECTOR[0].outProxValues[0];
 			
+			setSize();
+			setColor();
+			
 			if(displayMode==0){
 				trace("Diagram.scaleAndPlotDiagram:\n\tDisplay mode: Normal view:");
 				inMin = 0;
@@ -279,9 +282,6 @@ package com.fieldscanner.y2009.graphics {
 					inMax = (inMin+inMax+measures[0])/2;
 					outMax = (outMin+outMax+measures[1])/2;
 				}
-				
-				setSize(step);
-				setColor(step);
 				
 				tempContainer = displayMapKey(tempContainer,[inMin,inMax,outMin,outMax]);
 				tempContainer = displayDiagram(tempContainer,step,[inMin,inMax,outMin,outMax]);
@@ -423,10 +423,11 @@ package com.fieldscanner.y2009.graphics {
 			return [inDiffMax,outDiffMax];
 		}
 		
-		private function setSize(step:int):void{
-			var i:int;
+		private function setSize():void{
+			var i:int=0;
+			var step:int=0;
 			var l:int = wordsData.WORDS_VECTOR.length;
-			var indexArray:Array = new Array();
+			var indexMatrix:Array = new Array();
 			var sizeArray:Array = new Array();
 			var minValue:Number;
 			var maxValue:Number;
@@ -438,23 +439,29 @@ package com.fieldscanner.y2009.graphics {
 				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				
-				for(i=0;i<l;i++){
-					indexArray[i]=wordsData.WORDS_VECTOR[i].occurences[step];
-					
-					if(indexArray[i]<minValue) minValue=indexArray[i];
-					if(indexArray[i]>maxValue) maxValue=indexArray[i];
+				for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
+					indexMatrix[step] = new Array();
+					for(i=0;i<l;i++){
+						indexMatrix[step][i]=wordsData.WORDS_VECTOR[i].occurences[step];
+						
+						if(indexMatrix[step][i]<minValue) minValue=indexMatrix[step][i];
+						if(indexMatrix[step][i]>maxValue) maxValue=indexMatrix[step][i];
+					}
 				}
 			}
 			
-			for(i=0;i<l;i++){
-				wordsData.WORDS_VECTOR[i].setDiameter(minSize+(indexArray[i]-minValue)*(maxSize-minSize)/(maxValue-minValue));
+			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
+				for(i=0;i<l;i++){
+					wordsData.WORDS_VECTOR[i].setDiameter(minSize+(indexMatrix[step][i]-minValue)*(maxSize-minSize)/(maxValue-minValue));
+				}
 			}
 		}
 		
-		private function setColor(step:int):void{
-			var i:int;
+		private function setColor():void{
+			var i:int=0;
+			var step:int=0;
 			var l:int = wordsData.WORDS_VECTOR.length;
-			var indexArray:Array = new Array();
+			var indexMatrix:Array = new Array();
 			var sizeArray:Array = new Array();
 			var minValue:Number;
 			var maxValue:Number;
@@ -466,16 +473,21 @@ package com.fieldscanner.y2009.graphics {
 				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
 				
-				for(i=0;i<l;i++){
-					indexArray[i]=wordsData.WORDS_VECTOR[i].occurences[step];
-					
-					if(indexArray[i]<minValue) minValue=indexArray[i];
-					if(indexArray[i]>maxValue) maxValue=indexArray[i];
+				for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
+					indexMatrix[step] = new Array();
+					for(i=0;i<l;i++){
+						indexMatrix[step][i]=wordsData.WORDS_VECTOR[i].occurences[step];
+						
+						if(indexMatrix[step][i]<minValue) minValue=indexMatrix[step][i];
+						if(indexMatrix[step][i]>maxValue) maxValue=indexMatrix[step][i];
+					}
 				}
 			}
 			
-			for(i=0;i<l;i++){
-				wordsData.WORDS_VECTOR[i].setColor(fadeHex(minColor,maxColor,(indexArray[i]-minValue)/(maxValue-minValue)));
+			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
+				for(i=0;i<l;i++){
+					wordsData.WORDS_VECTOR[i].setColor(fadeHex(minColor,maxColor,(indexMatrix[step][i]-minValue)/(maxValue-minValue)));
+				}
 			}
 		}
 		

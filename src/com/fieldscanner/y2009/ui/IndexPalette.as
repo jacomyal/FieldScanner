@@ -1,3 +1,25 @@
+/*
+# Copyright (c) 2009 Alexis Jacomy <alexis.jacomy@gmail.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+*/
+
 package com.fieldscanner.y2009.ui{
 	
 	import fl.controls.Button;
@@ -34,7 +56,8 @@ package com.fieldscanner.y2009.ui{
 			with(iTF){
 				x = 10;
 				y = 10;
-				text = "Indexes:";
+				text = "Index settings:";
+				setTextFormat(up.TITLE_FORMAT);
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
 			}
@@ -44,15 +67,16 @@ package com.fieldscanner.y2009.ui{
 			with(minTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
+				text = "Low color border: ";
+				setTextFormat(up.BASIC_FORMAT);
 				x = 10;
 				y = 30;
-				text = "Low color border: ";
 			}
 			addChild(minTF);
 			
 			minColorPicker = new ColorPicker();
 			with(minColorPicker){
-				x = 100;
+				x = 150;
 				y = 30;
 				selectedColor = up.DIAGRAM.indexParams[0];
 			}
@@ -62,15 +86,16 @@ package com.fieldscanner.y2009.ui{
 			with(maxTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
+				text = "High color border: ";
+				setTextFormat(up.BASIC_FORMAT);
 				x = 10;
 				y = 60;
-				text = "High color border: ";
 			}
 			addChild(maxTF);
 			
 			maxColorPicker = new ColorPicker();
 			with(maxColorPicker){
-				x = 100;
+				x = 150;
 				y = 60;
 				selectedColor = up.DIAGRAM.indexParams[1];
 			}
@@ -80,21 +105,24 @@ package com.fieldscanner.y2009.ui{
 			with(minSTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
+				text = "Low size border: ";
+				setTextFormat(up.BASIC_FORMAT);
 				x = 10;
 				y = 90;
-				text = "Low size border: ";
 			}
 			addChild(minSTF);
 			
 			minSizeTF = new TextField();
 			with(minSizeTF){
 				type = TextFieldType.INPUT;
-				x = 100;
+				text = up.DIAGRAM.indexParams[2].toString();
+				setTextFormat(up.INPUT_FORMAT);
+				x = 150;
 				y = 90;
 				selectable = true;
 				background = true;
 				autoSize = TextFieldAutoSize.LEFT;
-				text = up.DIAGRAM.indexParams[2].toString();
+				addEventListener(Event.CHANGE,up.inputHandler);
 			}
 			addChild(minSizeTF);
 			
@@ -102,21 +130,24 @@ package com.fieldscanner.y2009.ui{
 			with(maxSTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
-				x = 10;
-				y = 110;
 				text = "High size border: ";
+				setTextFormat(up.BASIC_FORMAT);
+				x = 10;
+				y = 120;
 			}
 			addChild(maxSTF);
 			
 			maxSizeTF = new TextField();
 			with(maxSizeTF){
 				type = TextFieldType.INPUT;
-				x = 100;
-				y = 110;
+				text = up.DIAGRAM.indexParams[3].toString();
+				setTextFormat(up.INPUT_FORMAT);
+				x = 150;
+				y = 120;
 				selectable = true;
 				background = true;
 				autoSize = TextFieldAutoSize.LEFT;
-				text = up.DIAGRAM.indexParams[3].toString();
+				addEventListener(Event.CHANGE,up.inputHandler);
 			}
 			addChild(maxSizeTF);
 			
@@ -124,16 +155,17 @@ package com.fieldscanner.y2009.ui{
 			with(sizeIndexTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
-				x = 10;
-				y = 130;
 				text = "Size index: ";
+				setTextFormat(up.BASIC_FORMAT);
+				x = 10;
+				y = 150;
 			}
 			addChild(sizeIndexTF);
 			
 			sizeIndexComboBox = new ComboBox();
 			with(sizeIndexComboBox){
-				x = 80;
-				y = 130;
+				x = 100;
+				y = 150;
 			}
 			for(var i:int=0;i<up.DIAGRAM.INDEXES.length;i++) sizeIndexComboBox.addItem({label:up.DIAGRAM.INDEXES[i]});
 			sizeIndexComboBox.selectedIndex = up.DIAGRAM.sizeIndex;
@@ -143,16 +175,17 @@ package com.fieldscanner.y2009.ui{
 			with(colorIndexTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
-				x = 10;
-				y = 160;
 				text = "Color index: ";
+				setTextFormat(up.BASIC_FORMAT);
+				x = 10;
+				y = 180;
 			}
 			addChild(colorIndexTF);
 			
 			colorIndexComboBox = new ComboBox();
 			with(colorIndexComboBox){
-				x = 80;
-				y = 160;
+				x = 100;
+				y = 180;
 			}
 			for(var j:int=0;j<up.DIAGRAM.INDEXES.length;j++) colorIndexComboBox.addItem({label:up.DIAGRAM.INDEXES[j]});
 			colorIndexComboBox.selectedIndex = up.DIAGRAM.colorIndex;
@@ -161,12 +194,13 @@ package com.fieldscanner.y2009.ui{
 			redoButton = new Button();
 			with(redoButton){
 				x = 10;
-				y = 190;
-				width = 90;
+				y = 210;
+				width = 120;
 				height = 20;
 				toggle = true;
 				useHandCursor = true;
 				label = "Apply changes";
+				setStyle("textFormat",up.TITLE_FORMAT);
 				addEventListener(MouseEvent.CLICK,reprocessHandler);
 			}
 			addChild(redoButton);

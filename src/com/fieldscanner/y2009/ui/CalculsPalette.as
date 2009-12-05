@@ -22,13 +22,14 @@
 
 package com.fieldscanner.y2009.ui {
 	
+    import fl.controls.Button;
+    
     import flash.display.Sprite;
-    import flash.display.Stage;
-	import flash.text.TextField;
-	import flash.text.TextFieldType;
-	import flash.text.TextFieldAutoSize;
-	import flash.events.MouseEvent;
-	import fl.controls.Button;
+	import flash.events.Event;
+    import flash.events.MouseEvent;
+    import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
+    import flash.text.TextFieldType;
 	
 	public class CalculsPalette extends Sprite{
 		
@@ -49,51 +50,58 @@ package com.fieldscanner.y2009.ui {
 			with(intTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
+				text = "Interval: ";
+				setTextFormat(up.BASIC_FORMAT);
 				x = 10;
 				y = 10;
-				text = "Interval: ";
 			}
 			
 			intervalInputTextField = new TextField();
 			with(intervalInputTextField){
 				type = TextFieldType.INPUT;
-				x = 50;
+				text = up.DIAGRAM.interval.toString();
+				setTextFormat(up.INPUT_FORMAT);
+				x = 80;
 				y = 10;
 				selectable = true;
 				background = true;
 				autoSize = TextFieldAutoSize.LEFT;
-				text = up.DIAGRAM.interval.toString();
+				addEventListener(Event.CHANGE,up.inputHandler);
 			}
 			
 			var alpTF:TextField = new TextField();
 			with(alpTF){
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
+				text = "Alpha: ";
+				setTextFormat(up.BASIC_FORMAT);
 				x = 10;
 				y = 30;
-				text = "Alpha: ";
 			}
 			
 			alphaInputTextField = new TextField();
 			with(alphaInputTextField){
 				type = TextFieldType.INPUT;
-				x = 50;
+				text = up.DIAGRAM.alphaValue.toString();
+				setTextFormat(up.INPUT_FORMAT);
+				x = 80;
 				y = 30;
 				selectable = true;
 				background = true;
 				autoSize = TextFieldAutoSize.LEFT;
-				text = up.DIAGRAM.alphaValue.toString();
+				addEventListener(Event.CHANGE,up.inputHandler);
 			}
 			
 			redoButton = new Button();
 			with(redoButton){
 				x = 10;
 				y = 50;
-				width = 70;
+				width = 110;
 				height = 20;
 				toggle = true;
 				useHandCursor = true;
 				label = "Recalculate";
+				setStyle('textFormat',up.TITLE_FORMAT);
 				addEventListener(MouseEvent.CLICK,redoButtonHandler);
 			}
 			
@@ -103,7 +111,7 @@ package com.fieldscanner.y2009.ui {
 				autoSize = TextFieldAutoSize.LEFT;
 				x = 10;
 				y = 90;
-				textColor = 0x770909;
+				setTextFormat(up.ERROR_FORMAT);
 				text = "";
 			}
 			
@@ -117,12 +125,12 @@ package com.fieldscanner.y2009.ui {
 		
 		private function setProblem(s:String):void{
 			problemTextField.appendText(s+"\n");
-			problemTextField.textColor = 0x770909;
+			problemTextField.setTextFormat(up.ERROR_FORMAT);
 		}
 		
 		private function clearProblem():void{
 			problemTextField.text = "";
-			problemTextField.textColor = 0x770909;
+			problemTextField.setTextFormat(up.ERROR_FORMAT);
 		}
 		
 		private function redoButtonHandler(e:MouseEvent):void{
@@ -133,6 +141,8 @@ package com.fieldscanner.y2009.ui {
 			
 			if(newInt<=0 || newInt>intMax){
 				setProblem("Wrong interval value: Must be between 0 and "+intMax+".");
+			}else if(!(newInt is int)){
+				setProblem("Wrong interval value: Must be an integer value.");
 			}else if(newAlp<=0){
 				setProblem("Wrong alpha value: Must be over 0.");
 			}else{

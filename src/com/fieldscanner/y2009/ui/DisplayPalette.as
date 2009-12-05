@@ -22,7 +22,8 @@
 
 package com.fieldscanner.y2009.ui {
 	
-    import fl.controls.*;
+    import fl.controls.RadioButton;
+	import fl.controls.RadioButtonGroup;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.events.MouseEvent;
@@ -51,6 +52,7 @@ package com.fieldscanner.y2009.ui {
 				text = "Display mode:";
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
+				setTextFormat(up.TITLE_FORMAT);
 			}
 			addChild(dTF);
 
@@ -59,6 +61,7 @@ package com.fieldscanner.y2009.ui {
 				x = 10;
 				y = 30;
 				width = 200;
+				setStyle("textFormat",up.BASIC_FORMAT);
 				label = "Normal view";
 				if(up.DIAGRAM.MODE==0) selected = true;
 				group = rbGroups;
@@ -71,6 +74,7 @@ package com.fieldscanner.y2009.ui {
 				x = 10;
 				y = 50;
 				width = 200;
+				setStyle("textFormat",up.BASIC_FORMAT);
 				label = "Scaled view (global)";
 				if(up.DIAGRAM.MODE==1) selected = true;
 				group = rbGroups;
@@ -83,6 +87,7 @@ package com.fieldscanner.y2009.ui {
 				x = 10;
 				y = 70;
 				width = 200;
+				setStyle("textFormat",up.BASIC_FORMAT);
 				label = "Scaled view (local)";
 				if(up.DIAGRAM.MODE==2) selected = true;
 				group = rbGroups;
