@@ -36,6 +36,7 @@ package com.fieldscanner.y2009.graphics{
 		
 		public function DisplayWord(w:Word){
 			textFormat = new TextFormat("Verdana");
+			textFormat.bold = true;
 			
 			word = w;
 			
@@ -52,19 +53,44 @@ package com.fieldscanner.y2009.graphics{
 			graphics.clear();
 			
 			with(graphics){
-				graphics.beginFill(word.color,1);
+				graphics.beginFill(word.color,0.6);
+				graphics.lineStyle(2,brightenColor(word.color,80),1);
 				graphics.drawCircle(0,0,word.diameter*2/3);
-				graphics.beginFill(word.color,0.3);
-				graphics.drawCircle(0,0,word.diameter);
 			}
 			
 			with(labelField){
 				autoSize = TextFieldAutoSize.LEFT;
+				textColor = brightenColor(word.color,30);
+				
 				x = word.diameter;
 				y = -height/2;
 			}
 			
 			if(!this.contains(labelField)) addChild(labelField);
-		} 
+		}
+		
+		private function brightenColor(color:Number, perc:Number):Number{
+			var factor:Number;
+			var blueOffset:Number = color % 256;
+			var greenOffset:Number = ( color >> 8 ) % 256;
+			var redOffset:Number = ( color >> 16 ) % 256;
+			
+			if(perc > 50 && perc <= 100) {
+				factor = ( ( perc-50 ) / 50 );
+				
+				redOffset += ( 255 - redOffset ) * factor;
+				blueOffset += ( 255 - blueOffset ) * factor;
+				greenOffset += ( 255 - greenOffset ) * factor;
+			}
+			else if( perc < 50 && perc >= 0 ){
+				factor = ( ( 50 - perc ) / 50 );
+				
+				redOffset -= redOffset * factor;
+				blueOffset -= blueOffset * factor;
+				greenOffset -= greenOffset * factor;
+			}
+			
+			return (redOffset<<16|greenOffset<<8|blueOffset);
+		}
 	}
 }

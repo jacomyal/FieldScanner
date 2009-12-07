@@ -26,8 +26,8 @@ package com.fieldscanner.y2009.graphics {
 	import com.fieldscanner.y2009.data.Word;
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	import com.fieldscanner.y2009.ui.MainWindow;
-	import com.fieldscanner.y2009.ui.TimeLine;
 	import com.fieldscanner.y2009.ui.OptionsInterface;
+	import com.fieldscanner.y2009.ui.TimeLine;
 	
 	import flash.display.Sprite;
 	import flash.text.TextField;
@@ -38,31 +38,34 @@ package com.fieldscanner.y2009.graphics {
 		
 		private var indexes:Array;
 		private var wordsData:Data;
-		private var graphsVector:Vector.<Sprite>;
+		
 		private var beginYear:Number;
 		private var endYear:Number;
+		private var diagramSize:Number;
+		
 		private var interval:Number;
 		private var alphaValue:Number;
+		
 		private var indexOfImage:Number;
-		private var displayMode:int;
-		private var diagramSize:Number;
 		private var indexParams:Array;
+		private var displayMode:int;
 		private var colorIndex:int;
 		private var sizeIndex:int;
 		
 		private var optionsInterface:OptionsInterface;
+		private var graphsVector:Vector.<Sprite>;
 		private var timeLine:TimeLine;
 		
 		public var mainWindow:MainWindow;
 		
-		public function Diagram(m:MainWindow){
+		public function Diagram(m:MainWindow,newBegin:int,newEnd:int){
 			mainWindow = m;
 			mainWindow.addChild(this);
 			
+			beginYear = newBegin;
+			endYear = newEnd;
 			diagramSize = 400;
 			timeLine = new TimeLine(this);
-			timeLine.x = 20;
-			timeLine.y = 20;
 			
 			displayMode = 0;
 			indexOfImage = 0;
@@ -136,17 +139,21 @@ package com.fieldscanner.y2009.graphics {
 			return displayMode;
 		}
 		
+		public function get WORDS():Data{
+			return wordsData;
+		}
+		
 		public function setIndexParams(a:Array,c:int,s:int):void{
 			indexParams = a;
 			colorIndex = c;
 			sizeIndex = s;
-			process(wordsData,beginYear,endYear,interval,alphaValue);
+			process(wordsData,interval,alphaValue);
 		}
 		
 		public function changeDisplayMode(index:int):void{
 			displayMode = index;
 			trace("New display index: "+displayMode);
-			process(wordsData,beginYear,endYear,interval,alphaValue);
+			process(wordsData,interval,alphaValue);
 		}
 		
 		public function resetPlayer():void{
@@ -191,9 +198,7 @@ package com.fieldscanner.y2009.graphics {
 			addChild(graphsVector[0]);
 		}
 		
-		public function process(newWordsData:Data,newBY:Number,newEY:Number,newI:Number,newAlp:Number):void{
-			beginYear = newBY;
-			endYear = newEY;
+		public function process(newWordsData:Data,newI:Number,newAlp:Number):void{
 			interval = newI;
 			alphaValue = newAlp;
 			wordsData = newWordsData;

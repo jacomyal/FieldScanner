@@ -22,6 +22,7 @@
 
 package com.fieldscanner.y2009.text {
 	
+	import flash.text.Font;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -30,11 +31,16 @@ package com.fieldscanner.y2009.text {
 		
 		public var textFormat:TextFormat;
 		
-		public function DiagramTextField(){
+		public function DiagramTextField(options:String=""){
 			selectable = false;
 			autoSize = TextFieldAutoSize.CENTER;
 			
-			textFormat = new TextFormat("Verdana");
+			if(options=="little"){
+				textFormat = new TextFormat("Verdana",9);
+			}else if(options=="word"){
+				textFormat = new TextFormat("Verdana");
+				textFormat.bold = true;
+			}else textFormat = new TextFormat("Verdana");
 		}
 		
 		public function refresh():void{

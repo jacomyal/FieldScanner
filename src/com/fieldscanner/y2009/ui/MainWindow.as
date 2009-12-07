@@ -26,7 +26,6 @@ package com.fieldscanner.y2009.ui {
 	import com.fieldscanner.y2009.graphics.Diagram;
 	import com.fieldscanner.y2009.loading.DataLoader;
 	
-	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -53,6 +52,10 @@ package com.fieldscanner.y2009.ui {
 			else interval = new Number(root.loaderInfo.parameters["timeInterval"]);
 
 			launchFromFile();
+		}
+		
+		public function get DATA():DataLoader{
+			return dataLoader;
 		}
 		
 		public function reprocess(newInt:Number,newAlp:Number):void{
@@ -85,15 +88,18 @@ package com.fieldscanner.y2009.ui {
 		}
 		
 		private function onCalculsFinishedHandler(evt:Event):void{
-			diagram = new Diagram(this);
+			begin = dataLoader.beginYear;
+			end = dataLoader.endYear;
+			
+			diagram = new Diagram(this,begin,end);
 			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsFinishedHandler);
-			diagram.process(gsCalculator.wordsData,dataLoader.beginYear,dataLoader.endYear,interval,alphaValue);
+			diagram.process(gsCalculator.wordsData,interval,alphaValue);
 		}
 		
 		private function onCalculsReprocessedHandler(evt:Event):void{
 			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsReprocessedHandler);
 			diagram.resetPlayer();
-			diagram.process(gsCalculator.wordsData,dataLoader.beginYear,dataLoader.endYear,interval,alphaValue);
+			diagram.process(gsCalculator.wordsData,interval,alphaValue);
 		}
 		
 	}
