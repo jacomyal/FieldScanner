@@ -46,11 +46,6 @@ package com.fieldscanner.y2009.ui {
 			
 			main.addChild(this);
 			
-			var s:Sprite = new Sprite();
-			s.graphics.lineStyle(4,0x000000);
-			s.graphics.drawRect(0,0,800,600);
-			addChild(s);
-			
 			if(root.loaderInfo.parameters["alphaValue"]==undefined) alphaValue = 0.1;
 			else alphaValue = new Number(root.loaderInfo.parameters["alphaValue"]);
 			

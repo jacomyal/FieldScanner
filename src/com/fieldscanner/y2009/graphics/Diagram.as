@@ -26,6 +26,7 @@ package com.fieldscanner.y2009.graphics {
 	import com.fieldscanner.y2009.data.Word;
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	import com.fieldscanner.y2009.ui.MainWindow;
+	import com.fieldscanner.y2009.ui.TimeLine;
 	import com.fieldscanner.y2009.ui.OptionsInterface;
 	
 	import flash.display.Sprite;
@@ -43,12 +44,14 @@ package com.fieldscanner.y2009.graphics {
 		private var interval:Number;
 		private var alphaValue:Number;
 		private var indexOfImage:Number;
-		private var optionsInterface:OptionsInterface;
 		private var displayMode:int;
 		private var diagramSize:Number;
 		private var indexParams:Array;
 		private var colorIndex:int;
 		private var sizeIndex:int;
+		
+		private var optionsInterface:OptionsInterface;
+		private var timeLine:TimeLine;
 		
 		public var mainWindow:MainWindow;
 		
@@ -57,6 +60,9 @@ package com.fieldscanner.y2009.graphics {
 			mainWindow.addChild(this);
 			
 			diagramSize = 400;
+			timeLine = new TimeLine(this);
+			timeLine.x = 20;
+			timeLine.y = 20;
 			
 			displayMode = 0;
 			indexOfImage = 0;
@@ -110,8 +116,20 @@ package com.fieldscanner.y2009.graphics {
 			return interval;
 		}
 		
+		public function get START():int{
+			return beginYear;
+		}
+		
+		public function get END():int{
+			return endYear;
+		}
+		
 		public function get INDEXES():Array{
 			return indexes;
+		}
+		
+		public function get DIAGRAM_SIZE():Number{
+			return diagramSize;
 		}
 		
 		public function get MODE():int{
