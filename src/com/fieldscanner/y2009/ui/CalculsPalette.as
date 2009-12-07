@@ -59,7 +59,7 @@ package com.fieldscanner.y2009.ui {
 			intervalInputTextField = new TextField();
 			with(intervalInputTextField){
 				type = TextFieldType.INPUT;
-				text = up.DIAGRAM.interval.toString();
+				text = up.DIAGRAM.INTERVAL.toString();
 				setTextFormat(up.INPUT_FORMAT);
 				x = 80;
 				y = 10;
@@ -82,7 +82,7 @@ package com.fieldscanner.y2009.ui {
 			alphaInputTextField = new TextField();
 			with(alphaInputTextField){
 				type = TextFieldType.INPUT;
-				text = up.DIAGRAM.alphaValue.toString();
+				text = up.DIAGRAM.ALPHA.toString();
 				setTextFormat(up.INPUT_FORMAT);
 				x = 80;
 				y = 30;
@@ -137,7 +137,7 @@ package com.fieldscanner.y2009.ui {
 			clearProblem();
 			var newInt:int = new int(intervalInputTextField.text);
 			var newAlp:Number = new Number(alphaInputTextField.text);
-			var intMax:int = up.DIAGRAM.endYear-up.DIAGRAM.beginYear;
+			var intMax:int = up.DIAGRAM.MAX_INTERVAL;
 			
 			if(newInt<=0 || newInt>intMax){
 				setProblem("Wrong interval value: Must be between 0 and "+intMax+".");

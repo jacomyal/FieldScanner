@@ -26,6 +26,7 @@ package com.fieldscanner.y2009.ui {
 	import com.fieldscanner.y2009.graphics.Diagram;
 	import com.fieldscanner.y2009.loading.DataLoader;
 	
+	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -45,6 +46,11 @@ package com.fieldscanner.y2009.ui {
 			
 			main.addChild(this);
 			
+			var s:Sprite = new Sprite();
+			s.graphics.lineStyle(4,0x000000);
+			s.graphics.drawRect(0,0,800,600);
+			addChild(s);
+			
 			if(root.loaderInfo.parameters["alphaValue"]==undefined) alphaValue = 0.1;
 			else alphaValue = new Number(root.loaderInfo.parameters["alphaValue"]);
 			
@@ -61,7 +67,7 @@ package com.fieldscanner.y2009.ui {
 			gsCalculator.launch(interval,alphaValue);
 		}
 		
-		protected function launchFromFile():void{
+		private function launchFromFile():void{
 			var path:String;
 			if(root.loaderInfo.parameters["path"]==undefined){path = "D:/Text-Mining (stage)/dev/FieldScanner 0.2/bin/field_data.txt";}
 			else{path = root.loaderInfo.parameters["path"];}
@@ -71,27 +77,25 @@ package com.fieldscanner.y2009.ui {
 			dataLoader.parse(path);
 		}
 		
-		protected function onGSCalculatorFinish(evt:Event):void{
+		private function onGSCalculatorFinish(evt:Event):void{
 			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH, onGSCalculatorFinish);
 			
 			trace("MainWindow.onGSCalculatorFinish:\n\tGSCalculator.IN_OUT_FINISH event received");
 		}
 		
-		protected function onResultsFoundHandler(evt:Event):void{
-			
-			
+		private function onResultsFoundHandler(evt:Event):void{
 			gsCalculator = new GSCalculator(evt.target.wordsData,evt.target.beginYear,evt.target.endYear);
 			gsCalculator.addEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsFinishedHandler);
 			gsCalculator.launch(interval,alphaValue);
 		}
 		
-		protected function onCalculsFinishedHandler(evt:Event):void{
+		private function onCalculsFinishedHandler(evt:Event):void{
 			diagram = new Diagram(this);
 			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsFinishedHandler);
 			diagram.process(gsCalculator.wordsData,dataLoader.beginYear,dataLoader.endYear,interval,alphaValue);
 		}
 		
-		protected function onCalculsReprocessedHandler(evt:Event):void{
+		private function onCalculsReprocessedHandler(evt:Event):void{
 			gsCalculator.removeEventListener(GSCalculator.IN_OUT_FINISH_ALL,onCalculsReprocessedHandler);
 			diagram.resetPlayer();
 			diagram.process(gsCalculator.wordsData,dataLoader.beginYear,dataLoader.endYear,interval,alphaValue);

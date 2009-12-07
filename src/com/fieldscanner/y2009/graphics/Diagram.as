@@ -35,21 +35,20 @@ package com.fieldscanner.y2009.graphics {
 	
 	public class Diagram extends Sprite{
 		
-		public var INDEXES:Array;
-		
-		public var wordsData:Data;
-		public var graphsVector:Vector.<Sprite>;
-		public var beginYear:Number;
-		public var endYear:Number;
-		public var interval:Number;
-		public var alphaValue:Number;
-		public var indexOfImage:Number;
-		public var optionsInterface:OptionsInterface;
-		public var displayMode:int;
-		public var diagramSize:Number;
-		public var indexParams:Array;
-		public var colorIndex:int;
-		public var sizeIndex:int;
+		private var indexes:Array;
+		private var wordsData:Data;
+		private var graphsVector:Vector.<Sprite>;
+		private var beginYear:Number;
+		private var endYear:Number;
+		private var interval:Number;
+		private var alphaValue:Number;
+		private var indexOfImage:Number;
+		private var optionsInterface:OptionsInterface;
+		private var displayMode:int;
+		private var diagramSize:Number;
+		private var indexParams:Array;
+		private var colorIndex:int;
+		private var sizeIndex:int;
 		
 		public var mainWindow:MainWindow;
 		
@@ -63,7 +62,7 @@ package com.fieldscanner.y2009.graphics {
 			indexOfImage = 0;
 			
 			indexParams = [0xFFE241,0xBF1111,10,30];
-			INDEXES = ["occurences"];
+			indexes = ["occurences"];
 			colorIndex = 0;
 			sizeIndex = 0;
 			
@@ -77,6 +76,42 @@ package com.fieldscanner.y2009.graphics {
 		
 		public function get LAST_FRAME():Boolean{
 			return (indexOfImage==graphsVector.length-1);
+		}
+		
+		public function get FRAMES_NUMBER():int{
+			return graphsVector.length;
+		}
+		
+		public function get FRAME():int{
+			return indexOfImage;
+		}
+		
+		public function get COLOR_INDEX():int{
+			return colorIndex;
+		}
+		
+		public function get SIZE_INDEX():int{
+			return sizeIndex;
+		}
+		
+		public function get INDEX_STATUS():Array{
+			return indexParams;
+		}
+		
+		public function get MAX_INTERVAL():int{
+			return (endYear-beginYear);
+		}
+		
+		public function get ALPHA():Number{
+			return alphaValue;
+		}
+		
+		public function get INTERVAL():int{
+			return interval;
+		}
+		
+		public function get INDEXES():Array{
+			return indexes;
 		}
 		
 		public function get MODE():int{
@@ -427,8 +462,7 @@ package com.fieldscanner.y2009.graphics {
 			var i:int=0;
 			var step:int=0;
 			var l:int = wordsData.WORDS_VECTOR.length;
-			var indexMatrix:Array = new Array();
-			var sizeArray:Array = new Array();
+			var indexMatrix:Array;
 			var minValue:Number;
 			var maxValue:Number;
 			
@@ -436,18 +470,9 @@ package com.fieldscanner.y2009.graphics {
 			var maxSize:Number = indexParams[3];
 			
 			if(sizeIndex==0){
-				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
-				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
-				
-				for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
-					indexMatrix[step] = new Array();
-					for(i=0;i<l;i++){
-						indexMatrix[step][i]=wordsData.WORDS_VECTOR[i].occurences[step];
-						
-						if(indexMatrix[step][i]<minValue) minValue=indexMatrix[step][i];
-						if(indexMatrix[step][i]>maxValue) maxValue=indexMatrix[step][i];
-					}
-				}
+				minValue = occurencesIndex()[0];
+				maxValue = occurencesIndex()[1];
+				indexMatrix = occurencesIndex()[2];
 			}
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
@@ -461,7 +486,7 @@ package com.fieldscanner.y2009.graphics {
 			var i:int=0;
 			var step:int=0;
 			var l:int = wordsData.WORDS_VECTOR.length;
-			var indexMatrix:Array = new Array();
+			var indexMatrix:Array;
 			var sizeArray:Array = new Array();
 			var minValue:Number;
 			var maxValue:Number;
@@ -470,18 +495,9 @@ package com.fieldscanner.y2009.graphics {
 			var maxColor:uint = indexParams[1];
 			
 			if(colorIndex==0){
-				minValue = wordsData.WORDS_VECTOR[i].occurences[step];
-				maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
-				
-				for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
-					indexMatrix[step] = new Array();
-					for(i=0;i<l;i++){
-						indexMatrix[step][i]=wordsData.WORDS_VECTOR[i].occurences[step];
-						
-						if(indexMatrix[step][i]<minValue) minValue=indexMatrix[step][i];
-						if(indexMatrix[step][i]>maxValue) maxValue=indexMatrix[step][i];
-					}
-				}
+				minValue = occurencesIndex()[0];
+				maxValue = occurencesIndex()[1];
+				indexMatrix = occurencesIndex()[2];
 			}
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
@@ -489,6 +505,29 @@ package com.fieldscanner.y2009.graphics {
 					wordsData.WORDS_VECTOR[i].setColor(fadeHex(minColor,maxColor,(indexMatrix[step][i]-minValue)/(maxValue-minValue)));
 				}
 			}
+		}
+		
+		private function occurencesIndex():Array{
+			var i:int=0;
+			var step:int=0;
+			var minValue:Number;
+			var maxValue:Number;
+			var indexMatrix:Array = new Array();
+			
+			minValue = wordsData.WORDS_VECTOR[i].occurences[step];
+			maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
+			
+			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
+				indexMatrix[step] = new Array();
+				for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
+					indexMatrix[step][i]=wordsData.WORDS_VECTOR[i].occurences[step];
+					
+					if(indexMatrix[step][i]<minValue) minValue=indexMatrix[step][i];
+					if(indexMatrix[step][i]>maxValue) maxValue=indexMatrix[step][i];
+				}
+			}
+			
+			return [minValue,maxValue,indexMatrix];
 		}
 		
 		private function fadeHex(hex:uint, hex2:uint, ratio:Number):uint{

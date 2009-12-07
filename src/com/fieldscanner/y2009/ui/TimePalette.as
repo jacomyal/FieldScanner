@@ -56,7 +56,7 @@ package com.fieldscanner.y2009.ui {
 		
 		public function setTimeSlider():void{
 			var tf:TextField = new TextField();
-			var fn:Number = up.DIAGRAM.graphsVector.length
+			var fn:Number = up.DIAGRAM.FRAMES_NUMBER;
 			with(tf){
 				text = "Time slider:";
 				setTextFormat(up.BASIC_FORMAT);
@@ -70,7 +70,7 @@ package com.fieldscanner.y2009.ui {
 			with(timeSlider){
 				minimum = 1;
 				maximum = fn;
-				value = up.DIAGRAM.indexOfImage;
+				value = up.DIAGRAM.FRAME;
 				setSize(140,0);
 				liveDragging = true;
 				x = 10;

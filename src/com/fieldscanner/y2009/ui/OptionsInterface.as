@@ -49,7 +49,7 @@ package com.fieldscanner.y2009.ui {
 			x = 10;
 			y = 10;
 			
-			basicTextFormat = new TextFormat("Verdana",12);
+			basicTextFormat = new TextFormat("Verdana",11);
 			titleTextFormat = new TextFormat("Verdana",12,0x000000,true);
 			inputTextFormat = new TextFormat("Verdana",12,0x286777,false,true);
 			errorTextFormat = new TextFormat("Verdana",12,0x770909,true);
