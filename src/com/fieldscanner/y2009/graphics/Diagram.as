@@ -173,6 +173,8 @@ package com.fieldscanner.y2009.graphics {
 				res=false;
 			}
 			
+			timeLine.drawCursor(interval,indexOfImage);
+			
 			return res;
 		}
 		
@@ -188,7 +190,8 @@ package com.fieldscanner.y2009.graphics {
 			}else{
 				res=false;
 			}
-			
+		
+			timeLine.drawCursor(interval,indexOfImage);
 			return res;
 		}
 		
@@ -196,12 +199,15 @@ package com.fieldscanner.y2009.graphics {
 			removeChild(graphsVector[indexOfImage]);
 			indexOfImage=0;
 			addChild(graphsVector[0]);
+			
+			timeLine.drawCursor(interval,indexOfImage);
 		}
 		
 		public function process(newWordsData:Data,newI:Number,newAlp:Number):void{
 			interval = newI;
 			alphaValue = newAlp;
 			wordsData = newWordsData;
+			timeLine.drawCursor(interval,indexOfImage);
 			graphsVector = new Vector.<Sprite>();
 			
 			setWordsVector();
@@ -335,10 +341,10 @@ package com.fieldscanner.y2009.graphics {
 							outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
 					}
 					
-					inMin = (inMin+inMax-measures[0])/2;
-					outMin = (outMin+outMax-measures[1])/2;
-					inMax = (inMin+inMax+measures[0])/2;
-					outMax = (outMin+outMax+measures[1])/2;
+					inMin = (-inMin+inMax-measures[0])/2;
+					outMin = (-outMin+outMax-measures[1])/2;
+					inMax = (-inMin+inMax+measures[0])/2;
+					outMax = (-outMin+outMax+measures[1])/2;
 				}
 				
 				tempContainer = displayMapKey(tempContainer,[inMin,inMax,outMin,outMax]);

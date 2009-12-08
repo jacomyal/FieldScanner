@@ -68,7 +68,7 @@ package com.fieldscanner.y2009.ui {
 			
 			timeSlider = new Slider();
 			with(timeSlider){
-				minimum = 1;
+				minimum = 0;
 				maximum = fn;
 				value = up.DIAGRAM.FRAME;
 				setSize(140,0);

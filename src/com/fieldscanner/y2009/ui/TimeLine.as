@@ -26,6 +26,8 @@ package com.fieldscanner.y2009.ui{
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -37,7 +39,10 @@ package com.fieldscanner.y2009.ui{
 		private var diagramSize:Number;
 		private var beginYear:int;
 		private var endYear:int;
-		private var cursor:Sprite;
+		private var timeCursor:Sprite;
+		private var currentCursorPos:int;
+		
+		private var localMouseX:Number;
 		
 		public function TimeLine(newUp:Diagram){
 			var i:int;
@@ -56,6 +61,7 @@ package com.fieldscanner.y2009.ui{
 			
 			x = (diagramSize-60);
 			y = (diagramSize+60)+140;
+			timeCursor = new Sprite();
 			
 			displayMapKey();
 			
@@ -93,7 +99,7 @@ package com.fieldscanner.y2009.ui{
 				if(values[i]>maxValue) maxValue=values[i];
 			}
 			
-			this.graphics.lineStyle(3,tempColor);
+			this.graphics.lineStyle(2,tempColor);
 			this.graphics.moveTo(0,-values[0]*80/maxValue);
 			
 			for(i=0;i<=completeInterval;i++){
@@ -110,9 +116,20 @@ package com.fieldscanner.y2009.ui{
 			
 			addChild(labelField);
 			
-			drawCursor(up.INTERVAL,up.FRAME);
-			
 			return res;
+		}
+		
+		public function drawCursor(interval:int,currentFrame:int):void{
+			var yearsNumber:int = endYear-beginYear;
+			
+			timeCursor.graphics.clear();
+			timeCursor.graphics.beginFill(0x32b7d8,0.1);
+			timeCursor.graphics.lineStyle(3,0x1b5b6b);
+			timeCursor.graphics.drawRoundRect(currentFrame*diagramSize/yearsNumber,-90,interval*diagramSize/yearsNumber,95,5,5);
+			
+			currentCursorPos = currentFrame;
+			
+			if(!this.contains(timeCursor)) this.addChild(timeCursor);
 		}
 		
 		private function displayMapKey():void{
@@ -167,10 +184,20 @@ package com.fieldscanner.y2009.ui{
 			}
 		}
 		
-		private function drawCursor(interval:int,currentFrame:int):void{
-			var framesNumber:int = endYear-beginYear-interval+1;
+		private function startXDrag(e:MouseEvent):void{
+			localMouseX = e.localX;
+			timeCursor.addEventListener(Event.ENTER_FRAME,mouseDisplacementHandler);
+		}
+		
+		private function stopXDrag():void{
+			timeCursor.removeEventListener(Event.ENTER_FRAME,mouseDisplacementHandler);
+		}
+		
+		private function mouseDisplacementHandler(e:Event):void{
+/*			var floatCursorX:Number = timeCursor.x;
+			var newX:Number = Math.floor();
 			
-			
+			timeCursor.x = newX-localMouseX;*/
 		}
 		
 		private function brightenColor(color:Number, perc:Number):Number{
