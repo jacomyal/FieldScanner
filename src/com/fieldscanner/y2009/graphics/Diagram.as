@@ -350,6 +350,9 @@ package com.fieldscanner.y2009.graphics {
 			if(optionsInterface==null) optionsInterface = new OptionsInterface(this);
 			else optionsInterface.reset();
 			
+			setTimeLineForSize();
+			setTimeLineForColor();
+			
 			addChild(graphsVector[indexOfImage]);
 		}
 		
@@ -495,9 +498,11 @@ package com.fieldscanner.y2009.graphics {
 			var maxSize:Number = indexParams[3];
 			
 			if(sizeIndex==0){
-				minValue = occurencesIndex()[0];
-				maxValue = occurencesIndex()[1];
-				indexMatrix = occurencesIndex()[2];
+				var a:Array = occurencesLocalIndex();
+				
+				minValue = a[0];
+				maxValue = a[1];
+				indexMatrix = a[2];
 			}
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
@@ -520,9 +525,11 @@ package com.fieldscanner.y2009.graphics {
 			var maxColor:uint = indexParams[1];
 			
 			if(colorIndex==0){
-				minValue = occurencesIndex()[0];
-				maxValue = occurencesIndex()[1];
-				indexMatrix = occurencesIndex()[2];
+				var a:Array = occurencesLocalIndex();
+				
+				minValue = a[0];
+				maxValue = a[1];
+				indexMatrix = a[2];
 			}
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
@@ -532,7 +539,61 @@ package com.fieldscanner.y2009.graphics {
 			}
 		}
 		
-		private function occurencesIndex():Array{
+		private function setTimeLineForSize():void{
+			var i:int=0;
+			var step:int=0;
+			var l:int = wordsData.WORDS_VECTOR.length;
+			var indexMatrix:Array;
+			var tempMiddle:Number;
+			var resultArray:Array = new Array();
+			
+			if(sizeIndex==0){
+				indexMatrix = occurencesLocalIndex()[2];
+			}
+			
+			for(step=0;step<(endYear-beginYear-interval+1);step++){
+				tempMiddle = 0;
+				
+				for(i=0;i<l;i++){
+					tempMiddle += indexMatrix[step][i];
+				}
+				
+				resultArray.push(tempMiddle/l);
+			}
+			
+			optionsInterface.TIME_LINE.addClusterIndex(sizeIndex,resultArray,INDEXES[sizeIndex]+" (average value)",0xca5b46);
+			optionsInterface.TIME_LINE.drawIndexes();
+		}
+		
+		private function setTimeLineForColor():void{
+			var i:int=0;
+			var step:int=0;
+			var l:int = wordsData.WORDS_VECTOR.length;
+			var indexMatrix:Array;
+			var tempMiddle:Number;
+			var resultArray:Array = new Array();
+			
+			if(colorIndex!=sizeIndex){
+				if(colorIndex==0){
+					indexMatrix = occurencesLocalIndex()[2];
+				}
+				
+				for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
+					tempMiddle = 0;
+					
+					for(i=0;i<l;i++){
+						tempMiddle += indexMatrix[step][i];
+					}
+					
+					resultArray.push(tempMiddle/l);
+				}
+				
+				optionsInterface.TIME_LINE.addClusterIndex(colorIndex,resultArray,INDEXES[colorIndex]+" (average value)",0xca5b46);
+				optionsInterface.TIME_LINE.drawIndexes();
+			}
+		}
+		
+		private function occurencesLocalIndex():Array{
 			var i:int=0;
 			var step:int=0;
 			var minValue:Number;
@@ -589,6 +650,15 @@ package com.fieldscanner.y2009.graphics {
 			}
 			
 			return(resultStr);
+		}
+		
+		private function colorNorm(color:Number):Number{
+			var factor:Number;
+			var blueOffset:Number = color % 256;
+			var greenOffset:Number = ( color >> 8 ) % 256;
+			var redOffset:Number = ( color >> 16 ) % 256;
+			
+			return ((blueOffset+greenOffset+redOffset)/3);
 		}
 	}
 }

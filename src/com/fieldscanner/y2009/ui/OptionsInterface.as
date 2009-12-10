@@ -74,6 +74,14 @@ package com.fieldscanner.y2009.ui {
 			return errorTextFormat;
 		}
 		
+		public function get TIME_LINE():TimeLine{
+			return timeLine;
+		}
+		
+		public function get DIAGRAM ():Diagram{
+			return diagram;
+		}
+		
 		public function inputHandler(e:Event):void{
 			var tf:TextField = e.target as TextField;
 			tf.setTextFormat(INPUT_FORMAT);
@@ -116,20 +124,21 @@ package com.fieldscanner.y2009.ui {
 		}
 		
 		public function reset():void{
-			
 			while(this.numChildren>0){
 				this.removeChildAt(0);
 			}
 			
+			stage.removeChild(timeLine);
+			
 			setPalettes();
-		}
-		
-		public function get DIAGRAM ():Diagram{
-			return diagram;
 		}
 		
 		public function drawTimeLineCursor():void{
 			timeLine.drawCursor(diagram.INTERVAL,diagram.FRAME);
+		}
+		
+		public function setTimeSliderFrame(f:int):void{
+			timePalette.goFrame(f);
 		}
 	}
 }

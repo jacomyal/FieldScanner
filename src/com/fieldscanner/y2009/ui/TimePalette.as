@@ -22,15 +22,15 @@
 
 package com.fieldscanner.y2009.ui {
 	
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-    import flash.display.Sprite;
-    import flash.display.Stage;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import fl.controls.Button;
 	import fl.controls.Slider;
 	import fl.events.SliderEvent;
+	
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	
 	public class TimePalette extends Sprite{
 		
@@ -52,6 +52,10 @@ package com.fieldscanner.y2009.ui {
 			isStopped = false;
 			isPlaying = false;
 			isPaused = false;
+		}
+		
+		public function goFrame(f:int):void{
+			timeSlider.value = f;
 		}
 		
 		public function setTimeSlider():void{
@@ -209,11 +213,6 @@ package com.fieldscanner.y2009.ui {
 		private function goNextFrame():Boolean{
 			timeSlider.value ++;
 			return up.DIAGRAM.goNextFrame();
-		}
-		
-		private function goFrame(i:Number):Boolean{
-			timeSlider.value = i;
-			return up.DIAGRAM.goFrame(i);
 		}
 		
 	}

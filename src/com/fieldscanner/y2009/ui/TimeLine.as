@@ -22,6 +22,7 @@
 
 package com.fieldscanner.y2009.ui{
 	
+	import com.fieldscanner.y2009.data.Index;
 	import com.fieldscanner.y2009.graphics.Diagram;
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	
@@ -33,17 +34,19 @@ package com.fieldscanner.y2009.ui{
 	
 	public class TimeLine extends Sprite{
 		
+		private var indexesVector:Vector.<Index>;
 		private var up:OptionsInterface;
 		private var diagram:Diagram;
-		private var clusterIndexes:Array;
 		private var diagramSize:Number;
 		private var beginYear:int;
 		private var endYear:int;
 		private var timeCursor:Sprite;
-		private var currentCursorPos:int;
+		private var indexesCurves:Sprite;
+		private var mapKey:Sprite;
 		
 		private var interval:int;
 		private var localMouseX:Number;
+		private var frame:int;
 		
 		public function TimeLine(newUp:OptionsInterface,newDiagram:Diagram){
 			var i:int;
@@ -53,10 +56,11 @@ package com.fieldscanner.y2009.ui{
 			trace("New TimeLine created.");
 			
 			diagram = newDiagram;
-			up = newUp;
-			up.addChild(this);
+			frame = diagram.FRAME;
 			
-			clusterIndexes = new Array();
+			up = newUp;
+			up.stage.addChild(this);
+			
 			diagramSize = diagram.DIAGRAM_SIZE;
 			beginYear = diagram.START;
 			endYear = diagram.END;
@@ -64,64 +68,136 @@ package com.fieldscanner.y2009.ui{
 			x = diagramSize-70;
 			y = (diagramSize+60)+140;
 			
+			indexesVector = new Vector.<Index>();
+			
+			indexesCurves = new Sprite();
+			addChild(indexesCurves);
+			
+			mapKey = new Sprite();
+			addChild(mapKey);
+			
 			timeCursor = new Sprite();
 			timeCursor.addEventListener(MouseEvent.MOUSE_DOWN,startXDrag);
 			stage.addEventListener(MouseEvent.MOUSE_UP,stopXDrag);
 			
 			displayMapKey();
+		}
+		
+		public function getIndex(name:String):Index{
+			var i:int;
+			var res:Index = null;
 			
-			for(j=0;j<5;j++){
-				a = new Array();
-				
-				for(i=0;i<endYear-beginYear+1;i++){
-					a.push(1000*Math.random());
+			for(i=0;i<indexesVector.length;i++){
+				if(indexesVector[i].NAME==name){
+					res = indexesVector[i];
+				}
+			}
+			
+			return res;
+		}
+		
+		public function addClusterIndex(indexIndex:int,values:Array,indexName:String=null,indexColor:String="undefined"):void{
+			var tempColor:uint;
+			var tempIndex:Index;
+			
+			if(getIndex(diagram.INDEXES[indexIndex])==null){
+				if(indexColor=="undefined"){
+					tempColor = new uint(Math.round( Math.random()*0xFFFFFF));
+				}else{
+					tempColor = new uint(indexColor);
 				}
 				
-				addClusterIndex("Test "+j,a);
+				if(indexName!=null){
+					tempIndex = new Index(indexName,values,indexIndex,tempColor);
+				}else{
+					tempIndex = new Index(diagram.INDEXES[indexIndex],values,indexIndex,tempColor);
+				}
+				
+				indexesVector.push(tempIndex);
 			}
 		}
 		
-		public function addClusterIndex(indexName:String,values:Array,indexColor:String="undefined"):Boolean{
-			var res:Boolean = true;
-			var tempColor:uint;
+		public function drawIndexes():void{
 			var i:int;
-			var tempIndex:Object;
+			var j:int;
 			var completeInterval:int = endYear-beginYear;
 			var maxValue:Number = 0;
 			var labelField:TextField;
 			var textFormat:TextFormat;
+			var xTo:Number;
+			var yTo:Number;
+			var tempIndex:Index;
+			var values:Array;
+			var tempColor:uint;
+			var indexName:String;
 			
-			if(indexColor=="undefined"){
-				tempColor = new uint(Math.round( Math.random()*0xFFFFFF));
-			}else{
-				tempColor = new uint(indexColor);
+			indexesCurves.graphics.clear();
+			
+			while(indexesCurves.numChildren>0){
+				indexesCurves.removeChildAt(0);
 			}
-			
-			tempIndex = {iname:indexName, icolor:tempColor};
-			clusterIndexes.push(tempIndex);
-			
-			for(i=0;i<values.length;i++){
-				if(values[i]>maxValue) maxValue=values[i];
+			for(i=0;i<indexesVector.length;i++){
+				tempIndex = indexesVector[i];
+				values = tempIndex.VALUES;
+				tempColor = tempIndex.COLOR;
+				indexName = tempIndex.NAME;
+				xTo = 0;
+				
+				for(j=0;j<values.length;j++){
+					if(values[j]>maxValue) maxValue=values[j];
+				}
+				
+				indexesCurves.graphics.lineStyle(2,tempColor);
+				indexesCurves.graphics.moveTo(0,-values[0]*80/maxValue);
+				
+				j = 0;
+				
+				trace(frame);
+				if(frame!=0){
+					while(xTo<timeCursor.x-0.001){
+						xTo += diagramSize/completeInterval;
+						yTo = -values[j]*80/maxValue;
+						indexesCurves.graphics.lineTo(xTo,yTo);
+						
+						j++;
+					}
+				}
+				
+				xTo += interval*diagramSize/(endYear-beginYear);
+				indexesCurves.graphics.lineStyle(3,tempColor);
+				indexesCurves.graphics.lineTo(xTo,yTo);
+				indexesCurves.graphics.lineStyle(2,tempColor);
+				
+				while(j<values.length){
+					xTo += diagramSize/completeInterval;
+					yTo = -values[j]*80/maxValue;
+					indexesCurves.graphics.lineTo(xTo,yTo);
+					
+					j++;
+				}
+				
+				indexesCurves.graphics.lineStyle(1,tempColor,0.8);
+				
+				while(xTo+2<diagramSize){
+					indexesCurves.graphics.moveTo(xTo+1,yTo);
+					indexesCurves.graphics.lineTo(xTo+2,yTo);
+					
+					xTo += 2;
+				}
+				
+				textFormat = new TextFormat("Verdana",12,brightenColor(tempColor,35),true);
+				labelField = new TextField();
+				labelField.text = indexName;
+				labelField.setTextFormat(textFormat);
+				labelField.autoSize = TextFieldAutoSize.LEFT;
+				labelField.selectable = false;
+				labelField.x = diagramSize+2+diagramSize/completeInterval;
+				labelField.y = -values[j-1]*80/maxValue-labelField.height/2;
+				
+				with(labelField) playButton = null;
+				
+				indexesCurves.addChild(labelField);
 			}
-			
-			this.graphics.lineStyle(2,tempColor);
-			this.graphics.moveTo(0,-values[0]*80/maxValue);
-			
-			for(i=0;i<=completeInterval;i++){
-				this.graphics.lineTo(diagramSize*i/completeInterval,-values[i]*80/maxValue);
-			}
-			
-			textFormat = new TextFormat("Verdana",12,brightenColor(tempColor,35),true);
-			labelField = new TextField();
-			labelField.text = indexName;
-			labelField.setTextFormat(textFormat);
-			labelField.autoSize = TextFieldAutoSize.LEFT;
-			labelField.x = diagramSize+2;
-			labelField.y = -values[i-1]*80/maxValue-labelField.height/2;
-			
-			addChild(labelField);
-			
-			return res;
 		}
 		
 		public function drawCursor(newInterval:int,currentFrame:int):void{
@@ -135,9 +211,11 @@ package com.fieldscanner.y2009.ui{
 			timeCursor.x = currentFrame*diagramSize/yearsNumber;
 			timeCursor.y = -90;
 			
-			currentCursorPos = currentFrame;
+			frame = currentFrame;
 			
 			if(!this.contains(timeCursor)) this.addChild(timeCursor);
+			
+			drawIndexes();
 		}
 		
 		private function displayMapKey():void{
@@ -147,7 +225,7 @@ package com.fieldscanner.y2009.ui{
 			
 			trace("TimeLine.displayMapKey:\n\t"+completeInterval+" steps.");
 			
-			with(this.graphics){
+			with(mapKey.graphics){
 				lineStyle(1,0x000000);
 				moveTo(0,-100);
 				lineTo(0,0);
@@ -161,33 +239,33 @@ package com.fieldscanner.y2009.ui{
 					tf.x = diagramSize*i/completeInterval;
 					tf.y = 11;
 					tf.refresh();
-					addChild(tf);
+					mapKey.addChild(tf);
 					
-					this.graphics.moveTo(diagramSize*i/completeInterval,0);
-					this.graphics.lineTo(diagramSize*i/completeInterval,11);
+					mapKey.graphics.moveTo(diagramSize*i/completeInterval,0);
+					mapKey.graphics.lineTo(diagramSize*i/completeInterval,11);
 				}else if(i==completeInterval){
 					tf = new DiagramTextField("little");
 					tf.text = (beginYear+i).toString()+"\n(end year)";
 					tf.x = diagramSize*i/completeInterval;
 					tf.y = 11;
 					tf.refresh();
-					addChild(tf);
+					mapKey.addChild(tf);
 					
-					this.graphics.moveTo(diagramSize*i/completeInterval,0);
-					this.graphics.lineTo(diagramSize*i/completeInterval,3);
+					mapKey.graphics.moveTo(diagramSize*i/completeInterval,0);
+					mapKey.graphics.lineTo(diagramSize*i/completeInterval,3);
 				}else if(!((i+beginYear)%5)){
 					tf = new DiagramTextField("little");
 					tf.text = (beginYear+i).toString();
 					tf.x = diagramSize*i/completeInterval;
 					tf.y = 2;
 					tf.refresh();
-					addChild(tf);
+					mapKey.addChild(tf);
 					
-					this.graphics.moveTo(diagramSize*i/completeInterval,0);
-					this.graphics.lineTo(diagramSize*i/completeInterval,5);
+					mapKey.graphics.moveTo(diagramSize*i/completeInterval,0);
+					mapKey.graphics.lineTo(diagramSize*i/completeInterval,5);
 				}else{
-					this.graphics.moveTo(diagramSize*i/completeInterval,0);
-					this.graphics.lineTo(diagramSize*i/completeInterval,3);
+					mapKey.graphics.moveTo(diagramSize*i/completeInterval,0);
+					mapKey.graphics.lineTo(diagramSize*i/completeInterval,3);
 				}
 			}
 		}
@@ -208,6 +286,8 @@ package com.fieldscanner.y2009.ui{
 		}
 		
 		private function mouseMoveHandler(event:MouseEvent):void {
+			var oldFrame:int = frame;
+			
 			if(this.mouseX-localMouseX < 0){
 				timeCursor.x = 0;
 			}else if(this.mouseX-localMouseX > diagramSize-interval*diagramSize/(endYear-beginYear)){
@@ -216,7 +296,13 @@ package com.fieldscanner.y2009.ui{
 				timeCursor.x = Math.round((this.mouseX-localMouseX)/diagramSize*(endYear-beginYear))*diagramSize/(endYear-beginYear);
 			}
 			
-			diagram.goFrame(Math.round(timeCursor.x/diagramSize*(endYear-beginYear)));
+			frame = Math.round(timeCursor.x/diagramSize*(endYear-beginYear));
+			
+			if(frame!=oldFrame){
+				diagram.goFrame(frame);
+				up.setTimeSliderFrame(frame);
+				drawIndexes();
+			}
 		}
 		
 		private function brightenColor(color:Number, perc:Number):Number{
