@@ -27,7 +27,6 @@ package com.fieldscanner.y2009.graphics {
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	import com.fieldscanner.y2009.ui.MainWindow;
 	import com.fieldscanner.y2009.ui.OptionsInterface;
-	import com.fieldscanner.y2009.ui.TimeLine;
 	
 	import flash.display.Sprite;
 	import flash.text.TextField;
@@ -54,7 +53,6 @@ package com.fieldscanner.y2009.graphics {
 		
 		private var optionsInterface:OptionsInterface;
 		private var graphsVector:Vector.<Sprite>;
-		private var timeLine:TimeLine;
 		
 		public var mainWindow:MainWindow;
 		
@@ -65,7 +63,6 @@ package com.fieldscanner.y2009.graphics {
 			beginYear = newBegin;
 			endYear = newEnd;
 			diagramSize = 400;
-			timeLine = new TimeLine(this);
 			
 			displayMode = 0;
 			indexOfImage = 0;
@@ -173,7 +170,7 @@ package com.fieldscanner.y2009.graphics {
 				res=false;
 			}
 			
-			timeLine.drawCursor(interval,indexOfImage);
+			optionsInterface.drawTimeLineCursor();
 			
 			return res;
 		}
@@ -191,7 +188,7 @@ package com.fieldscanner.y2009.graphics {
 				res=false;
 			}
 		
-			timeLine.drawCursor(interval,indexOfImage);
+			optionsInterface.drawTimeLineCursor();
 			return res;
 		}
 		
@@ -200,14 +197,13 @@ package com.fieldscanner.y2009.graphics {
 			indexOfImage=0;
 			addChild(graphsVector[0]);
 			
-			timeLine.drawCursor(interval,indexOfImage);
+			optionsInterface.drawTimeLineCursor();
 		}
 		
 		public function process(newWordsData:Data,newI:Number,newAlp:Number):void{
 			interval = newI;
 			alphaValue = newAlp;
 			wordsData = newWordsData;
-			timeLine.drawCursor(interval,indexOfImage);
 			graphsVector = new Vector.<Sprite>();
 			
 			setWordsVector();
@@ -341,10 +337,10 @@ package com.fieldscanner.y2009.graphics {
 							outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
 					}
 					
-					inMin = (-inMin+inMax-measures[0])/2;
-					outMin = (-outMin+outMax-measures[1])/2;
-					inMax = (-inMin+inMax+measures[0])/2;
-					outMax = (-outMin+outMax+measures[1])/2;
+					inMin = (inMin+inMax-measures[0])/2;
+					outMin = (outMin+outMax-measures[1])/2;
+					inMax = (inMin+inMax+measures[0])/2;
+					outMax = (outMin+outMax+measures[1])/2;
 				}
 				
 				tempContainer = displayMapKey(tempContainer,[inMin,inMax,outMin,outMax]);

@@ -26,7 +26,6 @@ package com.fieldscanner.y2009.ui{
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	
 	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -34,7 +33,8 @@ package com.fieldscanner.y2009.ui{
 	
 	public class TimeLine extends Sprite{
 		
-		private var up:Diagram;
+		private var up:OptionsInterface;
+		private var diagram:Diagram;
 		private var clusterIndexes:Array;
 		private var diagramSize:Number;
 		private var beginYear:int;
@@ -42,26 +42,31 @@ package com.fieldscanner.y2009.ui{
 		private var timeCursor:Sprite;
 		private var currentCursorPos:int;
 		
+		private var interval:int;
 		private var localMouseX:Number;
 		
-		public function TimeLine(newUp:Diagram){
+		public function TimeLine(newUp:OptionsInterface,newDiagram:Diagram){
 			var i:int;
 			var j:int;
 			var a:Array;
 			
 			trace("New TimeLine created.");
 			
+			diagram = newDiagram;
 			up = newUp;
-			up.stage.addChild(this);
+			up.addChild(this);
 			
 			clusterIndexes = new Array();
-			diagramSize = up.DIAGRAM_SIZE;
-			beginYear = up.START;
-			endYear = up.END;
+			diagramSize = diagram.DIAGRAM_SIZE;
+			beginYear = diagram.START;
+			endYear = diagram.END;
 			
-			x = (diagramSize-60);
+			x = diagramSize-70;
 			y = (diagramSize+60)+140;
+			
 			timeCursor = new Sprite();
+			timeCursor.addEventListener(MouseEvent.MOUSE_DOWN,startXDrag);
+			stage.addEventListener(MouseEvent.MOUSE_UP,stopXDrag);
 			
 			displayMapKey();
 			
@@ -119,13 +124,16 @@ package com.fieldscanner.y2009.ui{
 			return res;
 		}
 		
-		public function drawCursor(interval:int,currentFrame:int):void{
+		public function drawCursor(newInterval:int,currentFrame:int):void{
 			var yearsNumber:int = endYear-beginYear;
+			interval = newInterval;
 			
 			timeCursor.graphics.clear();
 			timeCursor.graphics.beginFill(0x32b7d8,0.1);
 			timeCursor.graphics.lineStyle(3,0x1b5b6b);
-			timeCursor.graphics.drawRoundRect(currentFrame*diagramSize/yearsNumber,-90,interval*diagramSize/yearsNumber,95,5,5);
+			timeCursor.graphics.drawRoundRect(0,0,interval*diagramSize/yearsNumber,95,5,5);
+			timeCursor.x = currentFrame*diagramSize/yearsNumber;
+			timeCursor.y = -90;
 			
 			currentCursorPos = currentFrame;
 			
@@ -185,19 +193,30 @@ package com.fieldscanner.y2009.ui{
 		}
 		
 		private function startXDrag(e:MouseEvent):void{
-			localMouseX = e.localX;
-			timeCursor.addEventListener(Event.ENTER_FRAME,mouseDisplacementHandler);
+			addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+			localMouseX = this.mouseX - timeCursor.x;
 		}
 		
-		private function stopXDrag():void{
-			timeCursor.removeEventListener(Event.ENTER_FRAME,mouseDisplacementHandler);
-		}
-		
-		private function mouseDisplacementHandler(e:Event):void{
-/*			var floatCursorX:Number = timeCursor.x;
-			var newX:Number = Math.floor();
+		private function stopXDrag(event:MouseEvent):void{
+			var tempX:int;
 			
-			timeCursor.x = newX-localMouseX;*/
+			removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+			tempX = Math.round(timeCursor.x/diagramSize*(endYear-beginYear))*diagramSize/(endYear-beginYear);
+			tempX = Math.min(tempX,diagramSize-interval*diagramSize/(endYear-beginYear));
+			tempX = Math.max(tempX,0);
+			timeCursor.x = tempX;
+		}
+		
+		private function mouseMoveHandler(event:MouseEvent):void {
+			if(this.mouseX-localMouseX < 0){
+				timeCursor.x = 0;
+			}else if(this.mouseX-localMouseX > diagramSize-interval*diagramSize/(endYear-beginYear)){
+				timeCursor.x = diagramSize-interval*diagramSize/(endYear-beginYear);
+			}else{
+				timeCursor.x = Math.round((this.mouseX-localMouseX)/diagramSize*(endYear-beginYear))*diagramSize/(endYear-beginYear);
+			}
+			
+			diagram.goFrame(Math.round(timeCursor.x/diagramSize*(endYear-beginYear)));
 		}
 		
 		private function brightenColor(color:Number, perc:Number):Number{

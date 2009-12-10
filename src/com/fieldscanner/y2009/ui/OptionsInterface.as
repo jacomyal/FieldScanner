@@ -36,6 +36,7 @@ package com.fieldscanner.y2009.ui {
 		private var indexPalette:IndexPalette;
 		private var infoPalette:InfoPalette;
 		private var timePalette:TimePalette;
+		private var timeLine:TimeLine;
 		
 		private var basicTextFormat:TextFormat;
 		private var titleTextFormat:TextFormat;
@@ -110,7 +111,8 @@ package com.fieldscanner.y2009.ui {
 				setInterface();
 			}
 			
-			infoPalette = new InfoPalette(this);
+			timeLine = new TimeLine(this,diagram);
+			drawTimeLineCursor();
 		}
 		
 		public function reset():void{
@@ -124,6 +126,10 @@ package com.fieldscanner.y2009.ui {
 		
 		public function get DIAGRAM ():Diagram{
 			return diagram;
+		}
+		
+		public function drawTimeLineCursor():void{
+			timeLine.drawCursor(diagram.INTERVAL,diagram.FRAME);
 		}
 	}
 }
