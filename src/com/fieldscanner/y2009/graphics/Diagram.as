@@ -67,7 +67,7 @@ package com.fieldscanner.y2009.graphics {
 			displayMode = 0;
 			indexOfImage = 0;
 			
-			indexParams = [0xFFE241,0xBF1111,10,30];
+			indexParams = [0xFFCC66,0xBF1111,10,30];
 			indexes = ["Occurences"];
 			colorIndex = 0;
 			sizeIndex = 0;
@@ -140,6 +140,10 @@ package com.fieldscanner.y2009.graphics {
 			return wordsData;
 		}
 		
+		public function get IS_PLAYING():Boolean{
+			return optionsInterface.IS_PLAYING;
+		}
+		
 		public function setIndexParams(a:Array,c:int,s:int):void{
 			indexParams = a;
 			colorIndex = c;
@@ -190,6 +194,32 @@ package com.fieldscanner.y2009.graphics {
 		
 			optionsInterface.drawTimeLineCursor();
 			return res;
+		}
+		
+		public function activateDisplayWordsHandlers():void{
+			var i:int;
+			var j:int;
+			var tempGraph:Sprite;
+			
+			for(i=0;i<graphsVector.length;i++){
+				tempGraph = graphsVector[i];
+				for(j=0;j<tempGraph.numChildren;j++){
+					//if(tempGraph.getChildAt(j) is DisplayWord) tempGraph.getChildAt(j).activateHandlers();
+				}
+			}
+		}
+		
+		public function unactivateDisplayWordsHandlers():void{
+			var i:int;
+			var j:int;
+			var tempGraph:Sprite;
+			
+			for(i=0;i<graphsVector.length;i++){
+				tempGraph = graphsVector[i];
+				for(j=0;j<tempGraph.numChildren;j++){
+					//if(tempGraph.getChildAt(j) is DisplayWord) tempGraph.getChildAt(j).unactivateHandlers();
+				}
+			}
 		}
 		
 		public function goFirstFrame():void{

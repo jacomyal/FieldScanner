@@ -40,9 +40,10 @@ package com.fieldscanner.y2009.ui{
 		private var diagramSize:Number;
 		private var beginYear:int;
 		private var endYear:int;
-		private var timeCursor:Sprite;
 		private var indexesCurves:Sprite;
 		private var mapKey:Sprite;
+		
+		private var timeCursor:Sprite;
 		
 		private var interval:int;
 		private var localMouseX:Number;

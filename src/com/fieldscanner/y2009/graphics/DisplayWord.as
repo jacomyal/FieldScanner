@@ -25,6 +25,7 @@ package com.fieldscanner.y2009.graphics{
 	import com.fieldscanner.y2009.data.Word;
 	
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -33,6 +34,7 @@ package com.fieldscanner.y2009.graphics{
 		
 		private var labelField:TextField;
 		private var textFormat:TextFormat;
+		private var toolTip:Sprite;
 		private var word:Word;
 		private var step:int;
 		
@@ -47,6 +49,10 @@ package com.fieldscanner.y2009.graphics{
 			labelField.text = w.label;
 			labelField.selectable = false;
 			labelField.setTextFormat(textFormat);
+			
+			addEventListener(MouseEvent.MOUSE_OVER,onMouseOverHandler);
+			addEventListener(MouseEvent.MOUSE_OUT,onMouseOutHandler);
+			setToolTip();
 		}
 		
 		public function get WORD():Word{
@@ -71,6 +77,28 @@ package com.fieldscanner.y2009.graphics{
 			}
 			
 			if(!this.contains(labelField)) addChild(labelField);
+		}
+		
+		private function setToolTip():void{
+			toolTip = new Sprite();
+			
+			toolTip.graphics.beginFill(word.color[step],1);
+			toolTip.graphics.drawRect(20,20,word.diameter[step],word.diameter[step]);
+		}
+		
+		private function onMouseOverHandler(e:MouseEvent):void{
+			this.parent.addChild(toolTip);
+			addEventListener(MouseEvent.MOUSE_MOVE,onMouseMoveHandler);
+		}
+		
+		private function onMouseOutHandler(e:MouseEvent):void{
+			toolTip.parent.removeChild(toolTip);
+			removeEventListener(MouseEvent.MOUSE_MOVE,onMouseMoveHandler);
+		}
+		
+		private function onMouseMoveHandler(e:MouseEvent):void{
+			toolTip.x = this.parent.mouseX;
+			toolTip.y = this.parent.mouseY;
 		}
 		
 		private function brightenColor(color:Number, perc:Number):Number{

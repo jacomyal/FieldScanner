@@ -54,6 +54,10 @@ package com.fieldscanner.y2009.ui {
 			isPaused = false;
 		}
 		
+		public function get IS_PLAYING():Boolean{
+			return isPlaying;
+		}
+		
 		public function goFrame(f:int):void{
 			timeSlider.value = f;
 		}

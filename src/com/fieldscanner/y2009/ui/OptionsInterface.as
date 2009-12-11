@@ -78,6 +78,10 @@ package com.fieldscanner.y2009.ui {
 			return timeLine;
 		}
 		
+		public function get IS_PLAYING():Boolean{
+			return timePalette.IS_PLAYING;
+		}
+		
 		public function get DIAGRAM ():Diagram{
 			return diagram;
 		}
