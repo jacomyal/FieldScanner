@@ -137,6 +137,10 @@ package com.fieldscanner.y2009.ui {
 			timeLine.drawCursor(diagram.INTERVAL,diagram.FRAME);
 		}
 		
+		public function stopPlaying():void{
+			timePalette.pause();
+		}
+		
 		public function setTimeSliderFrame(f:int):void{
 			timePalette.goFrame(f);
 		}

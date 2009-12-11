@@ -29,8 +29,8 @@ package com.fieldscanner.y2009.data {
 		public var outProxValues:Vector.<Number>;
 		public var occurences:Vector.<Number>;
 		
-		public var color:uint;
-		public var diameter:Number;
+		public var color:Array;
+		public var diameter:Array;
 	
 		public function Word(newLabel:String){
 			label = newLabel;
@@ -38,16 +38,16 @@ package com.fieldscanner.y2009.data {
 			outProxValues = new Vector.<Number>();
 			occurences = new Vector.<Number>();
 			
-			color = Math.round((1+Math.random())/2*0xFFFFFF );
-			diameter = 15;
+			color = new Array();
+			diameter = new Array();
 		}
 		
-		public function setColor(c:uint):void{
-			color = c;
+		public function setColor(c:uint,step:int):void{
+			color[step] = c;
 		}
 		
-		public function setDiameter(d:Number):void{
-			diameter = d;
+		public function setDiameter(d:Number,step:int):void{
+			diameter[step] = d;
 		}
 		
 		public function setLabel():void{

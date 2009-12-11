@@ -23,6 +23,7 @@
 package com.fieldscanner.y2009.graphics{
 	
 	import com.fieldscanner.y2009.data.Word;
+	
 	import flash.display.Sprite;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -33,11 +34,13 @@ package com.fieldscanner.y2009.graphics{
 		private var labelField:TextField;
 		private var textFormat:TextFormat;
 		private var word:Word;
+		private var step:int;
 		
-		public function DisplayWord(w:Word){
+		public function DisplayWord(w:Word,s:int){
 			textFormat = new TextFormat("Verdana");
 			textFormat.bold = true;
 			
+			step = s;
 			word = w;
 			
 			labelField = new TextField();
@@ -54,16 +57,16 @@ package com.fieldscanner.y2009.graphics{
 			graphics.clear();
 			
 			with(graphics){
-				graphics.beginFill(word.color,0.6);
-				graphics.lineStyle(2,brightenColor(word.color,80),1);
-				graphics.drawCircle(0,0,word.diameter*2/3);
+				graphics.beginFill(word.color[step],0.6);
+				graphics.lineStyle(2,brightenColor(word.color[step],80),1);
+				graphics.drawCircle(0,0,word.diameter[step]*2/3);
 			}
 			
 			with(labelField){
 				autoSize = TextFieldAutoSize.LEFT;
-				textColor = brightenColor(word.color,30);
+				textColor = brightenColor(word.color[step],30);
 				
-				x = word.diameter;
+				x = word.diameter[step];
 				y = -height/2;
 			}
 			

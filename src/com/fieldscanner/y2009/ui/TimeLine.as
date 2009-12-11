@@ -120,6 +120,7 @@ package com.fieldscanner.y2009.ui{
 		public function drawIndexes():void{
 			var i:int;
 			var j:int;
+			var k:int;
 			var completeInterval:int = endYear-beginYear;
 			var maxValue:Number = 0;
 			var labelField:TextField;
@@ -130,6 +131,7 @@ package com.fieldscanner.y2009.ui{
 			var values:Array;
 			var tempColor:uint;
 			var indexName:String;
+			var tempMiddle:Number;
 			
 			indexesCurves.graphics.clear();
 			
@@ -152,7 +154,6 @@ package com.fieldscanner.y2009.ui{
 				
 				j = 0;
 				
-				trace(frame);
 				if(frame!=0){
 					while(xTo<timeCursor.x-0.001){
 						xTo += diagramSize/completeInterval;
@@ -163,11 +164,26 @@ package com.fieldscanner.y2009.ui{
 					}
 				}
 				
-				xTo += interval*diagramSize/(endYear-beginYear);
-				if(j==0) yTo = -values[0]*80/maxValue;
+				tempMiddle = 0;
+				for(k=0;k<interval+1;k++){
+					tempMiddle += values[j+k-1];
+				}
+				tempMiddle = tempMiddle/(interval+1);
+				
+				yTo = -tempMiddle*80/maxValue;
+				
 				indexesCurves.graphics.lineStyle(3,tempColor);
+				indexesCurves.graphics.moveTo(xTo,yTo);
+				
+				xTo += interval*diagramSize/(endYear-beginYear);
+				
 				indexesCurves.graphics.lineTo(xTo,yTo);
 				indexesCurves.graphics.lineStyle(2,tempColor);
+				
+				j += interval-1;
+				yTo = -values[j]*80/maxValue;
+				indexesCurves.graphics.moveTo(xTo,yTo);
+				j++;
 				
 				while(j<values.length){
 					xTo += diagramSize/completeInterval;
@@ -272,6 +288,7 @@ package com.fieldscanner.y2009.ui{
 		}
 		
 		private function startXDrag(e:MouseEvent):void{
+			up.stopPlaying();
 			addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			localMouseX = this.mouseX - timeCursor.x;
 		}

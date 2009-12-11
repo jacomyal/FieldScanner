@@ -73,7 +73,7 @@ package com.fieldscanner.y2009.ui {
 			timeSlider = new Slider();
 			with(timeSlider){
 				minimum = 0;
-				maximum = fn;
+				maximum = fn-1;
 				value = up.DIAGRAM.FRAME;
 				setSize(140,0);
 				liveDragging = true;
@@ -150,6 +150,18 @@ package com.fieldscanner.y2009.ui {
 				addEventListener(MouseEvent.CLICK,stopButtonHandler);
 			}
 			addChild(stopButton);
+		}
+		
+		public function pause():void{
+			if(isPlaying==true){
+				isStopped = false;
+				isPlaying = false;
+				isPaused = true;
+				
+				initButtons();
+				playButton.label = "Play";
+				playButton.setStyle("textFormat",up.TITLE_FORMAT);
+			}
 		}
 		
 		private function playButtonHandler(e:MouseEvent):void{

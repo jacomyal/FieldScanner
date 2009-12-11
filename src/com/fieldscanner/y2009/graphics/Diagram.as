@@ -68,7 +68,7 @@ package com.fieldscanner.y2009.graphics {
 			indexOfImage = 0;
 			
 			indexParams = [0xFFE241,0xBF1111,10,30];
-			indexes = ["occurences"];
+			indexes = ["Occurences"];
 			colorIndex = 0;
 			sizeIndex = 0;
 			
@@ -435,7 +435,7 @@ package com.fieldscanner.y2009.graphics {
 			for (i=0;i<wordsData.WORDS_VECTOR.length;i++){
 				if(wordsData.WORDS_VECTOR[i].occurences[step]==0) continue;
 				
-				w = new DisplayWord(wordsData.WORDS_VECTOR[i]);
+				w = new DisplayWord(wordsData.WORDS_VECTOR[i],step);
 				with(w){
 					plot();
 					x = diagramSize*(wordsData.WORDS_VECTOR[i].inProxValues[step]-im)/(iM-im);
@@ -507,7 +507,7 @@ package com.fieldscanner.y2009.graphics {
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
 				for(i=0;i<l;i++){
-					wordsData.WORDS_VECTOR[i].setDiameter(minSize+(indexMatrix[step][i]-minValue)*(maxSize-minSize)/(maxValue-minValue));
+					wordsData.WORDS_VECTOR[i].setDiameter(minSize+(indexMatrix[step][i]-minValue)*(maxSize-minSize)/(maxValue-minValue),step);
 				}
 			}
 		}
@@ -534,7 +534,7 @@ package com.fieldscanner.y2009.graphics {
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
 				for(i=0;i<l;i++){
-					wordsData.WORDS_VECTOR[i].setColor(fadeHex(minColor,maxColor,(indexMatrix[step][i]-minValue)/(maxValue-minValue)));
+					wordsData.WORDS_VECTOR[i].setColor(fadeHex(minColor,maxColor,(indexMatrix[step][i]-minValue)/(maxValue-minValue)),step);
 				}
 			}
 		}
@@ -543,25 +543,14 @@ package com.fieldscanner.y2009.graphics {
 			var i:int=0;
 			var step:int=0;
 			var l:int = wordsData.WORDS_VECTOR.length;
-			var indexMatrix:Array;
+			var averageArray:Array;
 			var tempMiddle:Number;
-			var resultArray:Array = new Array();
 			
 			if(sizeIndex==0){
-				indexMatrix = occurencesLocalIndex()[2];
+				averageArray = occurencesClusterIndex();
 			}
 			
-			for(step=0;step<(endYear-beginYear-interval+1);step++){
-				tempMiddle = 0;
-				
-				for(i=0;i<l;i++){
-					tempMiddle += indexMatrix[step][i];
-				}
-				
-				resultArray.push(tempMiddle/l);
-			}
-			
-			optionsInterface.TIME_LINE.addClusterIndex(sizeIndex,resultArray,INDEXES[sizeIndex]+" (average value)",0xca5b46);
+			optionsInterface.TIME_LINE.addClusterIndex(sizeIndex,averageArray,INDEXES[sizeIndex]+" (average value)","0xca5b46");
 			optionsInterface.TIME_LINE.drawIndexes();
 		}
 		
@@ -569,51 +558,66 @@ package com.fieldscanner.y2009.graphics {
 			var i:int=0;
 			var step:int=0;
 			var l:int = wordsData.WORDS_VECTOR.length;
-			var indexMatrix:Array;
+			var averageArray:Array;
 			var tempMiddle:Number;
-			var resultArray:Array = new Array();
 			
-			if(colorIndex!=sizeIndex){
-				if(colorIndex==0){
-					indexMatrix = occurencesLocalIndex()[2];
-				}
-				
-				for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
-					tempMiddle = 0;
-					
-					for(i=0;i<l;i++){
-						tempMiddle += indexMatrix[step][i];
-					}
-					
-					resultArray.push(tempMiddle/l);
-				}
-				
-				optionsInterface.TIME_LINE.addClusterIndex(colorIndex,resultArray,INDEXES[colorIndex]+" (average value)",0xca5b46);
-				optionsInterface.TIME_LINE.drawIndexes();
+			if(colorIndex==0){
+				averageArray = occurencesClusterIndex();
 			}
+			
+			optionsInterface.TIME_LINE.addClusterIndex(colorIndex,averageArray,INDEXES[colorIndex]+" (average value)","0xca5b46");
+			optionsInterface.TIME_LINE.drawIndexes();
 		}
 		
 		private function occurencesLocalIndex():Array{
 			var i:int=0;
 			var step:int=0;
+			var tempValue:Number;
 			var minValue:Number;
 			var maxValue:Number;
 			var indexMatrix:Array = new Array();
 			
-			minValue = wordsData.WORDS_VECTOR[i].occurences[step];
-			maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
+			minValue = wordsData.WORDS_VECTOR[0].occurences[0];
+			maxValue = wordsData.WORDS_VECTOR[0].occurences[0];
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
 				indexMatrix[step] = new Array();
 				for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
-					indexMatrix[step][i]=wordsData.WORDS_VECTOR[i].occurences[step];
+					tempValue = wordsData.WORDS_VECTOR[i].occurences[step]
 					
-					if(indexMatrix[step][i]<minValue) minValue=indexMatrix[step][i];
-					if(indexMatrix[step][i]>maxValue) maxValue=indexMatrix[step][i];
+					
+					if(tempValue<minValue) minValue=tempValue;
+					if(tempValue>maxValue) maxValue=tempValue;
+					
+					indexMatrix[step][i]=tempValue;
 				}
 			}
 			
 			return [minValue,maxValue,indexMatrix];
+		}
+		
+		private function occurencesClusterIndex():Array{
+			var i:int=0;
+			var step:int=0;
+			var minValue:Number;
+			var maxValue:Number;
+			var tempAverage:Number;
+			var averageArray:Array = new Array();
+			var l:int=wordsData.WORDS_VECTOR.length;
+			
+			minValue = wordsData.WORDS_VECTOR[i].occurences[step];
+			maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
+			
+			for(step=0;step<endYear-beginYear;step++){
+				tempAverage = 0;
+				
+				for(i=0;i<l;i++){
+					tempAverage += wordsData.getWordOcc(i,i,step);
+				}
+				averageArray[step] = tempAverage/l;
+			}
+			
+			return averageArray;
 		}
 		
 		private function fadeHex(hex:uint, hex2:uint, ratio:Number):uint{
