@@ -164,6 +164,7 @@ package com.fieldscanner.y2009.ui{
 				}
 				
 				xTo += interval*diagramSize/(endYear-beginYear);
+				if(j==0) yTo = -values[0]*80/maxValue;
 				indexesCurves.graphics.lineStyle(3,tempColor);
 				indexesCurves.graphics.lineTo(xTo,yTo);
 				indexesCurves.graphics.lineStyle(2,tempColor);

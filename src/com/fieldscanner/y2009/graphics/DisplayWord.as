@@ -42,6 +42,7 @@ package com.fieldscanner.y2009.graphics{
 			
 			labelField = new TextField();
 			labelField.text = w.label;
+			labelField.selectable = false;
 			labelField.setTextFormat(textFormat);
 		}
 		
