@@ -27,8 +27,9 @@ package com.fieldscanner.y2009.graphics {
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	import com.fieldscanner.y2009.ui.MainWindow;
 	import com.fieldscanner.y2009.ui.OptionsInterface;
-	
+	import flash.ui.Keyboard;
 	import flash.display.Sprite;
+	import flash.events.KeyboardEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -74,6 +75,8 @@ package com.fieldscanner.y2009.graphics {
 			
 			x = (diagramSize-60);
 			y = (diagramSize+60);
+			
+			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyboardStageHandler);
 		}
 		
 		public function get up():MainWindow{
@@ -470,6 +473,7 @@ package com.fieldscanner.y2009.graphics {
 					plot();
 					x = diagramSize*(wordsData.WORDS_VECTOR[i].inProxValues[step]-im)/(iM-im);
 					y = -1*diagramSize*(wordsData.WORDS_VECTOR[i].outProxValues[step]-om)/(oM-om);
+					setToolTip(this,step);
 				}
 				
 				s.addChild(w);
@@ -648,6 +652,33 @@ package com.fieldscanner.y2009.graphics {
 			}
 			
 			return averageArray;
+		}
+		
+		private function keyboardStageHandler(evt:KeyboardEvent):void{
+			switch(evt.keyCode)
+			{
+				case Keyboard.LEFT:
+					this.goFrame(indexOfImage-1);
+					optionsInterface.setTimeSliderFrame(this.indexOfImage);
+					break;
+				case Keyboard.RIGHT:
+					this.goNextFrame();
+					optionsInterface.setTimeSliderFrame(this.indexOfImage);
+					break;
+				case Keyboard.DOWN:
+					this.goFirstFrame();
+					optionsInterface.setTimeSliderFrame(this.indexOfImage);
+					break;
+				case Keyboard.UP:
+					this.goFrame((endYear-beginYear)-(interval));
+					optionsInterface.setTimeSliderFrame(this.indexOfImage);
+					break;
+				case Keyboard.SPACE:
+					optionsInterface.play();
+					break;
+				default:
+					break;
+			}
 		}
 		
 		private function fadeHex(hex:uint, hex2:uint, ratio:Number):uint{

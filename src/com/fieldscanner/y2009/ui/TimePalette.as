@@ -168,7 +168,17 @@ package com.fieldscanner.y2009.ui {
 			}
 		}
 		
-		private function playButtonHandler(e:MouseEvent):void{
+		public function goFirstFrame():void{
+			timeSlider.value = 0;
+			up.DIAGRAM.goFirstFrame();
+		}
+		
+		public function goNextFrame():Boolean{
+			timeSlider.value ++;
+			return up.DIAGRAM.goNextFrame();
+		}
+		
+		public function playButtonHandler(e:MouseEvent):void{
 			if(isPlaying==false){
 				isStopped = false;
 				isPlaying = true;
@@ -219,16 +229,6 @@ package com.fieldscanner.y2009.ui {
 		
 		private function speedSliderHandler(e:SliderEvent):void{
 			stage.frameRate = e.value;
-		}
-		
-		private function goFirstFrame():void{
-			timeSlider.value = 0;
-			up.DIAGRAM.goFirstFrame();
-		}
-		
-		private function goNextFrame():Boolean{
-			timeSlider.value ++;
-			return up.DIAGRAM.goNextFrame();
 		}
 		
 	}
