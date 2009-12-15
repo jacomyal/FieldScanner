@@ -86,16 +86,16 @@ package com.fieldscanner.y2009.graphics{
 			tf.text = "Expression:\n\t"+word.label;
 			tf.appendText("\nYear:\n\t"+(diagram.START+step)+" to "+(diagram.START+step+diagram.INTERVAL));
 			tf.appendText("\nOccurences:\n\t"+word.occurences[step]);
-			tf.x = 25;
-			tf.y = 25;
 			tf.selectable = false;
 			tf.setTextFormat(tff);
 			tf.autoSize = TextFieldAutoSize.LEFT;
+			tf.x = 25;
+			tf.y = -(25+tf.height);
 			
 			toolTip = new Sprite();
 			toolTip.graphics.lineStyle(0.4,word.color[step],1);
 			toolTip.graphics.beginFill(0xE0E0E0,1);
-			toolTip.graphics.drawRect(20,20,tf.width+10,tf.height+10);
+			toolTip.graphics.drawRect(20,-(20+tf.height+10),tf.width+10,tf.height+10);
 			
 			toolTip.addChild(tf);
 		}

@@ -66,7 +66,7 @@ package com.fieldscanner.y2009.ui{
 			beginYear = diagram.START;
 			endYear = diagram.END;
 			
-			x = diagramSize-70;
+			x = diagramSize-60;
 			y = (diagramSize+60)+140;
 			
 			indexesVector = new Vector.<Index>();
@@ -123,7 +123,7 @@ package com.fieldscanner.y2009.ui{
 			var j:int;
 			var k:int;
 			var completeInterval:int = endYear-beginYear;
-			var maxValue:Number = 0;
+			var maxValue:Number;
 			var labelField:TextField;
 			var textFormat:TextFormat;
 			var xTo:Number;
@@ -144,7 +144,9 @@ package com.fieldscanner.y2009.ui{
 				values = tempIndex.VALUES;
 				tempColor = tempIndex.COLOR;
 				indexName = tempIndex.NAME;
+				maxValue = 0;
 				xTo = 0;
+				yTo = 0;
 				
 				for(j=0;j<values.length;j++){
 					if(values[j]>maxValue) maxValue=values[j];
@@ -163,28 +165,38 @@ package com.fieldscanner.y2009.ui{
 						
 						j++;
 					}
+					
+					tempMiddle = 0;
+					for(k=0;k<interval+1;k++){
+						tempMiddle += values[j+k-1];
+					}
+				}else{
+					tempMiddle = 0;
+					
+					for(k=0;k<interval;k++){
+						tempMiddle += values[k];
+					}
 				}
 				
-				tempMiddle = 0;
-				for(k=0;k<interval+1;k++){
-					tempMiddle += values[j+k-1];
-				}
 				tempMiddle = tempMiddle/(interval+1);
 				
-				yTo = -tempMiddle*80/maxValue;
-				
 				indexesCurves.graphics.lineStyle(3,tempColor);
+				indexesCurves.graphics.moveTo(timeCursor.x,-tempMiddle*80/maxValue);
+				indexesCurves.graphics.lineTo(timeCursor.x+interval*diagramSize/(endYear-beginYear),-tempMiddle*80/maxValue);
+				
+				indexesCurves.graphics.lineStyle(0.5,tempColor);
 				indexesCurves.graphics.moveTo(xTo,yTo);
 				
-				xTo += interval*diagramSize/(endYear-beginYear);
+				while(xTo<timeCursor.x+interval*diagramSize/(endYear-beginYear)-0.001){
+					xTo += diagramSize/completeInterval;
+					yTo = -values[j]*80/maxValue;
+					indexesCurves.graphics.lineTo(xTo,yTo);
+					
+					j++;
+				}
 				
-				indexesCurves.graphics.lineTo(xTo,yTo);
 				indexesCurves.graphics.lineStyle(2,tempColor);
 				
-				j += interval-1;
-				yTo = -values[j]*80/maxValue;
-				indexesCurves.graphics.moveTo(xTo,yTo);
-				j++;
 				
 				while(j<values.length){
 					xTo += diagramSize/completeInterval;
@@ -245,9 +257,20 @@ package com.fieldscanner.y2009.ui{
 			
 			with(mapKey.graphics){
 				lineStyle(1,0x000000);
-				moveTo(0,-100);
-				lineTo(0,0);
+				moveTo(0,0);
+				lineTo(0,-100);
+				moveTo(0,0);
 				lineTo((diagramSize+20),0);
+				
+				lineStyle(2,0x000000);
+				moveTo(-5,-92);
+				lineTo(0,-100);
+				lineTo(5,-92);
+				moveTo(diagramSize+12,-5);
+				lineTo(diagramSize+20,0);
+				lineTo(diagramSize+12,5);
+				
+				lineStyle(1,0x000000);
 			}
 			
 			for(i=0;i<=completeInterval;i++){

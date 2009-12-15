@@ -27,12 +27,13 @@ package com.fieldscanner.y2009.graphics {
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	import com.fieldscanner.y2009.ui.MainWindow;
 	import com.fieldscanner.y2009.ui.OptionsInterface;
-	import flash.ui.Keyboard;
+	
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
+	import flash.ui.Keyboard;
 	
 	public class Diagram extends Sprite{
 		
@@ -65,16 +66,36 @@ package com.fieldscanner.y2009.graphics {
 			endYear = newEnd;
 			diagramSize = 400;
 			
+			var tf1:TextField;
+			tf1 = new TextField();
+			tf1.text = "In";
+			tf1.x = 800-diagramSize-70;
+			tf1.y = 10;
+			tf1.selectable = false;
+			tf1.setTextFormat(new TextFormat("Arial",20,0xA0A0A0,true,true));
+			tf1.autoSize = TextFieldAutoSize.LEFT;
+			this.stage.addChild(tf1);
+			
+			var tf2:TextField;
+			tf2 = new TextField();
+			tf2.text = "Out";
+			tf2.x = 765;
+			tf2.y = diagramSize+43;
+			tf2.selectable = false;
+			tf2.setTextFormat(new TextFormat("Arial",20,0xA0A0A0,true,true));
+			tf2.autoSize = TextFieldAutoSize.LEFT;
+			this.stage.addChild(tf2);
+			
 			displayMode = 0;
 			indexOfImage = 0;
 			
 			indexParams = [0xFFCC66,0xBF1111,10,30];
-			indexes = ["Occurences"];
+			indexes = ["Occurences","In proximity","Out proximity"];
 			colorIndex = 0;
 			sizeIndex = 0;
 			
-			x = (diagramSize-60);
-			y = (diagramSize+60);
+			x = 800-diagramSize-60;
+			y = diagramSize+60;
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyboardStageHandler);
 		}
@@ -185,7 +206,7 @@ package com.fieldscanner.y2009.graphics {
 		public function goFrame(i:Number):Boolean{
 			var res:Boolean = false;
 			
-			if(i<graphsVector.length){
+			if(i<graphsVector.length&&i>=0){
 				removeChild(graphsVector[indexOfImage]);
 				indexOfImage = i;
 				addChild(graphsVector[indexOfImage]);
@@ -402,6 +423,16 @@ package com.fieldscanner.y2009.graphics {
 				moveTo(0,-(diagramSize+20));
 				lineTo(0,0);
 				lineTo((diagramSize+20),0);
+				
+				lineStyle(2,0x000000);
+				moveTo(-7,-(diagramSize+10));
+				lineTo(0,-(diagramSize+20));
+				lineTo(7,-(diagramSize+10));
+				moveTo((diagramSize+10),7);
+				lineTo((diagramSize+20),0);
+				lineTo((diagramSize+10),-7);
+				
+				lineStyle(1,0x000000);
 			}
 			
 			pos = round((Math.floor((im*10)+1))/10,1);
@@ -527,17 +558,22 @@ package com.fieldscanner.y2009.graphics {
 			var indexMatrix:Array;
 			var minValue:Number;
 			var maxValue:Number;
+			var a:Array;
 			
 			var minSize:Number = indexParams[2];
 			var maxSize:Number = indexParams[3];
 			
 			if(sizeIndex==0){
-				var a:Array = occurencesLocalIndex();
-				
-				minValue = a[0];
-				maxValue = a[1];
-				indexMatrix = a[2];
+				a = occurencesLocalIndex();
+			}else if(sizeIndex==1){
+				a = inProxLocalIndex();
+			}else if(sizeIndex==2){
+				a = outProxLocalIndex();
 			}
+			
+			minValue = a[0];
+			maxValue = a[1];
+			indexMatrix = a[2];
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
 				for(i=0;i<l;i++){
@@ -554,17 +590,22 @@ package com.fieldscanner.y2009.graphics {
 			var sizeArray:Array = new Array();
 			var minValue:Number;
 			var maxValue:Number;
+			var a:Array;
 			
 			var minColor:uint = indexParams[0];
 			var maxColor:uint = indexParams[1];
 			
 			if(colorIndex==0){
-				var a:Array = occurencesLocalIndex();
-				
-				minValue = a[0];
-				maxValue = a[1];
-				indexMatrix = a[2];
+				a = occurencesLocalIndex();
+			}else if(colorIndex==1){
+				a = inProxLocalIndex();
+			}else if(colorIndex==2){
+				a = outProxLocalIndex();
 			}
+			
+			minValue = a[0];
+			maxValue = a[1];
+			indexMatrix = a[2];
 			
 			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
 				for(i=0;i<l;i++){
@@ -582,6 +623,10 @@ package com.fieldscanner.y2009.graphics {
 			
 			if(sizeIndex==0){
 				averageArray = occurencesClusterIndex();
+			}else if(sizeIndex==1){
+				averageArray = inProxClusterIndex();
+			}else if(sizeIndex==2){
+				averageArray = outProxClusterIndex();
 			}
 			
 			optionsInterface.TIME_LINE.addClusterIndex(sizeIndex,averageArray,INDEXES[sizeIndex]+" (average value)","0xca5b46");
@@ -597,9 +642,13 @@ package com.fieldscanner.y2009.graphics {
 			
 			if(colorIndex==0){
 				averageArray = occurencesClusterIndex();
+			}else if(colorIndex==1){
+				averageArray = inProxClusterIndex();
+			}else if(colorIndex==2){
+				averageArray = outProxClusterIndex();
 			}
 			
-			optionsInterface.TIME_LINE.addClusterIndex(colorIndex,averageArray,INDEXES[colorIndex]+" (average value)","0xca5b46");
+			optionsInterface.TIME_LINE.addClusterIndex(colorIndex,averageArray,INDEXES[colorIndex]+" (average value)","0x5bc228");
 			optionsInterface.TIME_LINE.drawIndexes();
 		}
 		
@@ -618,6 +667,58 @@ package com.fieldscanner.y2009.graphics {
 				indexMatrix[step] = new Array();
 				for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
 					tempValue = wordsData.WORDS_VECTOR[i].occurences[step]
+					
+					if(tempValue<minValue) minValue=tempValue;
+					if(tempValue>maxValue) maxValue=tempValue;
+					
+					indexMatrix[step][i]=tempValue;
+				}
+			}
+			
+			return [minValue,maxValue,indexMatrix];
+		}
+		
+		private function inProxLocalIndex():Array{
+			var i:int=0;
+			var step:int=0;
+			var tempValue:Number;
+			var minValue:Number;
+			var maxValue:Number;
+			var indexMatrix:Array = new Array();
+			
+			minValue = wordsData.WORDS_VECTOR[0].inProxValues[0];
+			maxValue = wordsData.WORDS_VECTOR[0].inProxValues[0];
+			
+			for(step=0;step<wordsData.WORDS_VECTOR[0].inProxValues.length;step++){
+				indexMatrix[step] = new Array();
+				for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
+					tempValue = wordsData.WORDS_VECTOR[i].inProxValues[step]
+					
+					if(tempValue<minValue) minValue=tempValue;
+					if(tempValue>maxValue) maxValue=tempValue;
+					
+					indexMatrix[step][i]=tempValue;
+				}
+			}
+			
+			return [minValue,maxValue,indexMatrix];
+		}
+		
+		private function outProxLocalIndex():Array{
+			var i:int=0;
+			var step:int=0;
+			var tempValue:Number;
+			var minValue:Number;
+			var maxValue:Number;
+			var indexMatrix:Array = new Array();
+			
+			minValue = wordsData.WORDS_VECTOR[0].outProxValues[0];
+			maxValue = wordsData.WORDS_VECTOR[0].outProxValues[0];
+			
+			for(step=0;step<wordsData.WORDS_VECTOR[0].outProxValues.length;step++){
+				indexMatrix[step] = new Array();
+				for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
+					tempValue = wordsData.WORDS_VECTOR[i].outProxValues[step]
 					
 					
 					if(tempValue<minValue) minValue=tempValue;
@@ -648,6 +749,56 @@ package com.fieldscanner.y2009.graphics {
 				for(i=0;i<l;i++){
 					tempAverage += wordsData.getWordOcc(i,i,step);
 				}
+				averageArray[step] = tempAverage/l;
+			}
+			
+			return averageArray;
+		}
+		
+		private function inProxClusterIndex():Array{
+			var i:int=0;
+			var step:int=0;
+			var minValue:Number;
+			var maxValue:Number;
+			var tempAverage:Number;
+			var averageArray:Array = new Array();
+			var l:int=wordsData.WORDS_VECTOR.length;
+			
+			minValue = wordsData.WORDS_VECTOR[i].inProxValues[step];
+			maxValue = wordsData.WORDS_VECTOR[i].inProxValues[step];
+			
+			for(step=0;step<endYear-beginYear;step++){
+				tempAverage = 0;
+				
+				for(i=0;i<l;i++){
+					tempAverage += wordsData.getIn(i,step);
+				}
+				trace("in: "+(tempAverage/l));
+				averageArray[step] = tempAverage/l;
+			}
+			
+			return averageArray;
+		}
+		
+		private function outProxClusterIndex():Array{
+			var i:int=0;
+			var step:int=0;
+			var minValue:Number;
+			var maxValue:Number;
+			var tempAverage:Number;
+			var averageArray:Array = new Array();
+			var l:int=wordsData.WORDS_VECTOR.length;
+			
+			minValue = wordsData.WORDS_VECTOR[i].outProxValues[step];
+			maxValue = wordsData.WORDS_VECTOR[i].outProxValues[step];
+			
+			for(step=0;step<endYear-beginYear;step++){
+				tempAverage = 0;
+				
+				for(i=0;i<l;i++){
+					tempAverage += wordsData.getOut(i,step);
+				}
+				trace("out: "+(tempAverage/l));
 				averageArray[step] = tempAverage/l;
 			}
 			
