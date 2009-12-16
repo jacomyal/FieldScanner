@@ -1,146 +1,81 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- saved from url=(0014)about:internet -->
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">	
-    <!-- 
-    Smart developers always View Source. 
-    
-    This application was built using Adobe Flex, an open source framework
-    for building rich Internet applications that get delivered via the
-    Flash Player or to desktops via Adobe AIR. 
-    
-    Learn more about Flex at http://flex.org 
-    // -->
-    <head>
-        <title>FieldScanner test page</title>         
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<!-- Include CSS to eliminate any default margins/padding and set the height of the html element and 
-		     the body element to 100%, because Firefox, or any Gecko based browser, interprets percentage as 
-			 the percentage of the height of its parent container, which has to be set explicitly.  Initially, 
-			 don't display flashContent div so it won't show if JavaScript disabled.
-		-->
-        <style type="text/css" media="screen"> 
-			html, body	{ height:100%; }
-			body { margin:0; padding:0; overflow:auto; text-align:center; 
-			       background-color: #ffffff; }   
-			#flashContent { display:none; }
-        </style>
-		
-		<!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
-        <!-- BEGIN Browser History required section -->
-        <link rel="stylesheet" type="text/css" href="history/history.css" />
-        <script type="text/javascript" src="history/history.js"></script>
-        <!-- END Browser History required section -->  
-		    
-        <script type="text/javascript" src="swfobject.js"></script>
-        <script type="text/javascript">
-            <!-- For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. --> 
-            var swfVersionStr = "10.0.0";
-            <!-- To use express install, set to playerProductInstall.swf, otherwise the empty string. -->
-            var xiSwfUrlStr = "playerProductInstall.swf";
-            var flashvars = {path: "field_data.txt"};
-            var params = {};
-            params.quality = "high";
-            params.bgcolor = "#ffffff";
-            params.allowscriptaccess = "sameDomain";
-            params.allowfullscreen = "true";
-            var attributes = {};
-            attributes.id = "FieldScanner";
-            attributes.name = "FieldScanner";
-            attributes.align = "middle";
-            swfobject.embedSWF(
-                "FieldScanner.swf", "flashContent", 
-                "100%", "100%", 
-                swfVersionStr, xiSwfUrlStr, 
-                flashvars, params, attributes);
-			<!-- JavaScript enabled so display the flashContent div in case it is not replaced with a swf object. -->
-			swfobject.createCSS("#flashContent", "display:block;text-align:left;");
-        </script>
-    </head>
-    <body>
-        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
-			 JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
-			 when JavaScript is disabled.
-		-->
-        <div id="flashContent">
-        	<p>
-	        	To view this page ensure that Adobe Flash Player version 
-				10.0.0 or greater is installed. 
-			</p>
-			<script type="text/javascript"> 
-				var pageHost = ((document.location.protocol == "https:") ? "https://" :	"http://"); 
-				document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
-								+ pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
-			</script> 
-        </div>
-	   	
-       	<noscript>
-            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="FieldScanner">
-				<script type="text/javascript">
-					<!-- Start
-					
-					/* Copyright (c) 2006-2009 Paranoid Ferret Productions.  All rights reserved.
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+	<head>
+		<title>FieldScanner demo</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	</head>
+	<body style="background-color:grey">
+		<object width="900" height="650" id="FieldScanner">
+			<script type="text/javascript">
+				<!-- Start
+				
+				/* Copyright (c) 2006-2009 Paranoid Ferret Productions.  All rights reserved.
 
-					 * Developed by: Paranoid Ferret Productions
-					 * 			http://www.paranoidferret.com
-					 */
-					 
-					function stopScroll(element, eventName, handler)
-						{
-						if(typeof(element) == "string")
-							element = document.getElementById(element);
-						if(element == null)
-							return;
-						if(element.addEventListener)
-						{
-							if(eventName == 'mousewheel')
-							element.addEventListener('DOMMouseScroll', handler, false);  
-							element.addEventListener(eventName, handler, false);
-						}
-						else if(element.attachEvent)
-							element.attachEvent("on" + eventName, handler);
-					}
-
-					function cancelEvent(e)
+				 * Developed by: Paranoid Ferret Productions
+				 * 			http://www.paranoidferret.com
+				 * 
+				 * Permission is hereby granted, free of charge, to any person obtaining a copy
+				 * of this software and associated documentation files (the "Software"), to
+				 * deal with the Software without restriction, including without limitation the
+				 * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+				 * sell copies of the Software, and to permit persons to whom the Software is
+				 * furnished to do so, subject to the following conditions:
+				 * 1. Redistributions of source code must retain the above copyright notice,
+				 *    this list of conditions and the following disclaimers.
+				 * 2. Redistributions in binary form must reproduce the above copyright
+				 *    notice, this list of conditions and the following disclaimers in the
+				 *    documentation and/or other materials provided with the distribution.
+				 * 3. Neither the name Paranoid Ferret Productions, nor the names of its 
+				 *    contributors may be used to endorse or promote products derived 
+				 *    from this Software without specific prior written permission.
+				 * 
+				 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+				 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+				 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+				 * CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+				 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+				 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+				 * WITH THE SOFTWARE.
+				 */
+				 
+				function stopScroll(element, eventName, handler)
 					{
-						e = e ? e : window.event;
-						if(e.stopPropagation)
-							e.stopPropagation();
-						if(e.preventDefault)
-							e.preventDefault();
-						e.cancelBubble = true;
-						e.cancel = true;
-						e.returnValue = false;
-						return false;
+					if(typeof(element) == "string")
+						element = document.getElementById(element);
+					if(element == null)
+						return;
+					if(element.addEventListener)
+					{
+						if(eventName == 'mousewheel')
+						element.addEventListener('DOMMouseScroll', handler, false);  
+						element.addEventListener(eventName, handler, false);
 					}
+					else if(element.attachEvent)
+						element.attachEvent("on" + eventName, handler);
+				}
 
-					stopScroll('FieldScanner', 'mousewheel', cancelEvent);
-					// end -->
-				</script>
-                <param name="movie" value="FieldScanner.swf" />
-                <param name="quality" value="high" />
-                <param name="bgcolor" value="#ffffff" />
-                <param name="allowScriptAccess" value="sameDomain" />
-                <param name="allowFullScreen" value="true" />
-                <!--[if !IE]>-->
-                <object type="application/x-shockwave-flash" data="FieldScanner.swf" width="100%" height="100%">
-                    <param name="quality" value="high" />
-                    <param name="bgcolor" value="#ffffff" />
-                    <param name="allowScriptAccess" value="sameDomain" />
-                    <param name="allowFullScreen" value="true" />
-                <!--<![endif]-->
-                <!--[if gte IE 6]>-->
-                	<p> 
-                		Either scripts and active content are not permitted to run or Adobe Flash Player version
-                		10.0.0 or greater is not installed.
-                	</p>
-                <!--<![endif]-->
-                    <a href="http://www.adobe.com/go/getflashplayer">
-                        <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
-                    </a>
-                <!--[if !IE]>-->
-                </object>
-                <!--<![endif]-->
-            </object>
-	    </noscript>		
-   </body>
+				function cancelEvent(e)
+				{
+					e = e ? e : window.event;
+					if(e.stopPropagation)
+						e.stopPropagation();
+					if(e.preventDefault)
+						e.preventDefault();
+					e.cancelBubble = true;
+					e.cancel = true;
+					e.returnValue = false;
+					return false;
+				}
+
+				stopScroll('FieldScanner', 'mousewheel', cancelEvent);
+				// end -->
+			</script>
+			<param name="movie" value="FieldScanner.swf?path=./field_data.txt" />
+			<param name="allowFullScreen" value="true" />
+			<param name="allowScriptAccess" value="always" />
+			<param name="bgcolor" value="#FFFFFF" />
+			<embed src="FieldScanner.swf?path=./field_data.txt" allowFullScreen="true" allowScriptAccess="always" bgcolor="#FFFFFF" width="900" height="650">
+			</embed>
+		</object>
+	</body>
 </html>

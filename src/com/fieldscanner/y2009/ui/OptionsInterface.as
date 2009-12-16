@@ -92,34 +92,45 @@ package com.fieldscanner.y2009.ui {
 		}
 		
 		public function setPalettes():void{
+			this.graphics.clear();
+			this.graphics.lineStyle(1,0x777777);
 			
 			timePalette = new TimePalette(this);
 			with(timePalette){
 				x = 0;
-				y = 470;
+				y = 510;
 				setButtons();
 				setSpeedSlider();
 				setTimeSlider();
 			}
 			
+			this.graphics.moveTo(20,510);
+			this.graphics.lineTo(150,510);
+			
 			calculsPalette = new CalculsPalette(this);
 			with(calculsPalette){
 				x = 0;
-				y = 370;
+				y = 420;
 				setInterface();
 			}
+			
+			this.graphics.moveTo(20,420);
+			this.graphics.lineTo(150,420);
 			
 			displayPalette = new DisplayPalette(this);
 			with(displayPalette){
 				x = 0;
-				y = 260;
+				y = 320;
 				setInterface();
 			}
+			
+			this.graphics.moveTo(20,320);
+			this.graphics.lineTo(150,320);
 			
 			indexPalette = new IndexPalette(this);
 			with(indexPalette){
 				x = 0;
-				y = 0;
+				y = 120;
 				setInterface();
 			}
 			

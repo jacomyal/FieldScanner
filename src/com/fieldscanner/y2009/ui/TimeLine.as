@@ -66,7 +66,7 @@ package com.fieldscanner.y2009.ui{
 			beginYear = diagram.START;
 			endYear = diagram.END;
 			
-			x = diagramSize-60;
+			x = 690-diagramSize;
 			y = (diagramSize+60)+140;
 			
 			indexesVector = new Vector.<Index>();

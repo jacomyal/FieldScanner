@@ -69,7 +69,7 @@ package com.fieldscanner.y2009.graphics {
 			var tf1:TextField;
 			tf1 = new TextField();
 			tf1.text = "In";
-			tf1.x = 800-diagramSize-70;
+			tf1.x = 680-diagramSize;
 			tf1.y = 10;
 			tf1.selectable = false;
 			tf1.setTextFormat(new TextFormat("Arial",20,0xA0A0A0,true,true));
@@ -79,7 +79,7 @@ package com.fieldscanner.y2009.graphics {
 			var tf2:TextField;
 			tf2 = new TextField();
 			tf2.text = "Out";
-			tf2.x = 765;
+			tf2.x = 715;
 			tf2.y = diagramSize+43;
 			tf2.selectable = false;
 			tf2.setTextFormat(new TextFormat("Arial",20,0xA0A0A0,true,true));
@@ -94,7 +94,7 @@ package com.fieldscanner.y2009.graphics {
 			colorIndex = 0;
 			sizeIndex = 0;
 			
-			x = 800-diagramSize-60;
+			x = 690-diagramSize;
 			y = diagramSize+60;
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyboardStageHandler);
@@ -629,7 +629,7 @@ package com.fieldscanner.y2009.graphics {
 				averageArray = outProxClusterIndex();
 			}
 			
-			optionsInterface.TIME_LINE.addClusterIndex(sizeIndex,averageArray,INDEXES[sizeIndex]+" (average value)","0xca5b46");
+			optionsInterface.TIME_LINE.addClusterIndex(sizeIndex,averageArray,INDEXES[sizeIndex]+"\n(average value)","0xca5b46");
 			optionsInterface.TIME_LINE.drawIndexes();
 		}
 		
@@ -648,7 +648,7 @@ package com.fieldscanner.y2009.graphics {
 				averageArray = outProxClusterIndex();
 			}
 			
-			optionsInterface.TIME_LINE.addClusterIndex(colorIndex,averageArray,INDEXES[colorIndex]+" (average value)","0x5bc228");
+			optionsInterface.TIME_LINE.addClusterIndex(colorIndex,averageArray,INDEXES[colorIndex]+"\n(average value)","0x5bc228");
 			optionsInterface.TIME_LINE.drawIndexes();
 		}
 		
