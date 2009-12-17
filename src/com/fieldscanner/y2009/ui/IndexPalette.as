@@ -56,7 +56,7 @@ package com.fieldscanner.y2009.ui{
 			with(iTF){
 				x = 10;
 				y = 10;
-				text = "Index settings:";
+				text = "Local indexes settings:";
 				setTextFormat(up.TITLE_FORMAT);
 				selectable = false;
 				autoSize = TextFieldAutoSize.LEFT;
@@ -169,7 +169,7 @@ package com.fieldscanner.y2009.ui{
 				x = 100;
 				y = 115;
 			}
-			for(var i:int=0;i<up.DIAGRAM.INDEXES.length;i++) sizeIndexComboBox.addItem({label:up.DIAGRAM.INDEXES[i]});
+			for(var i:int=0;i<up.DIAGRAM.LOCAL_INDEXES.length;i++) sizeIndexComboBox.addItem({label:up.DIAGRAM.LOCAL_INDEXES[i]});
 			sizeIndexComboBox.selectedIndex = up.DIAGRAM.SIZE_INDEX;
 			addChild(sizeIndexComboBox);
 			
@@ -189,7 +189,7 @@ package com.fieldscanner.y2009.ui{
 				x = 100;
 				y = 140;
 			}
-			for(var j:int=0;j<up.DIAGRAM.INDEXES.length;j++) colorIndexComboBox.addItem({label:up.DIAGRAM.INDEXES[j]});
+			for(var j:int=0;j<up.DIAGRAM.LOCAL_INDEXES.length;j++) colorIndexComboBox.addItem({label:up.DIAGRAM.LOCAL_INDEXES[j]});
 			colorIndexComboBox.selectedIndex = up.DIAGRAM.COLOR_INDEX;
 			addChild(colorIndexComboBox);
 			

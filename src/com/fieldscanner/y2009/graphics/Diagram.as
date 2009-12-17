@@ -22,6 +22,7 @@
 
 package com.fieldscanner.y2009.graphics {
 	
+	import com.fieldscanner.y2009.calcul.IndexCalculator;
 	import com.fieldscanner.y2009.data.Data;
 	import com.fieldscanner.y2009.data.Word;
 	import com.fieldscanner.y2009.text.DiagramTextField;
@@ -37,7 +38,8 @@ package com.fieldscanner.y2009.graphics {
 	
 	public class Diagram extends Sprite{
 		
-		private var indexes:Array;
+		private var localIndexes:Array;
+		private var clusterIndexes:Array;
 		private var wordsData:Data;
 		
 		private var beginYear:Number;
@@ -56,7 +58,8 @@ package com.fieldscanner.y2009.graphics {
 		private var optionsInterface:OptionsInterface;
 		private var graphsVector:Vector.<Sprite>;
 		
-		public var mainWindow:MainWindow;
+		private var mainWindow:MainWindow;
+		private var indexCalculator:IndexCalculator;
 		
 		public function Diagram(m:MainWindow,newBegin:int,newEnd:int){
 			mainWindow = m;
@@ -90,9 +93,12 @@ package com.fieldscanner.y2009.graphics {
 			indexOfImage = 0;
 			
 			indexParams = [0xFFCC66,0xBF1111,10,30];
-			indexes = ["Occurences","In proximity","Out proximity"];
+			localIndexes = ["Occurences","In proximity","Out proximity"];
+			clusterIndexes = ["Occurences (average)","In/Out proximity (average)"];
 			colorIndex = 0;
 			sizeIndex = 0;
+			
+			indexCalculator = new IndexCalculator(mainWindow.GS_CALCULATOR);
 			
 			x = 690-diagramSize;
 			y = diagramSize+60;
@@ -148,8 +154,12 @@ package com.fieldscanner.y2009.graphics {
 			return endYear;
 		}
 		
-		public function get INDEXES():Array{
-			return indexes;
+		public function get LOCAL_INDEXES():Array{
+			return localIndexes;
+		}
+		
+		public function get CLUSTER_INDEXES():Array{
+			return clusterIndexes;
 		}
 		
 		public function get DIAGRAM_SIZE():Number{
@@ -305,6 +315,7 @@ package com.fieldscanner.y2009.graphics {
 			}
 			
 			trace("Diagram.setWordsVector:\n\tWords all set.");
+			indexCalculator.SET_WORDS_DATA(wordsData);
 			
 			scaleAndPlotDiagram();
 		}
@@ -404,8 +415,7 @@ package com.fieldscanner.y2009.graphics {
 			if(optionsInterface==null) optionsInterface = new OptionsInterface(this);
 			else optionsInterface.reset();
 			
-			setTimeLineForSize();
-			setTimeLineForColor();
+			setTimeLineIndexes();
 			
 			addChild(graphsVector[indexOfImage]);
 		}
@@ -563,13 +573,7 @@ package com.fieldscanner.y2009.graphics {
 			var minSize:Number = indexParams[2];
 			var maxSize:Number = indexParams[3];
 			
-			if(sizeIndex==0){
-				a = occurencesLocalIndex();
-			}else if(sizeIndex==1){
-				a = inProxLocalIndex();
-			}else if(sizeIndex==2){
-				a = outProxLocalIndex();
-			}
+			a = indexCalculator.getLocalIndexValues(sizeIndex);
 			
 			minValue = a[0];
 			maxValue = a[1];
@@ -595,13 +599,7 @@ package com.fieldscanner.y2009.graphics {
 			var minColor:uint = indexParams[0];
 			var maxColor:uint = indexParams[1];
 			
-			if(colorIndex==0){
-				a = occurencesLocalIndex();
-			}else if(colorIndex==1){
-				a = inProxLocalIndex();
-			}else if(colorIndex==2){
-				a = outProxLocalIndex();
-			}
+			a = indexCalculator.getLocalIndexValues(colorIndex);
 			
 			minValue = a[0];
 			maxValue = a[1];
@@ -614,195 +612,15 @@ package com.fieldscanner.y2009.graphics {
 			}
 		}
 		
-		private function setTimeLineForSize():void{
+		private function setTimeLineIndexes():void{
 			var i:int=0;
-			var step:int=0;
-			var l:int = wordsData.WORDS_VECTOR.length;
 			var averageArray:Array;
-			var tempMiddle:Number;
 			
-			if(sizeIndex==0){
-				averageArray = occurencesClusterIndex();
-			}else if(sizeIndex==1){
-				averageArray = inProxClusterIndex();
-			}else if(sizeIndex==2){
-				averageArray = outProxClusterIndex();
-			}
-			
-			optionsInterface.TIME_LINE.addClusterIndex(sizeIndex,averageArray,INDEXES[sizeIndex]+"\n(average value)","0xca5b46");
-			optionsInterface.TIME_LINE.drawIndexes();
-		}
-		
-		private function setTimeLineForColor():void{
-			var i:int=0;
-			var step:int=0;
-			var l:int = wordsData.WORDS_VECTOR.length;
-			var averageArray:Array;
-			var tempMiddle:Number;
-			
-			if(colorIndex==0){
-				averageArray = occurencesClusterIndex();
-			}else if(colorIndex==1){
-				averageArray = inProxClusterIndex();
-			}else if(colorIndex==2){
-				averageArray = outProxClusterIndex();
-			}
-			
-			optionsInterface.TIME_LINE.addClusterIndex(colorIndex,averageArray,INDEXES[colorIndex]+"\n(average value)","0x5bc228");
-			optionsInterface.TIME_LINE.drawIndexes();
-		}
-		
-		private function occurencesLocalIndex():Array{
-			var i:int=0;
-			var step:int=0;
-			var tempValue:Number;
-			var minValue:Number;
-			var maxValue:Number;
-			var indexMatrix:Array = new Array();
-			
-			minValue = wordsData.WORDS_VECTOR[0].occurences[0];
-			maxValue = wordsData.WORDS_VECTOR[0].occurences[0];
-			
-			for(step=0;step<wordsData.WORDS_VECTOR[0].occurences.length;step++){
-				indexMatrix[step] = new Array();
-				for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
-					tempValue = wordsData.WORDS_VECTOR[i].occurences[step]
-					
-					if(tempValue<minValue) minValue=tempValue;
-					if(tempValue>maxValue) maxValue=tempValue;
-					
-					indexMatrix[step][i]=tempValue;
-				}
-			}
-			
-			return [minValue,maxValue,indexMatrix];
-		}
-		
-		private function inProxLocalIndex():Array{
-			var i:int=0;
-			var step:int=0;
-			var tempValue:Number;
-			var minValue:Number;
-			var maxValue:Number;
-			var indexMatrix:Array = new Array();
-			
-			minValue = wordsData.WORDS_VECTOR[0].inProxValues[0];
-			maxValue = wordsData.WORDS_VECTOR[0].inProxValues[0];
-			
-			for(step=0;step<wordsData.WORDS_VECTOR[0].inProxValues.length;step++){
-				indexMatrix[step] = new Array();
-				for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
-					tempValue = wordsData.WORDS_VECTOR[i].inProxValues[step]
-					
-					if(tempValue<minValue) minValue=tempValue;
-					if(tempValue>maxValue) maxValue=tempValue;
-					
-					indexMatrix[step][i]=tempValue;
-				}
-			}
-			
-			return [minValue,maxValue,indexMatrix];
-		}
-		
-		private function outProxLocalIndex():Array{
-			var i:int=0;
-			var step:int=0;
-			var tempValue:Number;
-			var minValue:Number;
-			var maxValue:Number;
-			var indexMatrix:Array = new Array();
-			
-			minValue = wordsData.WORDS_VECTOR[0].outProxValues[0];
-			maxValue = wordsData.WORDS_VECTOR[0].outProxValues[0];
-			
-			for(step=0;step<wordsData.WORDS_VECTOR[0].outProxValues.length;step++){
-				indexMatrix[step] = new Array();
-				for(i=0;i<wordsData.WORDS_VECTOR.length;i++){
-					tempValue = wordsData.WORDS_VECTOR[i].outProxValues[step]
-					
-					
-					if(tempValue<minValue) minValue=tempValue;
-					if(tempValue>maxValue) maxValue=tempValue;
-					
-					indexMatrix[step][i]=tempValue;
-				}
-			}
-			
-			return [minValue,maxValue,indexMatrix];
-		}
-		
-		private function occurencesClusterIndex():Array{
-			var i:int=0;
-			var step:int=0;
-			var minValue:Number;
-			var maxValue:Number;
-			var tempAverage:Number;
-			var averageArray:Array = new Array();
-			var l:int=wordsData.WORDS_VECTOR.length;
-			
-			minValue = wordsData.WORDS_VECTOR[i].occurences[step];
-			maxValue = wordsData.WORDS_VECTOR[i].occurences[step];
-			
-			for(step=0;step<endYear-beginYear;step++){
-				tempAverage = 0;
+			for(i=0;i<clusterIndexes.length;i++){
+				averageArray = indexCalculator.getClusterIndexValues(i);
 				
-				for(i=0;i<l;i++){
-					tempAverage += wordsData.getWordOcc(i,i,step);
-				}
-				averageArray[step] = tempAverage/l;
+				optionsInterface.TIME_LINE.addClusterIndex(i,averageArray,clusterIndexes[i],new uint(Math.round( Math.random()*0xFFFFFF)));
 			}
-			
-			return averageArray;
-		}
-		
-		private function inProxClusterIndex():Array{
-			var i:int=0;
-			var step:int=0;
-			var minValue:Number;
-			var maxValue:Number;
-			var tempAverage:Number;
-			var averageArray:Array = new Array();
-			var l:int=wordsData.WORDS_VECTOR.length;
-			
-			minValue = wordsData.WORDS_VECTOR[i].inProxValues[step];
-			maxValue = wordsData.WORDS_VECTOR[i].inProxValues[step];
-			
-			for(step=0;step<endYear-beginYear;step++){
-				tempAverage = 0;
-				
-				for(i=0;i<l;i++){
-					tempAverage += wordsData.getIn(i,step);
-				}
-				trace("in: "+(tempAverage/l));
-				averageArray[step] = tempAverage/l;
-			}
-			
-			return averageArray;
-		}
-		
-		private function outProxClusterIndex():Array{
-			var i:int=0;
-			var step:int=0;
-			var minValue:Number;
-			var maxValue:Number;
-			var tempAverage:Number;
-			var averageArray:Array = new Array();
-			var l:int=wordsData.WORDS_VECTOR.length;
-			
-			minValue = wordsData.WORDS_VECTOR[i].outProxValues[step];
-			maxValue = wordsData.WORDS_VECTOR[i].outProxValues[step];
-			
-			for(step=0;step<endYear-beginYear;step++){
-				tempAverage = 0;
-				
-				for(i=0;i<l;i++){
-					tempAverage += wordsData.getOut(i,step);
-				}
-				trace("out: "+(tempAverage/l));
-				averageArray[step] = tempAverage/l;
-			}
-			
-			return averageArray;
 		}
 		
 		private function keyboardStageHandler(evt:KeyboardEvent):void{

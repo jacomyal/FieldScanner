@@ -25,8 +25,7 @@ package com.fieldscanner.y2009.ui {
 	import com.fieldscanner.y2009.calcul.GSCalculator;
 	import com.fieldscanner.y2009.graphics.Diagram;
 	import com.fieldscanner.y2009.loading.DataLoader;
-
-	import fl.controls.Button;
+	
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -54,7 +53,7 @@ package com.fieldscanner.y2009.ui {
 			if(root.loaderInfo.parameters["alphaValue"]==undefined) alphaValue = 0.1;
 			else alphaValue = new Number(root.loaderInfo.parameters["alphaValue"]);
 			
-			if(root.loaderInfo.parameters["timeInterval"]==undefined) interval = 1;
+			if(root.loaderInfo.parameters["timeInterval"]==undefined) interval = 3;
 			else interval = new Number(root.loaderInfo.parameters["timeInterval"]);
 
 			launchFromFile();
@@ -62,6 +61,10 @@ package com.fieldscanner.y2009.ui {
 		
 		public function get DATA():DataLoader{
 			return dataLoader;
+		}
+		
+		public function get GS_CALCULATOR():GSCalculator{
+			return gsCalculator;
 		}
 		
 		public function reprocess(newInt:Number,newAlp:Number):void{
@@ -73,8 +76,11 @@ package com.fieldscanner.y2009.ui {
 		
 		private function launchFromFile():void{
 			var path:String;
-			if(root.loaderInfo.parameters["path"]==undefined){path = "D:/Text-Mining (stage)/dev/FieldScanner 0.2/bin/field_data.txt";}
-			else{path = root.loaderInfo.parameters["path"];}
+			if(root.loaderInfo.parameters["path"]==undefined){
+				path = "D:/Text-Mining (stage)/dev/FieldScanner 0.2/bin/field_data.txt";
+			}else{
+				path = root.loaderInfo.parameters["path"];
+			}
 			
 			dataLoader = new DataLoader();
 			dataLoader.addEventListener(DataLoader.ON_COMPLETED, onResultsFoundHandler);
@@ -103,7 +109,7 @@ package com.fieldscanner.y2009.ui {
 			
 			infoButton = new InfoButton();
 			with(infoButton){
-				x = 20;
+				x = 220;
 				y = 20;
 				width = 30;
 				height = 30;

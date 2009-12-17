@@ -82,17 +82,7 @@ package com.fieldscanner.y2009.calcul {
 			}
 		}
 		
-		protected function onResultsFoundHandler(evt:Event):void{
-			var i:Number = 0;
-			for(i=0;i<wordsData.getArrayLength();i++){
-				setInProx(i);
-				setOutProx(i);
-			}
-			
-			launchNextStep();
-		}
-		
-		protected function P(A:Number,i1:Number,i2:Number):Number{
+		public function P(A:Number,i1:Number,i2:Number):Number{
 			
 			var cooc:Number = 0;
 			var oc1:Number = 0;
@@ -114,6 +104,16 @@ package com.fieldscanner.y2009.calcul {
 			}
 			
 			return(res);
+		}
+		
+		protected function onResultsFoundHandler(evt:Event):void{
+			var i:Number = 0;
+			for(i=0;i<wordsData.getArrayLength();i++){
+				setInProx(i);
+				setOutProx(i);
+			}
+			
+			launchNextStep();
 		}
 		
 		protected function setInProx(wordIndex:Number):void{

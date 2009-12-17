@@ -97,15 +97,15 @@ package com.fieldscanner.y2009.ui {
 			
 			timePalette = new TimePalette(this);
 			with(timePalette){
-				x = 0;
-				y = 510;
+				x = 10;
+				y = 0;
 				setButtons();
 				setSpeedSlider();
 				setTimeSlider();
 			}
 			
-			this.graphics.moveTo(20,510);
-			this.graphics.lineTo(150,510);
+			this.graphics.moveTo(20,120);
+			this.graphics.lineTo(150,120);
 			
 			calculsPalette = new CalculsPalette(this);
 			with(calculsPalette){
@@ -133,6 +133,9 @@ package com.fieldscanner.y2009.ui {
 				y = 120;
 				setInterface();
 			}
+			
+			this.graphics.moveTo(20,510);
+			this.graphics.lineTo(150,510);
 			
 			timeLine = new TimeLine(this,diagram);
 			drawTimeLineCursor();
