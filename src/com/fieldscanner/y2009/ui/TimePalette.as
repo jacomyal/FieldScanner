@@ -38,8 +38,6 @@ package com.fieldscanner.y2009.ui {
 		
 		private var playButton:Button;
 		private var stopButton:Button;
-		private var timeSlider:Slider;
-		private var speedSlider:Slider;
 		
 		private var isStopped:Boolean;
 		private var isPlaying:Boolean;
@@ -58,67 +56,6 @@ package com.fieldscanner.y2009.ui {
 			return isPlaying;
 		}
 		
-		public function goFrame(f:int):void{
-			timeSlider.value = f;
-		}
-		
-		public function setTimeSlider():void{
-			var tf:TextField = new TextField();
-			var fn:Number = up.DIAGRAM.FRAMES_NUMBER;
-			with(tf){
-				text = "Time slider:";
-				setTextFormat(up.BASIC_FORMAT);
-				selectable = false;
-				autoSize = TextFieldAutoSize.LEFT;
-				x = 10;
-				y = 10;
-			}
-			
-			timeSlider = new Slider();
-			with(timeSlider){
-				minimum = 0;
-				maximum = fn-1;
-				value = up.DIAGRAM.FRAME;
-				setSize(140,0);
-				liveDragging = true;
-				x = 10;
-				y = 30;
-				addEventListener(SliderEvent.CHANGE,timeSliderHandler);
-			}
-			
-			addChild(tf);
-			addChild(timeSlider);
-		}
-		
-		public function setSpeedSlider():void{
-			var tf:TextField = new TextField();
-			with(tf){
-				text = "Speed slider:";
-				setTextFormat(up.BASIC_FORMAT);
-				selectable = false;
-				autoSize = TextFieldAutoSize.LEFT;
-				x = 10;
-				y = 50;
-			}
-			
-			speedSlider = new Slider();
-			with(speedSlider){
-				minimum = 0.1;
-				maximum = 30;
-				value = 8;
-				setSize(140,0);
-				liveDragging = true;
-				x = 10;
-				y = 70;
-				addEventListener(SliderEvent.CHANGE,speedSliderHandler);
-			}
-			
-			stage.frameRate = speedSlider.value;
-			
-			addChild(tf);
-			addChild(speedSlider);
-		}
-		
 		public function initButtons():void{
 			playButton.label = "Play";
 			playButton.setStyle("textFormat",up.TITLE_FORMAT);
@@ -130,11 +67,12 @@ package com.fieldscanner.y2009.ui {
 			playButton = new Button();
 			with(playButton){
 				x = 10;
-				y = 90;
+				y = 0;
 				width = 80;
 				height = 20;
 				toggle = true;
 				useHandCursor = true;
+				focusEnabled = false;
 				label = "Play";
 				setStyle("textFormat",up.TITLE_FORMAT);
 				addEventListener(MouseEvent.CLICK,playButtonHandler);
@@ -144,11 +82,12 @@ package com.fieldscanner.y2009.ui {
 			stopButton = new Button();
 			with(stopButton){
 				x = 100;
-				y = 90;
+				y = 0;
 				width = 50;
 				height = 20;
 				toggle = true;
 				useHandCursor = true;
+				focusEnabled = false;
 				label = "Stop";
 				setStyle("textFormat",up.TITLE_FORMAT);
 				addEventListener(MouseEvent.CLICK,stopButtonHandler);
@@ -169,12 +108,10 @@ package com.fieldscanner.y2009.ui {
 		}
 		
 		public function goFirstFrame():void{
-			timeSlider.value = 0;
 			up.DIAGRAM.goFirstFrame();
 		}
 		
 		public function goNextFrame():Boolean{
-			timeSlider.value ++;
 			return up.DIAGRAM.goNextFrame();
 		}
 		

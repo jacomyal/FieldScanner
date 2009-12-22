@@ -27,12 +27,11 @@ package com.fieldscanner.y2009.ui{
 	import com.fieldscanner.y2009.text.DiagramTextField;
 	
 	import fl.controls.CheckBox;
-	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
+	import flash.text.TextField;
 	import flash.text.TextFormat;
 	
 	public class TimeLine extends Sprite{
@@ -68,7 +67,7 @@ package com.fieldscanner.y2009.ui{
 			beginYear = diagram.START;
 			endYear = diagram.END;
 			
-			x = 690-diagramSize;
+			x = 740-diagramSize;
 			y = (diagramSize+60)+140;
 			
 			indexesVector = new Vector.<Index>();
@@ -87,6 +86,19 @@ package com.fieldscanner.y2009.ui{
 			displayMapKey();
 		}
 		
+		public function SELECTION():Array{
+			var a:Array = [];
+			var i:int;
+			
+			for(i=0;i<indexesList.length;i++){
+				if(indexesList[i].selected){
+					a.push(up.DIAGRAM.CLUSTER_INDEXES[i]);
+				}
+			}
+			
+			return a;
+		}
+		
 		public function getIndex(name:String):Index{
 			var i:int;
 			var res:Index = null;
@@ -98,6 +110,21 @@ package com.fieldscanner.y2009.ui{
 			}
 			
 			return res;
+		}
+		
+		public function setTitle():void{
+			var iTF:TextField = new TextField();
+			
+			with(iTF){
+				text = "Cluster indexes:";
+				setTextFormat(up.TITLE_FORMAT);
+				selectable = false;
+				autoSize = TextFieldAutoSize.LEFT;
+			}
+			iTF.x = -this.x+20;
+			iTF.y = -100;
+			
+			addChild(iTF);
 		}
 		
 		public function addClusterIndex(indexIndex:int,values:Array,indexName:String=null,indexColor:String="undefined"):void{
@@ -124,13 +151,14 @@ package com.fieldscanner.y2009.ui{
 			
 			tempCheckBox = new CheckBox();
 			tempCheckBox.label = indexName;
+			tempCheckBox.focusEnabled = false;
 			tempCheckBox.setStyle("textFormat",new TextFormat("Verdana",10,brightenColor(tempColor,30)));
 			tempCheckBox.width = 200;
 			tempCheckBox.x = -this.x+20;
-			tempCheckBox.y = -70 + i*18;
+			tempCheckBox.y = -80 + i*18;
 			tempCheckBox.addEventListener(Event.CHANGE,onChangeCheckBox);
 			
-			if(i==0){
+			if(diagram.CLUSTER_SELECTED_INDEXES.indexOf(indexName)>-1){
 				tempCheckBox.selected = true;
 			}else{
 				tempCheckBox.selected = false;
@@ -182,23 +210,13 @@ package com.fieldscanner.y2009.ui{
 					if(values[j]>maxValue) maxValue=values[j];
 				}
 				
-				indexesCurves.graphics.lineStyle(2,tempColor);
-				indexesCurves.graphics.moveTo(0,-values[0]*80/maxValue);
-				
 				j = 0;
 				
-				indexesCurves.graphics.lineStyle(1,tempColor,0.8);
+				indexesCurves.graphics.lineStyle(1.5,tempColor,0.8);
 				
-				while(xTo+2<interval*diagramSize/completeInterval){
-					indexesCurves.graphics.moveTo(xTo+1,yTo);
-					indexesCurves.graphics.lineTo(xTo+2,yTo);
-					
-					xTo += 2;
-				}
-				
-				xTo = interval*diagramSize/completeInterval;
 				yTo = -values[j]*80/maxValue;
 				
+				indexesCurves.graphics.moveTo(0,-values[j]*80/maxValue);
 				indexesCurves.graphics.lineStyle(2,tempColor);
 				
 				while(j<values.length){
@@ -208,9 +226,23 @@ package com.fieldscanner.y2009.ui{
 					
 					j++;
 				}
+			}
+			
+			for(i=0;i<selectedIndexes.length;i++){
+				tempIndex = indexesVector[selectedIndexes[i]];
+				values = tempIndex.VALUES;
+				tempColor = tempIndex.COLOR;
+				indexName = tempIndex.NAME;
+				maxValue = 0;
+				xTo = 0;
+				yTo = 0;
+				
+				for(j=0;j<values.length;j++){
+					if(values[j]>maxValue) maxValue=values[j];
+				}
 				
 				xTo = timeCursor.x;
-				yTo = -values[frame-1]*80/maxValue;
+				yTo = -values[frame-1+interval]*80/maxValue;
 				indexesCurves.graphics.lineStyle(2,brightenColor(tempColor,30));
 				
 				indexesCurves.graphics.moveTo(xTo,yTo);
@@ -333,12 +365,12 @@ package com.fieldscanner.y2009.ui{
 			
 			if(frame!=oldFrame){
 				diagram.goFrame(frame);
-				up.setTimeSliderFrame(frame);
 				drawIndexes();
 			}
 		}
 		
 		private function onChangeCheckBox(e:Event):void{
+			diagram.setSelectedClusterIndexes(this.SELECTION());
 			drawIndexes();
 		}
 		

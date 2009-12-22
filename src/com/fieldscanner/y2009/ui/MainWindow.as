@@ -48,6 +48,8 @@ package com.fieldscanner.y2009.ui {
 		
 		public function MainWindow(main:Stage){
 			main.addChild(this);
+			stage.frameRate = 9;
+			
 			var tf:TextField;
 			
 			if(root.loaderInfo.parameters["alphaValue"]==undefined) alphaValue = 0.1;
@@ -109,8 +111,8 @@ package com.fieldscanner.y2009.ui {
 			
 			infoButton = new InfoButton();
 			with(infoButton){
-				x = 220;
-				y = 20;
+				x = 180;
+				y = 65;
 				width = 30;
 				height = 30;
 				addEventListener(MouseEvent.MOUSE_DOWN,infoDownHandler);

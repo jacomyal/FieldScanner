@@ -98,44 +98,42 @@ package com.fieldscanner.y2009.ui {
 			timePalette = new TimePalette(this);
 			with(timePalette){
 				x = 10;
-				y = 0;
+				y = 60;
 				setButtons();
-				setSpeedSlider();
-				setTimeSlider();
 			}
 			
-			this.graphics.moveTo(20,120);
-			this.graphics.lineTo(150,120);
+			this.graphics.moveTo(20,90);
+			this.graphics.lineTo(150,90);
 			
 			calculsPalette = new CalculsPalette(this);
 			with(calculsPalette){
 				x = 0;
-				y = 420;
+				y = 390;
 				setInterface();
 			}
 			
-			this.graphics.moveTo(20,420);
-			this.graphics.lineTo(150,420);
+			this.graphics.moveTo(20,390);
+			this.graphics.lineTo(150,390);
 			
 			displayPalette = new DisplayPalette(this);
 			with(displayPalette){
 				x = 0;
-				y = 320;
+				y = 290;
 				setInterface();
 			}
 			
-			this.graphics.moveTo(20,320);
-			this.graphics.lineTo(150,320);
+			this.graphics.moveTo(20,290);
+			this.graphics.lineTo(150,290);
 			
 			indexPalette = new IndexPalette(this);
 			with(indexPalette){
 				x = 0;
-				y = 120;
+				y = 90;
 				setInterface();
 			}
 			
-			this.graphics.moveTo(20,510);
-			this.graphics.lineTo(150,510);
+			this.graphics.moveTo(20,480);
+			this.graphics.lineTo(150,480);
 			
 			timeLine = new TimeLine(this,diagram);
 			drawTimeLineCursor();
@@ -161,10 +159,6 @@ package com.fieldscanner.y2009.ui {
 		
 		public function stopPlaying():void{
 			timePalette.pause();
-		}
-		
-		public function setTimeSliderFrame(f:int):void{
-			timePalette.goFrame(f);
 		}
 	}
 }

@@ -62,7 +62,7 @@ package com.fieldscanner.y2009.graphics{
 			graphics.clear();
 			
 			with(graphics){
-				graphics.beginFill(word.color[step],0.6);
+				graphics.beginFill(word.color[step],0.8);
 				graphics.lineStyle(2,brightenColor(word.color[step],80),1);
 				graphics.drawCircle(0,0,word.diameter[step]*2/3);
 			}

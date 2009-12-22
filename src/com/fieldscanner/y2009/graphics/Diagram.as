@@ -40,6 +40,7 @@ package com.fieldscanner.y2009.graphics {
 		
 		private var localIndexes:Array;
 		private var clusterIndexes:Array;
+		private var selectedClusterIndexes:Array;
 		private var wordsData:Data;
 		
 		private var beginYear:Number;
@@ -51,6 +52,7 @@ package com.fieldscanner.y2009.graphics {
 		
 		private var indexOfImage:Number;
 		private var indexParams:Array;
+		private var colorsArray:Array;
 		private var displayMode:int;
 		private var colorIndex:int;
 		private var sizeIndex:int;
@@ -72,7 +74,7 @@ package com.fieldscanner.y2009.graphics {
 			var tf1:TextField;
 			tf1 = new TextField();
 			tf1.text = "In";
-			tf1.x = 680-diagramSize;
+			tf1.x = 730-diagramSize;
 			tf1.y = 10;
 			tf1.selectable = false;
 			tf1.setTextFormat(new TextFormat("Arial",20,0xA0A0A0,true,true));
@@ -82,7 +84,7 @@ package com.fieldscanner.y2009.graphics {
 			var tf2:TextField;
 			tf2 = new TextField();
 			tf2.text = "Out";
-			tf2.x = 715;
+			tf2.x = 765;
 			tf2.y = diagramSize+43;
 			tf2.selectable = false;
 			tf2.setTextFormat(new TextFormat("Arial",20,0xA0A0A0,true,true));
@@ -93,14 +95,16 @@ package com.fieldscanner.y2009.graphics {
 			indexOfImage = 0;
 			
 			indexParams = [0xFFCC66,0xBF1111,10,30];
-			localIndexes = ["Occurences","In proximity","Out proximity"];
-			clusterIndexes = ["Occurences (average)","In/Out proximity (average)"];
+			localIndexes = ["Occurences","Occurences (derivative)","Cooccurences","Cooccurences (derivative)","In proximity","In proximity (derivative)","Out proximity","Out proximity (derivative)"];
+			clusterIndexes = ["Occurences (average)","Occurences (derivative)","Cooccurences","Cooccurences (derivative)","In/Out proximity (average)","In/Out proximity (derivative)"];
+			colorsArray = [0xd9433a3,0x02578c,0xf28704,0xf21c1c,0x04f257,0xc0d906,0xf2620e,0xd90303,0x8c0202];
+			selectedClusterIndexes = ["Occurences (average)"];
 			colorIndex = 0;
 			sizeIndex = 0;
 			
 			indexCalculator = new IndexCalculator(mainWindow.GS_CALCULATOR);
 			
-			x = 690-diagramSize;
+			x = 740-diagramSize;
 			y = diagramSize+60;
 			
 			stage.addEventListener(KeyboardEvent.KEY_DOWN,keyboardStageHandler);
@@ -162,6 +166,10 @@ package com.fieldscanner.y2009.graphics {
 			return clusterIndexes;
 		}
 		
+		public function get CLUSTER_SELECTED_INDEXES():Array{
+			return selectedClusterIndexes;
+		}
+		
 		public function get DIAGRAM_SIZE():Number{
 			return diagramSize;
 		}
@@ -176,6 +184,10 @@ package com.fieldscanner.y2009.graphics {
 		
 		public function get IS_PLAYING():Boolean{
 			return optionsInterface.IS_PLAYING;
+		}
+		
+		public function setSelectedClusterIndexes(a:Array):void{
+			selectedClusterIndexes = a;
 		}
 		
 		public function setIndexParams(a:Array,c:int,s:int):void{
@@ -346,6 +358,10 @@ package com.fieldscanner.y2009.graphics {
 			var inMax:Number = wordsData.WORDS_VECTOR[0].inProxValues[0];
 			var outMin:Number = wordsData.WORDS_VECTOR[0].outProxValues[0];
 			var outMax:Number = wordsData.WORDS_VECTOR[0].outProxValues[0];
+			var temp1:Number;
+			var temp2:Number;
+			var temp3:Number;
+			var temp4:Number;
 			
 			setSize();
 			setColor();
@@ -402,10 +418,14 @@ package com.fieldscanner.y2009.graphics {
 							outMax = wordsData.WORDS_VECTOR[i].outProxValues[step];
 					}
 					
-					inMin = (inMin+inMax-measures[0])/2;
-					outMin = (outMin+outMax-measures[1])/2;
-					inMax = (inMin+inMax+measures[0])/2;
-					outMax = (outMin+outMax+measures[1])/2;
+					temp1 = (inMin+inMax-measures[0])/2;
+					temp2 = (outMin+outMax-measures[1])/2;
+					temp3 = (inMin+inMax+measures[0])/2;
+					temp4 = (outMin+outMax+measures[1])/2;
+					inMin = temp1;
+					outMin = temp2;
+					inMax = temp3;
+					outMax = temp4;
 				}
 				
 				tempContainer = displayMapKey(tempContainer,[inMin,inMax,outMin,outMax]);
@@ -619,8 +639,10 @@ package com.fieldscanner.y2009.graphics {
 			for(i=0;i<clusterIndexes.length;i++){
 				averageArray = indexCalculator.getClusterIndexValues(i);
 				
-				optionsInterface.TIME_LINE.addClusterIndex(i,averageArray,clusterIndexes[i],new uint(Math.round( Math.random()*0xFFFFFF)));
+				optionsInterface.TIME_LINE.addClusterIndex(i,averageArray,clusterIndexes[i],new uint(colorsArray[i]));
 			}
+			
+			optionsInterface.TIME_LINE.setTitle();
 		}
 		
 		private function keyboardStageHandler(evt:KeyboardEvent):void{
@@ -628,19 +650,15 @@ package com.fieldscanner.y2009.graphics {
 			{
 				case Keyboard.LEFT:
 					this.goFrame(indexOfImage-1);
-					optionsInterface.setTimeSliderFrame(this.indexOfImage);
 					break;
 				case Keyboard.RIGHT:
 					this.goNextFrame();
-					optionsInterface.setTimeSliderFrame(this.indexOfImage);
 					break;
 				case Keyboard.DOWN:
 					this.goFirstFrame();
-					optionsInterface.setTimeSliderFrame(this.indexOfImage);
 					break;
 				case Keyboard.UP:
 					this.goFrame((endYear-beginYear)-(interval));
-					optionsInterface.setTimeSliderFrame(this.indexOfImage);
 					break;
 				case Keyboard.SPACE:
 					optionsInterface.play();
