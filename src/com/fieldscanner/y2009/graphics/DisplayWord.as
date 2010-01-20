@@ -35,6 +35,7 @@ package com.fieldscanner.y2009.graphics{
 		private var labelField:TextField;
 		private var textFormat:TextFormat;
 		private var toolTip:Sprite;
+		private var wordTrace:Sprite;
 		private var word:Word;
 		private var step:int;
 		
@@ -44,6 +45,7 @@ package com.fieldscanner.y2009.graphics{
 			
 			step = s;
 			word = w;
+			wordTrace = new Sprite();
 			
 			labelField = new TextField();
 			labelField.text = w.label;
@@ -56,6 +58,10 @@ package com.fieldscanner.y2009.graphics{
 		
 		public function get WORD():Word{
 			return(word);
+		}
+		
+		public function get TRACE():Sprite{
+			return(wordTrace);
 		}
 		
 		public function plot():void{

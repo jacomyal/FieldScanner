@@ -31,6 +31,7 @@ package com.fieldscanner.y2009.graphics {
 	
 	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -56,6 +57,7 @@ package com.fieldscanner.y2009.graphics {
 		private var displayMode:int;
 		private var colorIndex:int;
 		private var sizeIndex:int;
+		private var selectedWordIndex:int;
 		
 		private var optionsInterface:OptionsInterface;
 		private var graphsVector:Vector.<Sprite>;
@@ -180,6 +182,10 @@ package com.fieldscanner.y2009.graphics {
 		
 		public function get WORDS():Data{
 			return wordsData;
+		}
+		
+		public function get OPTIONS_WINDOWS():OptionsInterface{
+			return optionsInterface;
 		}
 		
 		public function get IS_PLAYING():Boolean{
@@ -509,6 +515,7 @@ package com.fieldscanner.y2009.graphics {
 			var tf:TextField = new TextField();
 			var w:DisplayWord;
 			var i:int;
+			var j:int;
 			
 			var im:Number = borders[0];
 			var iM:Number = borders[1];
@@ -537,6 +544,19 @@ package com.fieldscanner.y2009.graphics {
 					setToolTip(this,step);
 				}
 				
+				if(i==selectedWordIndex){
+					for(j=0;j<step;j++){
+						w.TRACE.graphics.lineStyle(2,w.WORD.color[j]);
+						w.TRACE.graphics.moveTo(diagramSize*(wordsData.WORDS_VECTOR[i].inProxValues[j]-im)/(iM-im)-w.x,
+												-1*diagramSize*(wordsData.WORDS_VECTOR[i].outProxValues[j]-om)/(oM-om)-w.y);
+						w.TRACE.graphics.lineTo(diagramSize*(wordsData.WORDS_VECTOR[i].inProxValues[j+1]-im)/(iM-im)-w.x,
+							-1*diagramSize*(wordsData.WORDS_VECTOR[i].outProxValues[j+1]-om)/(oM-om)-w.y);
+					}
+					
+					w.addChild(w.TRACE);
+				}
+				
+				w.addEventListener(MouseEvent.CLICK,onClickAWord);
 				s.addChild(w);
 			}
 			
@@ -579,6 +599,13 @@ package com.fieldscanner.y2009.graphics {
 			}
 			
 			return [inDiffMax,outDiffMax];
+		}
+		
+		private function onClickAWord(e:MouseEvent):void{
+			var s:String = (e.target as DisplayWord).WORD.label;
+			selectedWordIndex = wordsData.indexOfString(s);
+			process(wordsData,interval,alphaValue);
+			trace(selectedWordIndex);
 		}
 		
 		private function setSize():void{
@@ -639,7 +666,7 @@ package com.fieldscanner.y2009.graphics {
 			for(i=0;i<clusterIndexes.length;i++){
 				averageArray = indexCalculator.getClusterIndexValues(i);
 				
-				optionsInterface.TIME_LINE.addClusterIndex(i,averageArray,clusterIndexes[i],new uint(colorsArray[i]));
+				optionsInterface.TIME_LINE.addClusterIndex(i,averageArray,clusterIndexes[i],colorsArray[i].toString());
 			}
 			
 			optionsInterface.TIME_LINE.setTitle();

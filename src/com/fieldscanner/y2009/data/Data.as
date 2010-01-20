@@ -73,6 +73,18 @@ package com.fieldscanner.y2009.data {
 			return(wordsArray.length);
 		}
 		
+		public function indexOfString(s:String):int{
+			var i:int;
+			
+			for(i=0;i<wordsVector.length;i++){
+				if(s==wordsVector[i].label){
+					return i;
+				}
+			}
+			
+			return -1;
+		}
+		
 		public function getWordOcc(wordIndex1:Number,wordIndex2:Number,year:Number):Number{
 			var res:Number;
 			if(year>=1500) res=occMatrixes[wordIndex1][wordIndex2][year-beginYear];
